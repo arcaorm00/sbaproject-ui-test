@@ -4,7 +4,8 @@ import {
   Badge,
   MuiThemeProvider,
   IconButton,
-  Drawer
+  Dialog,
+  Button
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import { PropTypes } from "prop-types";
@@ -14,6 +15,7 @@ import {
   deleteProductFromCart,
   updateCartAmount
 } from "app/redux/actions/EcommerceActions";
+import {Admin} from "../../views"
 
 let cartListLoaded = false;
 
@@ -54,27 +56,42 @@ function ShoppingCart(props) {
         }}
       >
         <Badge color="secondary" badgeContent={cartList.length}>
-          <Icon>shopping_cart</Icon>
+          <Icon>apps</Icon>
         </Badge>
       </IconButton>
 
-      <Drawer
+      <Dialog
         container={container}
         variant="temporary"
-        anchor={"right"}
         open={panelOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
           keepMounted: true
         }}
+        width='300px'
       >
         <div className="mini-cart">
           <div className="cart__topbar flex flex-middle p-16 mb-24">
-            <Icon color="primary">shopping_cart</Icon>
-            <h5 className="ml-8 my-0 font-weight-500">Cart</h5>
+            <Icon color="primary">apps</Icon>
+            <h5 className="ml-8 my-0 font-weight-500">Admin Code</h5>
           </div>
-
-          {cartList.map(product => (
+          <div className="flex flex-middle flex-space-between py-16 px-8">
+            <form action="/admin">
+              <input/><p/>
+              <div className="flex flex-middle">
+                <Button
+                  className="capitalize"
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                >
+                  입력
+                </Button>
+              </div>
+            </form>
+          </div>
+          
+          {/* {cartList.map(product => (
             <div
               key={product.id}
               className="mini-cart__item flex flex-middle flex-space-between py-16 px-8"
@@ -122,9 +139,9 @@ function ShoppingCart(props) {
                 <Icon fontSize="small">clear</Icon>
               </IconButton>
             </div>
-          ))}
+          ))} */}
         </div>
-      </Drawer>
+      </Dialog>
     </MuiThemeProvider>
   );
 }

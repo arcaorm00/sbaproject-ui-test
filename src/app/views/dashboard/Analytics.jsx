@@ -15,15 +15,8 @@ import UpgradeCard from "./shared/UpgradeCard";
 import Campaigns from "./shared/Campaigns";
 import { withStyles } from "@material-ui/styles";
 
-class Dashboard1 extends Component {
-  state = {};
-
-  render() {
-    let { theme } = this.props;
-
-    return (
-      <Fragment>
-        <div className="pb-86 pt-30 px-30 bg-primary">
+const Dashboard1 =()=> <>
+  <div className="pb-86 pt-30 px-30 bg-primary">
           <ModifiedAreaChart
             height="280px"
             option={{
@@ -57,7 +50,7 @@ class Dashboard1 extends Component {
           <Grid container spacing={3}>
             <Grid item lg={8} md={8} sm={12} xs={12}>
 
-              <StatCards theme={theme}/>
+              <StatCards />
 
               {/* Top Selling Products */}
               <TableCard/>
@@ -75,11 +68,6 @@ class Dashboard1 extends Component {
                 <div className="card-subtitle">Last 30 days</div>
                 <DoughnutChart
                   height="300px"
-                  color={[
-                    theme.palette.primary.dark,
-                    theme.palette.primary.main,
-                    theme.palette.primary.light
-                  ]}
                 />
               </Card>
 
@@ -90,9 +78,6 @@ class Dashboard1 extends Component {
             </Grid>
           </Grid>
         </div>
-      </Fragment>
-    );
-  }
-}
+</>
 
 export default withStyles({}, { withTheme: true })(Dashboard1);

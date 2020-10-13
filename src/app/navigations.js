@@ -1,14 +1,14 @@
 export const navigations = [
-  {
-    name: "KOSPI",
-    path: "/dashboard/analytics",
-    icon: "dashboard"
-  },
-  {
-    name: "NASDOQ",
-    path: "/dashboard/analytics",
-    icon: "dashboard"
-  },
+  // {
+  //   name: "KOSPI",
+  //   path: "/dashboard/analytics",
+  //   icon: "dashboard"
+  // },
+  // {
+  //   name: "NASDOQ",
+  //   path: "/dashboard/analytics",
+  //   icon: "dashboard"
+  // },
   {
     name: "게시판",
     icon: "description",
@@ -25,11 +25,11 @@ export const navigations = [
       }
     ]
   },
-  {
-    name: "관심 종목",
-    icon: "control_camera",
-    path: "/others/drag-and-drop"
-  },
+  // {
+  //   name: "관심 종목",
+  //   icon: "control_camera",
+  //   path: "/others/drag-and-drop"
+  // },
   // {
   //   name: "Multilevel",
   //   icon: "trending_up",
@@ -62,32 +62,32 @@ export const navigations = [
   //     }
   //   ]
   // },
-  {
-    name: "주가 예측",
-    icon: "format_list_bulleted",
-    children: [
-      {
-        name: "Samsung",
-        path: "/utilities/color",
-        iconText: "C"
-      },
-      {
-        name: "Apple",
-        path: "/utilities/spacing",
-        iconText: "S"
-      },
-      {
-        name: "temp",
-        path: "/utilities/typography",
-        iconText: "T"
-      },
-      {
-        name: "temp",
-        path: "/utilities/display",
-        iconText: "D"
-      }
-    ]
-  },
+  // {
+  //   name: "주가 예측",
+  //   icon: "format_list_bulleted",
+  //   children: [
+  //     {
+  //       name: "Samsung",
+  //       path: "/utilities/color",
+  //       iconText: "C"
+  //     },
+  //     {
+  //       name: "Apple",
+  //       path: "/utilities/spacing",
+  //       iconText: "S"
+  //     },
+  //     {
+  //       name: "temp",
+  //       path: "/utilities/typography",
+  //       iconText: "T"
+  //     },
+  //     {
+  //       name: "temp",
+  //       path: "/utilities/display",
+  //       iconText: "D"
+  //     }
+  //   ]
+  // },
   {
     name: "회원 관리",
     icon: "trending_up",
@@ -102,16 +102,16 @@ export const navigations = [
         iconText: "SU",
         path: "/session/signup"
       },
-      {
-        name: "Forgot password",
-        iconText: "FP",
-        path: "/session/forgot-password"
-      },
-      {
-        name: "Error",
-        iconText: "404",
-        path: "/session/404"
-      }
+      // {
+      //   name: "Forgot password",
+      //   iconText: "FP",
+      //   path: "/session/forgot-password"
+      // },
+      // {
+      //   name: "Error",
+      //   iconText: "404",
+      //   path: "/session/404"
+      // }
     ]
   },
   
