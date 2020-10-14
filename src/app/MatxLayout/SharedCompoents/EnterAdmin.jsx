@@ -17,9 +17,8 @@ import {
 } from "app/redux/actions/EcommerceActions";
 import {Admin} from "../../views"
 
-let cartListLoaded = false;
-
-function EnterAdmin(props) {
+const EnterAdmin = (props) => {
+  
   const {
     container,
     theme,
@@ -32,11 +31,6 @@ function EnterAdmin(props) {
   } = props;
 
   const [panelOpen, setPanelOpen] = React.useState(false);
-
-  if (!cartListLoaded) {
-    getCartList(user.userId);
-    cartListLoaded = true;
-  }
 
   function handleDrawerToggle() {
     setPanelOpen(!panelOpen);

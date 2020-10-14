@@ -1,7 +1,9 @@
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 import NotFound from "./NotFound";
-import ForgotPassword from "./ForgotPassword";
+import ForgotPassword from "./ForgotPassword"
+import Mypage from './Mypage'
+import AccountSetting from './AccountSetting'
 
 const settings = {
   activeLayout: "layout1",
@@ -40,6 +42,14 @@ const sessionRoutes = [
     path: "/session/forgot-password",
     component: ForgotPassword,
     settings
+  },
+  {
+    path: "/session/mypage",
+    component: Mypage
+  },
+  {
+    path: "/session/accountsetting",
+    component: AccountSetting
   },
   {
     path: "/session/404",

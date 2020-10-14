@@ -21,7 +21,7 @@ export const navigations = [
       {
         name: "글쓰기",
         path: "/forms/editor",
-        iconText: "E"
+        iconText: "W"
       }
     ]
   },
@@ -115,6 +115,19 @@ export const navigations = [
     ]
   },
   
+ 
+  {
+    name: "마이페이지",
+    path: "/session/mypage"
+  },
+  {
+    name: "계정관리",
+    path: "/session/accountsetting"
+  },
+  {
+    name: "관리자 페이지",
+    path: "/admin"
+  }
   
 
   // {

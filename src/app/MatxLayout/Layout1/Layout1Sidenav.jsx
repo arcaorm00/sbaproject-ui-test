@@ -85,7 +85,9 @@ class Layout1Sidenav extends Component {
 
   handleSignOut = () => {
     this.props.logoutUser();
-  };
+  }
+
+  
 
   renderLogoSwitch = () => (
     // Open Brand component file to replace logo and text
@@ -100,6 +102,19 @@ class Layout1Sidenav extends Component {
   );
 
   renderUser = () => {
+    // 마이페이지 클릭: 회원이 매매한 주식 정보
+    const clickMyPage = () => {
+      alert('click mypage')
+    }
+    // 홈버튼 클릭: home 경로로 이동
+    const clickHome = () => {
+      alert('click Home')
+    }
+    // 설정 클릭: 회원 계정 관리
+    const clickSetting = () => {
+      alert('click setting')
+    }
+
     let { user } = this.props;
     return (
       <div className="sidenav__user">
@@ -125,18 +140,18 @@ class Layout1Sidenav extends Component {
                 </Tooltip>
               }
             >
-              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }}>
+              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }} onClick={clickHome}>
                 <Icon> home </Icon>
                 <span className="pl-16"> Home </span>
               </MenuItem>
-              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }}>
+              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }} onClick={clickSetting}>
                 <Icon> settings </Icon>
                 <span className="pl-16"> Account Setting </span>
               </MenuItem>
             </MatxMenu>
 
-            <Tooltip title="Profile">
-              <IconButtonWhite aria-label="Delete" className="" size="small">
+            <Tooltip title="mypage">
+              <IconButtonWhite aria-label="Delete" className="" size="small" onClick={clickMyPage}>
                 <IconSmall>person</IconSmall>
               </IconButtonWhite>
             </Tooltip>
