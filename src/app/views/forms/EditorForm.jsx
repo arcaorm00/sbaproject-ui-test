@@ -21,7 +21,7 @@ const EditorForm = () => <>
       color="primary"
       type="submit"
     >
-      Sign up
+      등록
     </Button>
   </div>
 

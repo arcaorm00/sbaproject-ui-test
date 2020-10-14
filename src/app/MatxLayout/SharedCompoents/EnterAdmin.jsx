@@ -19,7 +19,7 @@ import {Admin} from "../../views"
 
 let cartListLoaded = false;
 
-function ShoppingCart(props) {
+function EnterAdmin(props) {
   const {
     container,
     theme,
@@ -44,6 +44,9 @@ function ShoppingCart(props) {
 
   const parentThemePalette = theme.palette;
 
+  const submitCode = () => {
+    alert('WOW')
+  }
   return (
     <MuiThemeProvider theme={settings.themes[settings.activeTheme]}>
       <IconButton
@@ -76,7 +79,7 @@ function ShoppingCart(props) {
             <h5 className="ml-8 my-0 font-weight-500">Admin Code</h5>
           </div>
           <div className="flex flex-middle flex-space-between py-16 px-8">
-            <form action="/admin">
+            <form>
               <input/><p/>
               <div className="flex flex-middle">
                 <Button
@@ -84,6 +87,7 @@ function ShoppingCart(props) {
                   variant="contained"
                   color="primary"
                   type="submit"
+                  onClick={submitCode}
                 >
                   입력
                 </Button>
@@ -146,7 +150,7 @@ function ShoppingCart(props) {
   );
 }
 
-ShoppingCart.propTypes = {
+EnterAdmin.propTypes = {
   settings: PropTypes.object.isRequired,
   cartList: PropTypes.array.isRequired
 };
@@ -164,5 +168,5 @@ export default withStyles({}, { withTheme: true })(
   connect(
     mapStateToProps,
     { getCartList, deleteProductFromCart, updateCartAmount }
-  )(ShoppingCart)
+  )(EnterAdmin)
 );

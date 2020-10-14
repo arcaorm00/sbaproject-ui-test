@@ -16,7 +16,7 @@ import { MatxMenu, MatxSearchBox } from "matx";
 import { isMdScreen } from "utils";
 import NotificationBar from "../SharedCompoents/NotificationBar";
 import { Link } from "react-router-dom";
-import ShoppingCart from "../SharedCompoents/ShoppingCart";
+import EnterAdmin from "../SharedCompoents/EnterAdmin";
 
 const styles = theme => ({
   root: {
@@ -95,7 +95,7 @@ class Layout1Topbar extends Component {
 
                 <NotificationBar />
 
-                <ShoppingCart></ShoppingCart>
+                <EnterAdmin></EnterAdmin>
 
                 <MatxMenu
                   menuButton={
