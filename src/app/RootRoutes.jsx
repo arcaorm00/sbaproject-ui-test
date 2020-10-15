@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom";
 import dashboardRoutes from "./views/dashboard/DashboardRoutes";
 import utilitiesRoutes from "./views/utilities/UtilitiesRoutes";
 import sessionRoutes from "./views/sessions/SessionRoutes";
+import adminRoutes from './views/admin/adminRoutes'
 
 import materialRoutes from "./views/material-kit/MaterialRoutes";
 import dragAndDropRoute from "./views/Drag&Drop/DragAndDropRoute";
@@ -26,6 +27,7 @@ const errorRoute = [
 ];
 
 const routes = [
+  ...adminRoutes,
   ...sessionRoutes,
   ...dashboardRoutes,
   ...materialRoutes,
