@@ -1,17 +1,18 @@
+
 import React from 'react'
 import { Breadcrumb } from "matx";
 
-const Mypage = () => <>
+const AccountSetting = () => <>
 <div className="m-sm-30">
     <div  className="mb-sm-30">
       <Breadcrumb
         routeSegments={[
-          { name: "Mypage" }
+          { name: "마이 페이지" }
         ]}
       />
     </div>
-    <div>Mypage</div>
+    <div>마이 페이지</div>
 </div>
 </>
 
-export default Mypage
+export default AccountSetting

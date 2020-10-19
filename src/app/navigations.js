@@ -19,6 +19,11 @@ export const navigations = [
         iconText: "B"
       },
       {
+        name: "글 내용",
+        path: "/forms/detail",
+        iconText: "D"
+      },
+      {
         name: "글쓰기",
         path: "/forms/editor",
         iconText: "W"

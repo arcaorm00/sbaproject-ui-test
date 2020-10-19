@@ -1,11 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Icon,
   Badge,
   MuiThemeProvider,
   IconButton,
   Dialog,
-  Button
+  Button,
+  TextField
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import { PropTypes } from "prop-types";
@@ -15,10 +16,12 @@ import {
   deleteProductFromCart,
   updateCartAmount
 } from "app/redux/actions/EcommerceActions";
-import {Admin} from "../../views"
+
 
 const EnterAdmin = (props) => {
   
+  const [adminCode, setAdminCode] = useState()
+
   const {
     container,
     theme,
@@ -38,9 +41,16 @@ const EnterAdmin = (props) => {
 
   const parentThemePalette = theme.palette;
 
-  const submitCode = () => {
-    alert('WOW')
+  const submitCode = (e) => {
+    e.preventDefault()
+    let inputCode = `${adminCode}`
+    if (inputCode == 'admin'){
+      alert('Success!')
+    }else{
+      alert('Fail!')
+    }
   }
+
   return (
     <MuiThemeProvider theme={settings.themes[settings.activeTheme]}>
       <IconButton
@@ -53,7 +63,7 @@ const EnterAdmin = (props) => {
         }}
       >
         <Badge color="secondary" badgeContent={cartList.length}>
-          <Icon>apps</Icon>
+          <Icon>dashboard</Icon>
         </Badge>
       </IconButton>
 
@@ -74,7 +84,13 @@ const EnterAdmin = (props) => {
           </div>
           <div className="flex flex-middle flex-space-between py-16 px-8">
             <form>
-              <input/><p/>
+              <TextField
+                id="adminCodeInput"
+                label="Admin code"
+                type="password"
+                autoComplete="current-password"
+                onChange={ e => {setAdminCode(`${e.target.value}`)}}
+              /><p/>
               <div className="flex flex-middle">
                 <Button
                   className="capitalize"

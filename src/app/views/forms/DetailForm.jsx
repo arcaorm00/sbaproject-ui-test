@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb } from "matx";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
   }
 });
 
-function createData(name, calories, fat, carbs, protein) {
+const createData = (name, calories, fat, carbs, protein) => {
   return { name, calories, fat, carbs, protein };
 }
 
@@ -32,7 +33,7 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-const BasicForm = () => {
+const DetailForm = () => {
 
   const classes = useStyles();
 
@@ -50,24 +51,13 @@ const BasicForm = () => {
     <TableContainer className={classes.container} component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
-          <TableRow>
-            <TableCell align="left" width="10%">글번호</TableCell>
-            <TableCell align="center" width="40%">제목</TableCell>
-            <TableCell align="right" width="20%">작성자</TableCell>
-            <TableCell align="right" width="20%">작성일자</TableCell>
-          </TableRow>
+          <Typography variant="h6" color="inherit" noWrap>
+            글 제목
+          </Typography>
         </TableHead>
+        <hr/>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell align="left">{row.calories}</TableCell>
-              <TableCell align='left'>
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-            </TableRow>
-          ))}
+          글 내용
         </TableBody>
       </Table>
     </TableContainer>
@@ -75,4 +65,4 @@ const BasicForm = () => {
   )
 }
 
-export default BasicForm;
+export default DetailForm;

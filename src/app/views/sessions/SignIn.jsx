@@ -31,7 +31,7 @@ const styles = theme => ({
 
 class SignIn extends Component {
   state = {
-    email: "watson@example.com",
+    email: "example@example.com",
     password: "testpass",
     agreement: ""
   };
