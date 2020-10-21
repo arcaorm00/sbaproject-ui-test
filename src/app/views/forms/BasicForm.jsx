@@ -12,6 +12,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 
 import Paper from '@material-ui/core/Paper';
+
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 const useStyles = makeStyles({
@@ -21,37 +23,38 @@ const useStyles = makeStyles({
   container: {
     padding: '20px'
   }
-});
+})
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+const read_all_articles = () => {
+  axios.get('http://localhost:8080/api/boards/list')
+  .then( res => {
+    console.log(res.data)
+    return res.data
+  })
+  .catch( err => {
+    alert(`ERROR: ${err}`)
+  })
+}
+
+const createData = (id, title, email, regdate) => {
+  return { id, title, email, regdate };
 }
 
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+  createData(159, 'Frozen yoghurt', 6.0, 24)
+]
 
 const BasicForm = () => {
 
   const classes = useStyles();
 
-  const connect_test = () => {
-    axios.get('http://localhost:8080/api')
-    .then( res => {
-      console.log(res)
-    }).catch( err => alert('Failure!'))
-  }
+  const article = read_all_articles()
 
   return (
   <div className="m-sm-30">
     <div  className="mb-sm-30">
       <Breadcrumb
         routeSegments={[
-          { name: "게시판", path: "/forms" },
           { name: "게시판" }
         ]}
       />
@@ -85,14 +88,18 @@ const BasicForm = () => {
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.name} onClick={connect_test}>
-              <TableCell align="left" width="10%">{row.calories}</TableCell>
-              <TableCell align='left' width="50%">
-                {row.name}
+            
+            <TableRow key={row.title}>
+              <TableCell align="left" width="10%">{row.id}</TableCell>
+              <Link className="flex flex-middle" to="/forms/detail?board-id=${row.id}">
+              <TableCell align='left' width="100%">
+                {row.title}
               </TableCell>
-              <TableCell align="center" width="20%">{row.fat}</TableCell>
-              <TableCell align="center" width="10%">{row.carbs}</TableCell>
+              </Link>
+              <TableCell align="center" width="20%">{row.email}</TableCell>
+              <TableCell align="center" width="10%">{row.regdate}</TableCell>
             </TableRow>
+            
           ))}
         </TableBody>
       </Table>

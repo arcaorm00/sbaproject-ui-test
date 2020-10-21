@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import {
   Card,
   Checkbox,
@@ -8,25 +8,32 @@ import {
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
+import axios from 'axios'
 
 class SignUp extends Component {
+
   state = {
-    username: "",
+    name: "",
     email: "",
     password: "",
     agreement: ""
-  };
+  }
 
-  handleChange = event => {
-    event.persist();
+  handleChange = e => {
+    e.persist();
     this.setState({
-      [event.target.name]: event.target.value
+      [e.target.name]: e.target.value
     });
   };
 
-  handleFormSubmit = event => {};
+  handleFormSubmit = e => {
+    e.preventDefault()
+    axios.get('http://localhost:8080/api/members/insert').then(
+      
+    ).catch()
+  };
   render() {
-    let { username, email, password } = this.state;
+    let { name, email, password } = this.state;
     return (
       <div className="signup flex flex-center w-100 h-100vh">
         <div className="p-8">
@@ -46,11 +53,11 @@ class SignUp extends Component {
                     <TextValidator
                       className="mb-24 w-100"
                       variant="outlined"
-                      label="Username"
+                      label="Name"
                       onChange={this.handleChange}
                       type="text"
-                      name="username"
-                      value={username}
+                      name="name"
+                      value={name}
                       validators={["required"]}
                       errorMessages={["this field is required"]}
                     />

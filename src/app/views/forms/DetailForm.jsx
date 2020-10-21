@@ -52,7 +52,7 @@ const DetailForm = () => {
     <div  className="mb-sm-30">
       <Breadcrumb
         routeSegments={[
-          { name: "게시판", path: "/forms" },
+          { name: "게시판", path: "/forms/basic" },
           { name: "글 제목" }
         ]}
       />

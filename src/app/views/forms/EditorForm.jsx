@@ -1,32 +1,61 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { RichTextEditor, Breadcrumb } from "matx";
 import { Button, TextField } from "@material-ui/core";
+import axios from 'axios'
 
-const EditorForm = () => <>
-  <div className="m-sm-30">
+const EditorForm = () => {
+  const [title, setTitle] = useState()
+  const [content, setContent] = useState()
+
+  const clickSubmit = (e) => {
+    e.preventDefault()
+    alert(`${title}, ${content}`)
+  }
+
+  const titleChange = (e) => {
+    e.preventDefault()
+    // setTitle(e.target.value)
+    
+    console.log(e.target.value)
+    
+  }
+
+  const contentChange = (e) => {
+    e.preventDefault(e.target)
+  }
+
+  return (
+    <div className="m-sm-30">
     <div  className="mb-sm-30">
       <Breadcrumb
         routeSegments={[
-          { name: "게시판", path: "/forms" },
-          { name: "새글작성" }
+          { name: "게시판", path: "/forms/basic" },
+          { name: "글작성" }
         ]}
       />
     </div>
     <TextField
         id="title"
+        name="title"
         label="Title"
         variant="outlined"
         fullWidth
+        type="text"
+        onChange={titleChange}
     />
     <p/>
     <RichTextEditor
+      id="content"
+      name="content"
       placeholder="insert text here..."
-    /><br/>
+    />
+    <br/>
     <Button
       className="capitalize mr-10"
       variant="contained"
       color="primary"
       type="submit"
+      onClick={clickSubmit}
     >
       등록
     </Button>
@@ -40,7 +69,7 @@ const EditorForm = () => <>
     </Button>
   </div>
 
-</>
-
+  )
+}
 
 export default EditorForm;
