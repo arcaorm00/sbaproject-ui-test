@@ -13,31 +13,26 @@ import {
 const TableCard = () => {
   const productList = [
     {
-      imgUrl: "/assets/images/products/headphone-2.jpg",
       name: "earphone",
       price: 100,
       available: 15
     },
     {
-      imgUrl: "/assets/images/products/headphone-3.jpg",
       name: "earphone",
       price: 1500,
       available: 30
     },
     {
-      imgUrl: "/assets/images/products/iphone-2.jpg",
       name: "iPhone x",
       price: 1900,
       available: 35
     },
     {
-      imgUrl: "/assets/images/products/iphone-1.jpg",
       name: "iPhone x",
       price: 100,
       available: 0
     },
     {
-      imgUrl: "/assets/images/products/headphone-3.jpg",
       name: "Head phone",
       price: 1190,
       available: 5
@@ -46,43 +41,29 @@ const TableCard = () => {
 
   return (
     <Card elevation={3} className="pt-20 mb-24">
-      <div className="card-title px-24 mb-12">top selling products</div>
+      <div className="card-title px-24 mb-12">보유 주식</div>
       <div className="overflow-auto">
         <Table className="product-table">
           <TableHead>
             <TableRow>
               <TableCell className="px-24" colSpan={4}>
-                Name
+                종목
               </TableCell>
               <TableCell className="px-0" colSpan={2}>
-                Revenue
+                보유주 수량
               </TableCell>
               <TableCell className="px-0" colSpan={2}>
-                Stock Status
-              </TableCell>
-              <TableCell className="px-0" colSpan={1}>
-                Action
+                투자 금액
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {productList.map((product, index) => (
               <TableRow key={index}>
-                <TableCell className="px-0 capitalize" colSpan={4} align="left">
-                  <div className="flex flex-middle">
-                    <img
-                      className="circular-image-small"
-                      src={product.imgUrl}
-                      alt="user"
-                    />
-                    <p className="m-0 ml-8">{product.name}</p>
-                  </div>
-                </TableCell>
-                <TableCell className="px-0 capitalize" align="left" colSpan={2}>
-                  $
-                  {product.price > 999
-                    ? (product.price / 1000).toFixed(1) + "k"
-                    : product.price}
+                <TableCell className="px-0" colSpan={4}>
+                  <IconButton>
+                    {product.name}
+                  </IconButton>
                 </TableCell>
 
                 <TableCell className="px-0" align="left" colSpan={2}>
@@ -102,10 +83,12 @@ const TableCard = () => {
                     </small>
                   )}
                 </TableCell>
-                <TableCell className="px-0" colSpan={1}>
-                  <IconButton>
-                    <Icon color="primary">edit</Icon>
-                  </IconButton>
+                
+                <TableCell className="px-0 capitalize" align="left" colSpan={2}>
+                  $
+                  {product.price > 999
+                    ? (product.price / 1000).toFixed(1) + "k"
+                    : product.price}
                 </TableCell>
               </TableRow>
             ))}

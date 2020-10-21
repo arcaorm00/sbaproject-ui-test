@@ -1,16 +1,17 @@
-import React, { Component } from "react";
-import { Breadcrumb } from "matx";
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
+import React, { Component } from "react"
+import { Breadcrumb } from "matx"
+import { withStyles, makeStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
 
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
 
-import Paper from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper'
+import axios from 'axios'
 
 const useStyles = makeStyles({
   table: {
@@ -18,12 +19,12 @@ const useStyles = makeStyles({
   },
   tablehead: {
     display: 'inlineblock',
-    padding: '50px',
+    padding: '20px',
     borderBottom: '1px solid lightgrey'
   },
   tablebody: {
-    display: 'inlineblock',
-    padding: '50px',
+    display: 'block',
+    padding: '20px',
     borderBottom: '1px solid lightgrey'
   },
   container: {
@@ -80,8 +81,8 @@ const DetailForm = () => {
           </tr>
         </TableHead>
         <br/>
-        <TableBody className={classes.tablebody}>
-          <tr>
+        <TableBody className={classes.tablebody} width="100%">
+          <tr >
             <td width="100%" align="left">
               글 내용
             </td>

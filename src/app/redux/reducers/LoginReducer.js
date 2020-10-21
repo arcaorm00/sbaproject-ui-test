@@ -14,7 +14,7 @@ const initialState = {
   }
 };
 
-const LoginReducer = function(state = initialState, action) {
+const LoginReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_LOADING: {
       return {

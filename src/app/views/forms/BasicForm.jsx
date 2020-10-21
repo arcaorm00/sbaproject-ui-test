@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import { Breadcrumb } from "matx";
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import React, { Component } from "react"
+import { Breadcrumb } from "matx"
+import { withStyles, makeStyles } from '@material-ui/core/styles'
 
-import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography'
 
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableBody from '@material-ui/core/TableBody';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
 
-import Paper from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper'
 
 import { Link } from 'react-router-dom'
 import axios from 'axios'

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { RichTextEditor, Breadcrumb } from "matx";
-import { Button, TextField } from "@material-ui/core";
+import React, { useState } from "react"
+import { RichTextEditor, Breadcrumb } from "matx"
+import { Button, TextField } from "@material-ui/core"
 import axios from 'axios'
+import StateManager from "react-select"
 
 const EditorForm = () => {
   const [title, setTitle] = useState()
@@ -20,9 +21,10 @@ const EditorForm = () => {
     
   }
 
-  const contentChange = (e) => {
-    e.preventDefault(e.target)
-  }
+  // const contentChange = (e) => {
+  //   e.preventDefault(e.target)
+  //   console.log(e.target.value)
+  // }
 
   return (
     <div className="m-sm-30">

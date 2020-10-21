@@ -2,3 +2,4 @@
 [1016/114640.508:ERROR:process_info.cc(359)] UncheckedAllocate
 [1016/120802.843:ERROR:process_info.cc(359)] UncheckedAllocate
 [1016/133517.610:ERROR:filesystem_win.cc(148)] DeleteFile C:\Users\saltQ\AppData\Local\Google\Chrome\User Data\Crashpad\reports\40293a76-6986-44dc-8907-73de0f9009fd.dmp: 다른 프로세스가 파일을 사용 중이기 때문에 프로세스가 액세스 할 수 없습니다. (0x20)
+[1021/172542.413:ERROR:directory_reader_win.cc(43)] FindFirstFile: 지정된 경로를 찾을 수 없습니다. (0x3)
