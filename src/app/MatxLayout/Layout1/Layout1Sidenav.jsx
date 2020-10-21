@@ -23,6 +23,8 @@ import Brand from "../SharedCompoents/Brand";
 import SidenavTheme from "../MatxTheme/SidenavTheme";
 import { isMdScreen } from "utils";
 
+import { Link } from 'react-router-dom'
+
 const styles = theme => ({});
 
 const IconButtonWhite = withStyles(theme => ({
@@ -102,19 +104,7 @@ class Layout1Sidenav extends Component {
   );
 
   renderUser = () => {
-    // 마이페이지 클릭: 회원이 매매한 주식 정보
-    const clickMyPage = () => {
-      alert('click mypage')
-    }
-    // 홈버튼 클릭: home 경로로 이동
-    const clickHome = () => {
-      alert('click Home')
-    }
-    // 설정 클릭: 회원 계정 관리
-    const clickSetting = () => {
-      alert('click setting')
-    }
-
+    
     let { user } = this.props;
     return (
       <div className="sidenav__user">
@@ -140,19 +130,25 @@ class Layout1Sidenav extends Component {
                 </Tooltip>
               }
             >
-              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }} onClick={clickHome}>
+              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }}>
+              <Link className="flex flex-middle" to="/">
                 <Icon> home </Icon>
                 <span className="pl-16"> Home </span>
+              </Link>
               </MenuItem>
-              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }} onClick={clickSetting}>
+              <MenuItem className="flex flex-middle" style={{ minWidth: 185 }}>
+              <Link className="flex flex-middle" to="/session/accountsetting">
                 <Icon> settings </Icon>
                 <span className="pl-16"> Account Setting </span>
+                </Link>
               </MenuItem>
             </MatxMenu>
 
             <Tooltip title="mypage">
-              <IconButtonWhite aria-label="Delete" className="" size="small" onClick={clickMyPage}>
+              <IconButtonWhite aria-label="Delete" className="" size="small">
+              <Link className="flex flex-middle" to="/session/mypage">
                 <IconSmall>person</IconSmall>
+              </Link>
               </IconButtonWhite>
             </Tooltip>
             <Tooltip title="Sign out">

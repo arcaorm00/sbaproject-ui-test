@@ -17,6 +17,8 @@ import { isMdScreen } from "utils";
 import NotificationBar from "../SharedCompoents/NotificationBar";
 import { Link } from "react-router-dom";
 import EnterAdmin from "../SharedCompoents/EnterAdmin";
+import VpnKeyRoundedIcon from '@material-ui/icons/VpnKeyRounded';
+
 
 const styles = theme => ({
   root: {
@@ -78,7 +80,9 @@ class Layout1Topbar extends Component {
 
                 <div className="hide-on-mobile">
                   <IconButton>
-                    <Icon>mail_outline</Icon>
+                    <Link className="flex flex-middle" to="/session/signin">
+                      <Icon><VpnKeyRoundedIcon></VpnKeyRoundedIcon></Icon>
+                    </Link>
                   </IconButton>
 
                   <IconButton>
@@ -115,7 +119,7 @@ class Layout1Topbar extends Component {
                   <MenuItem style={{ minWidth: 185 }}>
                     <Link
                       className="flex flex-middle"
-                      to="/page-layouts/user-profile"
+                      to="/session/mypage"
                     >
                       <Icon> person </Icon>
                       <span className="pl-16"> Profile </span>
@@ -125,8 +129,13 @@ class Layout1Topbar extends Component {
                     className="flex flex-middle"
                     style={{ minWidth: 185 }}
                   >
-                    <Icon> settings </Icon>
-                    <span className="pl-16"> Settings </span>
+                    <Link
+                      className="flex flex-middle"
+                      to="/session/accountsetting"
+                    >
+                      <Icon> settings </Icon>
+                      <span className="pl-16"> Settings </span>
+                    </Link>
                   </MenuItem>
                   <MenuItem
                     onClick={this.handleSignOut}

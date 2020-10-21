@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Breadcrumb } from "matx";
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 
+import Typography from '@material-ui/core/Typography';
+
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,6 +12,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 
 import Paper from '@material-ui/core/Paper';
+import axios from 'axios'
 
 const useStyles = makeStyles({
   table: {
@@ -36,13 +39,20 @@ const BasicForm = () => {
 
   const classes = useStyles();
 
+  const connect_test = () => {
+    axios.get('http://localhost:8080/api')
+    .then( res => {
+      console.log(res)
+    }).catch( err => alert('Failure!'))
+  }
+
   return (
   <div className="m-sm-30">
     <div  className="mb-sm-30">
       <Breadcrumb
         routeSegments={[
-          { name: "Forms", path: "/forms" },
-          { name: "Basic" }
+          { name: "게시판", path: "/forms" },
+          { name: "게시판" }
         ]}
       />
     </div>
@@ -51,21 +61,37 @@ const BasicForm = () => {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="left" width="10%">글번호</TableCell>
-            <TableCell align="center" width="40%">제목</TableCell>
-            <TableCell align="right" width="20%">작성자</TableCell>
-            <TableCell align="right" width="20%">작성일자</TableCell>
+            <TableCell align="left" width="10%">
+              <Typography variant="subtitle2" color="inherit" noWrap>
+                글번호
+              </Typography>
+            </TableCell>
+            <TableCell align="center" width="50%">
+              <Typography variant="subtitle2" color="inherit" noWrap>
+                제목
+              </Typography>
+            </TableCell>
+            <TableCell align="center" width="20%">
+              <Typography variant="subtitle2" color="inherit" noWrap>
+                작성자
+              </Typography>
+            </TableCell>
+            <TableCell align="center" width="10%">
+              <Typography variant="subtitle2" color="inherit" noWrap>
+                작성일자
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell align="left">{row.calories}</TableCell>
-              <TableCell align='left'>
+            <TableRow key={row.name} onClick={connect_test}>
+              <TableCell align="left" width="10%">{row.calories}</TableCell>
+              <TableCell align='left' width="50%">
                 {row.name}
               </TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
+              <TableCell align="center" width="20%">{row.fat}</TableCell>
+              <TableCell align="center" width="10%">{row.carbs}</TableCell>
             </TableRow>
           ))}
         </TableBody>

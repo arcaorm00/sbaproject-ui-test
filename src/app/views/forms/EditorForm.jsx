@@ -7,8 +7,8 @@ const EditorForm = () => <>
     <div  className="mb-sm-30">
       <Breadcrumb
         routeSegments={[
-          { name: "Forms", path: "/forms" },
-          { name: "Editor" }
+          { name: "게시판", path: "/forms" },
+          { name: "새글작성" }
         ]}
       />
     </div>

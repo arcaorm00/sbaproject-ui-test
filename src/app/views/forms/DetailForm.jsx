@@ -14,11 +14,21 @@ import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 650
+    minWidth: 650,
+  },
+  tablehead: {
+    display: 'inlineblock',
+    padding: '50px',
+    borderBottom: '1px solid lightgrey'
+  },
+  tablebody: {
+    display: 'inlineblock',
+    padding: '50px',
+    borderBottom: '1px solid lightgrey'
   },
   container: {
-    padding: '20px'
-  }
+    padding: '40px',
+  },
 });
 
 const createData = (name, calories, fat, carbs, protein) => {
@@ -42,22 +52,40 @@ const DetailForm = () => {
     <div  className="mb-sm-30">
       <Breadcrumb
         routeSegments={[
-          { name: "Forms", path: "/forms" },
-          { name: "Basic" }
+          { name: "게시판", path: "/forms" },
+          { name: "글 제목" }
         ]}
       />
     </div>
     {/* <SimpleForm /> */}
     <TableContainer className={classes.container} component={Paper}>
       <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <Typography variant="h6" color="inherit" noWrap>
-            글 제목
-          </Typography>
+        <TableHead className={classes.tablehead}>
+          <tr>
+            <td width="60%" align="left">
+              <Typography variant="h6" color="inherit" noWrap>
+                글 제목
+              </Typography>
+            </td>
+            <td width="20%" align="center">
+              <Typography variant="subtitle1" color="inherit" noWrap>
+                작성자
+              </Typography>
+            </td>
+            <td width="20%" align="center">
+              <Typography variant="subtitle1" color="inherit" noWrap>
+                작성일자
+              </Typography>
+            </td>
+          </tr>
         </TableHead>
-        <hr/>
-        <TableBody>
-          글 내용
+        <br/>
+        <TableBody className={classes.tablebody}>
+          <tr>
+            <td width="100%" align="left">
+              글 내용
+            </td>
+          </tr>
         </TableBody>
       </Table>
     </TableContainer>

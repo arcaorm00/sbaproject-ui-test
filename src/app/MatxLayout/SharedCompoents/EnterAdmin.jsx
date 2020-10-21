@@ -17,7 +17,6 @@ import {
   updateCartAmount
 } from "app/redux/actions/EcommerceActions";
 
-
 const EnterAdmin = (props) => {
   
   const [adminCode, setAdminCode] = useState()
@@ -45,7 +44,7 @@ const EnterAdmin = (props) => {
     e.preventDefault()
     let inputCode = `${adminCode}`
     if (inputCode == 'admin'){
-      alert('Success!')
+      document.location.href = '/admin'
     }else{
       alert('Fail!')
     }
