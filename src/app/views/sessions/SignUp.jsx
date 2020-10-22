@@ -6,6 +6,11 @@ import {
   Grid,
   Button
 } from "@material-ui/core";
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import axios from 'axios'
@@ -16,6 +21,9 @@ class SignUp extends Component {
     name: "",
     email: "",
     password: "",
+    geography: "",
+    gender: "",
+    age: "",
     agreement: ""
   }
 
@@ -33,7 +41,7 @@ class SignUp extends Component {
     ).catch()
   };
   render() {
-    let { name, email, password } = this.state;
+    let { name, email, password, geography, gender, age } = this.state;
     return (
       <div className="signup flex flex-center w-100 h-100vh">
         <div className="p-8">
@@ -83,6 +91,53 @@ class SignUp extends Component {
                       name="password"
                       type="password"
                       value={password}
+                      validators={["required"]}
+                      errorMessages={["this field is required"]}
+                    />
+                    <TextValidator
+                      className="mb-24 w-100"
+                      variant="outlined"
+                      label="Geography"
+                      onChange={this.handleChange}
+                      type="text"
+                      name="geography"
+                      value={geography}
+                      validators={["required"]}
+                      errorMessages={["this field is required"]}
+                    />
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        value={gender}
+                        onChange={handleChange}
+                        label="Gender"
+                      >
+                        <MenuItem value={'Etc'}>Etc</MenuItem>
+                        <MenuItem value={'Male'}>Male</MenuItem>
+                        <MenuItem value={'Female'}>Female</MenuItem>
+                      </Select>
+                    </FormControl>
+                    {/* <TextValidator
+                      className="mb-24 w-100"
+                      variant="outlined"
+                      label="Gender"
+                      onChange={this.handleChange}
+                      type="text"
+                      name="gender"
+                      value={gender}
+                      validators={["required"]}
+                      errorMessages={["this field is required"]}
+                    /> */}
+                    <TextValidator
+                      className="mb-24 w-100"
+                      variant="outlined"
+                      label="Age"
+                      onChange={this.handleChange}
+                      type="number"
+                      name="age"
+                      value={age}
                       validators={["required"]}
                       errorMessages={["this field is required"]}
                     />

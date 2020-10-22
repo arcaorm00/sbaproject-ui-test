@@ -32,6 +32,15 @@ const useStyles = makeStyles({
   },
 });
 
+const get_article = (id) => {
+  axios.get('', {id: id})
+  .then( res => {
+    console.log(res.data)
+    return res.data
+  }).catch( err => {
+    alert(err)
+  })
+}
 const createData = (name, calories, fat, carbs, protein) => {
   return { name, calories, fat, carbs, protein };
 }

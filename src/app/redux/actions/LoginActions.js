@@ -8,7 +8,7 @@ export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_LOADING = "LOGIN_LOADING";
 export const RESET_PASSWORD = "RESET_PASSWORD";
 
-export function loginWithEmailAndPassword({ email, password }) {
+export const loginWithEmailAndPassword = ({ email, password }) => {
   return dispatch => {
     dispatch({
       type: LOGIN_LOADING
@@ -36,7 +36,7 @@ export function loginWithEmailAndPassword({ email, password }) {
   };
 }
 
-export function resetPassword({ email }) {
+export const resetPassword = ({ email }) => {
   return dispatch => {
     dispatch({
       payload: email,
