@@ -10,15 +10,7 @@ const EditorForm = () => {
 
   const clickSubmit = (e) => {
     e.preventDefault()
-    alert(`${title}, ${content}`)
-  }
-
-  const titleChange = (e) => {
-    e.preventDefault()
-    // setTitle(e.target.value)
-    
-    console.log(e.target.value)
-    
+    alert(`${title}`)
   }
 
   // const contentChange = (e) => {
@@ -39,11 +31,11 @@ const EditorForm = () => {
     <TextField
         id="title"
         name="title"
-        label="Title"
         variant="outlined"
         fullWidth
         type="text"
-        onChange={titleChange}
+        placeholder="Title"
+        onChange={e => {setTitle(e.target.velue)}}
     />
     <p/>
     <RichTextEditor

@@ -6,11 +6,6 @@ import {
   Grid,
   Button
 } from "@material-ui/core";
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import axios from 'axios'
@@ -105,21 +100,8 @@ class SignUp extends Component {
                       validators={["required"]}
                       errorMessages={["this field is required"]}
                     />
-                    <FormControl variant="outlined" className={classes.formControl}>
-                      <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        value={gender}
-                        onChange={handleChange}
-                        label="Gender"
-                      >
-                        <MenuItem value={'Etc'}>Etc</MenuItem>
-                        <MenuItem value={'Male'}>Male</MenuItem>
-                        <MenuItem value={'Female'}>Female</MenuItem>
-                      </Select>
-                    </FormControl>
-                    {/* <TextValidator
+                    
+                    <TextValidator
                       className="mb-24 w-100"
                       variant="outlined"
                       label="Gender"
@@ -129,7 +111,7 @@ class SignUp extends Component {
                       value={gender}
                       validators={["required"]}
                       errorMessages={["this field is required"]}
-                    /> */}
+                    />
                     <TextValidator
                       className="mb-24 w-100"
                       variant="outlined"

@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { Breadcrumb } from "matx"
+import { Button, TextField } from "@material-ui/core"
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 
@@ -30,6 +31,9 @@ const useStyles = makeStyles({
   container: {
     padding: '40px',
   },
+  contents_padding: {
+    padding: '20px'
+  }
 });
 
 const get_article = (id) => {
@@ -57,6 +61,14 @@ const DetailForm = () => {
 
   const classes = useStyles();
 
+  const clickUpdate = () => {
+
+  }
+
+  const clickDelete = () => {
+
+  }
+
   return (
   <div className="m-sm-30">
     <div  className="mb-sm-30">
@@ -69,7 +81,7 @@ const DetailForm = () => {
     </div>
     {/* <SimpleForm /> */}
     <TableContainer className={classes.container} component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
+      {/* <Table className={classes.table} aria-label="simple table">
         <TableHead className={classes.tablehead}>
           <tr>
             <td width="60%" align="left">
@@ -97,8 +109,90 @@ const DetailForm = () => {
             </td>
           </tr>
         </TableBody>
+      </Table> */}
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead className={classes.tablehead}>
+          <tr>
+            <td width="60%" align="left">
+              <Typography variant="h6" color="inherit" noWrap>
+                글 제목
+              </Typography>
+            </td>
+            <td width="20%" align="center">
+              <Typography variant="subtitle1" color="inherit" noWrap>
+                작성자
+              </Typography>
+            </td>
+            <td width="20%" align="center">
+              <Typography variant="subtitle1" color="inherit" noWrap>
+                작성일자
+              </Typography>
+            </td>
+          </tr>
+        </TableHead>
+          
+        <tr>
+          <td colspan="4" height="500px">
+            <div className={classes.contents_padding}>글 내용</div>
+          </td>
+        </tr>     	
       </Table>
-    </TableContainer>
+      <hr/>
+      <div class="mb-3">			
+        <Button
+          className="capitalize mr-10"
+          variant="contained"
+          color="primary"
+          type="submit"
+          onClick={clickUpdate}
+        >
+          수정
+        </Button>
+        <Button
+          className="capitalize mr-10"
+          variant="contained"
+          color="light-grey"
+          onClick={clickDelete}
+        >
+          삭제
+        </Button>		
+        <Button
+          className="capitalize mr-10"
+          variant="contained"
+          color="secondary"
+          onClick={clickDelete}
+        >
+          목록
+        </Button>	
+        </div>
+        <br/>
+      <h4>Comments</h4>
+      {/* 댓글 목록 여기 와야함 */}
+      <ul id="replyList" class="list-group list-group-flush">
+      </ul>
+      <hr/>
+          <form id="boardReply">
+            <div id="replyDiv" class="form-row align-items-center">
+              <input type="hidden" name="b_no" value="<c:out value='${board.b_no }'/>"/>
+              <input type="hidden" name="r_ref" value="0"/>
+              <input type="hidden" name="r_level" value="0"/>
+              <div class="col-sm-2 my-1">
+                <input class="form-control" type="hidden" name="m_id"  readonly="readonly"/>
+              </div>
+              <div class="col-sm-8 my-2"> 
+              <table fullWidth>
+                <tr fullWidth>
+                  <td width="90%"><TextField id="comment" placeholder="댓글을 등록해주세요!" variant="outlined" fullWidth/></td>
+                  <td width="10%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit" onClick={clickUpdate}>comment</Button></td>
+                </tr>
+              </table>
+              </div>
+              <div class="col-sm-2 my-1">
+                
+              </div>
+            </div>
+          </form>
+      </TableContainer>
     </div>
   )
 }

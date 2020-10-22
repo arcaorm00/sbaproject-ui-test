@@ -55,8 +55,8 @@ const Mypage =()=> {
           <TableCard/>
           <h4 className="card-title text-muted mb-16">OO님을 위한 종목 추천</h4>
           <StatCards />
-          {/* <StatCards2/>
-          <RowCards /> */}
+          <StatCards2/>
+          {/* <RowCards /> */}
 
         {/* </Grid> */}
 

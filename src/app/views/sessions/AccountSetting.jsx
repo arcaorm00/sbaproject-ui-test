@@ -235,13 +235,13 @@ const AccountSetting = () => {
                     {activeStep === steps.length - 1 ? '저장' : '저장'}
                   </Button>
                 </div>
+                <Button className="border-radius-4 bg-light-error text-white px-8 py-2">탈퇴하기</Button>
               </React.Fragment>
             )}
           </React.Fragment>
         </Paper>
+        
       </main>
-
-
       
     </React.Fragment>
   );

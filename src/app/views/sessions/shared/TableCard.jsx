@@ -13,27 +13,27 @@ import {
 const TableCard = () => {
   const productList = [
     {
-      name: "earphone",
+      name: "temp",
       price: 100,
       available: 15
     },
     {
-      name: "earphone",
+      name: "temp",
       price: 1500,
       available: 30
     },
     {
-      name: "iPhone x",
+      name: "temp",
       price: 1900,
       available: 35
     },
     {
-      name: "iPhone x",
+      name: "temp",
       price: 100,
       available: 0
     },
     {
-      name: "Head phone",
+      name: "temp",
       price: 1190,
       available: 5
     }
