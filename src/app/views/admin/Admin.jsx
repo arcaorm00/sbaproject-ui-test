@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Breadcrumb } from "matx"
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -22,9 +22,14 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
+import { Button, TextField } from "@material-ui/core"
+
+import axios from 'axios'
+
 const createData = (email, name, stock_qty, is_activate_member, exit) => {
   return { email, name, stock_qty, is_activate_member, exit };
 }
+
 
 const rows = [
   createData('Cupcake', 305, 3.7, 67, 4.3),
@@ -153,6 +158,11 @@ const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
 
+  const clickDelete = () => {
+    // 체크박스 선택된 행 있는지 확인 후 삭제 로직
+    alert('DELETE!!!!!!!')
+  }
+
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -165,14 +175,14 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          관리 회원
+          특별 관리 회원
         </Typography>
       )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton aria-label="delete">
-            <DeleteIcon />
+            <DeleteIcon onClick={clickDelete} />
           </IconButton>
         </Tooltip>
       ) : (
@@ -215,6 +225,10 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  float_right: {
+    float: 'right',
+    padding: '20px'
+  }
 }));
 
 const Admin = () => {
@@ -358,8 +372,210 @@ const Admin = () => {
         />
       </Paper>
     </div>
+    <MemberList/>
     </div>
+    
   );
 }
+
+
+// ================================================== 회원 관리
+
+const headCellsForMembers = [
+  { id: 'email', numeric: false, disablePadding: true, label: '계정' },
+  { id: 'name', numeric: true, disablePadding: false, label: '이름' },
+  { id: 'stock_qty', numeric: true, disablePadding: false, label: '보유주식 수' },
+  { id: 'is_activate_member', numeric: true, disablePadding: false, label: '활성 여부' },
+  { id: 'exit', numeric: true, disablePadding: false, label: '이탈 확률' },
+];
+
+const MemberList = () => {
+  const classes = useStyles();
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('exit');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = rows.map((n) => n.name);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleChangeDense = (event) => {
+    setDense(event.target.checked);
+  };
+
+  const isSelected = (name) => selected.indexOf(name) !== -1;
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+  return (
+    <div >
+    <div className={classes.root}>
+      <Paper className={classes.paper}>
+        <EnhancedTableToolbarForMember numSelected={selected.length} />
+        <TableContainer className={classes.container}>
+          <Table
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            size={dense ? 'small' : 'medium'}
+            aria-label="enhanced table"
+          >
+            <EnhancedTableHead
+              classes={classes}
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={rows.length}
+            />
+            <TableBody>
+              {stableSort(rows, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const isItemSelected = isSelected(row.name);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.name)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.name}
+                      selected={isItemSelected}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ 'aria-labelledby': labelId }}
+                        />
+                      </TableCell>
+                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                        {row.email}
+                      </TableCell>
+                      <TableCell align="right">{row.name}</TableCell>
+                      <TableCell align="right">{row.stock_qty}</TableCell>
+                      <TableCell align="right">{row.is_activate_member}</TableCell>
+                      <TableCell align="right">{row.exit}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <table align="right"> {/* 이 친구 왜 float이든 align이든 right만 먹이면 paper 밖으로 빠지는지? */}
+          <tr  fullWidth>
+            <td width="40%"><TextField id="comment" placeholder="회원 검색" variant="outlined" fullWidth/></td>
+            <td width="20%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit">search</Button></td>
+            <td width="50%">
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 20, 30]}
+                component="div"
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+            </td>
+          </tr>
+        </table>
+      </Paper>
+      
+    </div>
+    </div>
+  )
+}
+
+const EnhancedTableToolbarForMember = (props) => {
+  const classes = useToolbarStyles();
+  const { numSelected } = props;
+
+  const clickDelete = () => {
+    // 체크박스 선택된 행 있는지 확인 후 삭제 로직
+    alert('DELETE!!!!!!!')
+  }
+
+  return (
+    <Toolbar
+      className={clsx(classes.root, {
+        [classes.highlight]: numSelected > 0,
+      })}
+    >
+      {numSelected > 0 ? (
+        <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
+          {numSelected} selected
+        </Typography>
+      ) : (
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+          회원 관리
+        </Typography>
+      )}
+
+      {numSelected > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton aria-label="delete">
+            <DeleteIcon onClick={clickDelete} />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title="Filter list">
+          <IconButton aria-label="filter list">
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Toolbar>
+  );
+};
 
 export default Admin

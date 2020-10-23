@@ -6,12 +6,14 @@ import {
   withStyles,
   CircularProgress
 } from "@material-ui/core";
-import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
-import { connect } from "react-redux";
-import { PropTypes } from "prop-types";
-import { withRouter } from "react-router-dom";
+import { TextValidator, ValidatorForm } from "react-material-ui-form-validator"
+import { connect } from "react-redux"
+import { PropTypes } from "prop-types"
+import { withRouter } from "react-router-dom"
 
-import { resetPassword } from "../../redux/actions/LoginActions";
+import { resetPassword } from "../../redux/actions/LoginActions"
+
+import axios from 'axios'
 
 class ForgotPassword extends Component {
   state = {
