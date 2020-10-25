@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx"
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -381,13 +381,112 @@ const Admin = () => {
 
 // ================================================== 회원 관리
 
+ const descendingComparatorForMember = (a, b, orderBy) => {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+const getComparatorForMember = (order, orderBy) => {
+  return order === 'desc'
+    ? (a, b) => descendingComparatorForMember(a, b, orderBy)
+    : (a, b) => -descendingComparatorForMember(a, b, orderBy);
+}
+
+const stableSortForMember = (array, comparator) => {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
+
 const headCellsForMembers = [
   { id: 'email', numeric: false, disablePadding: true, label: '계정' },
-  { id: 'name', numeric: true, disablePadding: false, label: '이름' },
+  { id: 'name', numeric: false, disablePadding: false, label: '이름' },
   { id: 'stock_qty', numeric: true, disablePadding: false, label: '보유주식 수' },
-  { id: 'is_activate_member', numeric: true, disablePadding: false, label: '활성 여부' },
-  { id: 'exit', numeric: true, disablePadding: false, label: '이탈 확률' },
+  { id: 'is_active_member', numeric: true, disablePadding: false, label: '활성 여부' },
+  { id: 'role', numeric: true, disablePadding: false, label: '권한' },
 ];
+
+const EnhancedTableHeadForMember = (props) => {
+  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ 'aria-label': 'select all desserts' }}
+          />
+        </TableCell>
+        {headCellsForMembers.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align={headCell.numeric ? 'right' : 'left'}
+            padding={headCell.disablePadding ? 'none' : 'default'}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </span>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHeadForMember.propTypes = {
+  classes: PropTypes.object.isRequired,
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+
+const useToolbarStylesForMember = makeStyles((theme) => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+  },
+  highlight:
+    theme.palette.type === 'light'
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
+  title: {
+    flex: '1 1 100%',
+  },
+}));
 
 const MemberList = () => {
   const classes = useStyles();
@@ -398,6 +497,20 @@ const MemberList = () => {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/members`)
+    .then(res => {
+      alert('list Success')
+      setData(res.data)
+    })
+    .catch(e => {
+      alert('list Fail')
+      throw(e)
+    })
+  }, [])
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -406,7 +519,7 @@ const MemberList = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = data.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -448,7 +561,7 @@ const MemberList = () => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   return (
     <div >
@@ -462,17 +575,17 @@ const MemberList = () => {
             size={dense ? 'small' : 'medium'}
             aria-label="enhanced table"
           >
-            <EnhancedTableHead
+            <EnhancedTableHeadForMember
               classes={classes}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={data.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSortForMember(data, getComparatorForMember(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -499,8 +612,8 @@ const MemberList = () => {
                       </TableCell>
                       <TableCell align="right">{row.name}</TableCell>
                       <TableCell align="right">{row.stock_qty}</TableCell>
-                      <TableCell align="right">{row.is_activate_member}</TableCell>
-                      <TableCell align="right">{row.exit}</TableCell>
+                      <TableCell align="right">{row.is_active_member}</TableCell>
+                      <TableCell align="right">{row.role}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -512,7 +625,7 @@ const MemberList = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <table align="right"> {/* 이 친구 왜 float이든 align이든 right만 먹이면 paper 밖으로 빠지는지? */}
+        <table style={{float: 'right'}}> {/* 이 친구 왜 float이든 align이든 right만 먹이면 paper 밖으로 빠지는지? */}
           <tr  fullWidth>
             <td width="40%"><TextField id="comment" placeholder="회원 검색" variant="outlined" fullWidth/></td>
             <td width="20%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit">search</Button></td>
@@ -520,7 +633,7 @@ const MemberList = () => {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 20, 30]}
                 component="div"
-                count={rows.length}
+                count={data.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
@@ -537,7 +650,7 @@ const MemberList = () => {
 }
 
 const EnhancedTableToolbarForMember = (props) => {
-  const classes = useToolbarStyles();
+  const classes = useToolbarStylesForMember();
   const { numSelected } = props;
 
   const clickDelete = () => {

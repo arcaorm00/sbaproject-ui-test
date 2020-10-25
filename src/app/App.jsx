@@ -1,6 +1,9 @@
 import "../fake-db";
 import "../styles/_app.scss";
 import React from "react";
+
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import ReduxThunk from 'redux-thunk'
 import { Provider } from "react-redux";
 import { Router } from "react-router-dom";
 import MatxTheme from "./MatxLayout/MatxTheme/MatxTheme";

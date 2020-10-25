@@ -13,7 +13,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 
 import Paper from '@material-ui/core/Paper'
 
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import axios from 'axios'
 
 const useStyles = makeStyles({
@@ -32,6 +32,7 @@ const createData = (id, title, email, regdate) => {
 const BasicForm = () => {
 
   const classes = useStyles();
+  const history = useHistory()
 
   const [data, setData] = useState([])
 
@@ -45,9 +46,11 @@ const BasicForm = () => {
       throw(err)
     })
   }, [])
+
   const clickTitle = (id) => {
     alert(id)
     // window.location.href('/form/detail/'+id)
+    window.location.href(`/form/detail`)
   }
 
   return (
@@ -91,7 +94,7 @@ const BasicForm = () => {
             
             <TableRow key={row.title}>
               <TableCell align="left" width="10%">{row.id}</TableCell>
-              <TableCell align='left' width="100%" onClick={() => {clickTitle(row.id)}} style={{cursor: 'pointer'}}>
+              <TableCell align='left' width="100%" onClick={() => history.push("/forms/detail/"+row.id)} style={{cursor: 'pointer'}}>
                 {row.title}
               </TableCell>
               <TableCell align="center" width="20%">{row.email}</TableCell>
