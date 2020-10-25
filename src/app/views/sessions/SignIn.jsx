@@ -40,12 +40,6 @@ const SignIn = (props) => {
 
   const history = useHistory()
 
-  const state = {
-    email: "example@example.com",
-    password: "testpass",
-    agreement: ""
-  }
-
   const handleFormSubmit = event => {
     event.preventDefault()
     alert(`${email}, ${password}`)
