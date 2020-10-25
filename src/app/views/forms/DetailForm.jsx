@@ -17,6 +17,8 @@ import axios from 'axios'
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
+    marginBottom: '10px',
+    borderBottom: '1px solid lightgrey'
   },
   tablehead: {
     display: 'inlineblock',
@@ -32,7 +34,25 @@ const useStyles = makeStyles({
     padding: '40px',
   },
   contents_padding: {
+    height: '450px',
     padding: '20px'
+  },
+  lineBottom: {
+    padding: '20px',
+    borderBottom: '1px solid lightgrey'
+  },
+  commentsUl: {
+    padding: '0px'
+  },
+  commentsDiv: {
+    borderRadius: '5px',
+    backgroundColor: '#F5F5F5',
+    padding: '0px'
+  },
+  comments: {
+    listStyle: 'None',
+    borderBottom: '1px solid white',
+    padding: '10px'
   }
 });
 
@@ -61,11 +81,25 @@ const DetailForm = () => {
 
   const classes = useStyles();
 
+  // board
   const clickUpdate = () => {
 
   }
 
   const clickDelete = () => {
+
+  }
+
+  // comment
+  const clickComment = () => {
+
+  }
+
+  const clickCommentUpdate = () => {
+
+  }
+
+  const clickCommentDelete = () => {
 
   }
 
@@ -130,14 +164,14 @@ const DetailForm = () => {
             </td>
           </tr>
         </TableHead>
-          
-        <tr>
-          <td colspan="4" height="500px">
-            <div className={classes.contents_padding}>글 내용</div>
-          </td>
-        </tr>     	
+        <TableBody>
+          <tr>
+            <td colspan="4" height="500px">
+              <div className={classes.contents_padding}>글 내용</div>
+            </td>
+          </tr>     
+        </TableBody>
       </Table>
-      <hr/>
       <div class="mb-3">			
         <Button
           className="capitalize mr-10"
@@ -166,14 +200,20 @@ const DetailForm = () => {
         </Button>	
         </div>
         <br/>
-      <h4>Comments</h4>
-      {/* 댓글 목록 여기 와야함 */}
-      <ul id="replyList" class="list-group list-group-flush">
+      <h4 className={classes.lineBottom}>Comments</h4>
+      <ul id="replyList" class="list-group list-group-flush" className={classes.commentsUl}>
+        <div className={classes.commentsDiv}>
+          <li className={classes.comments}>
+            <td width="15%" align="left"><b>댓글 작성자</b></td>
+            <td width="75%" align="left">댓글내용</td>
+            <td width="10%" align="center">수정</td>
+            <td width="5%" align="left">X</td>
+          </li>
+        </div>
       </ul>
-      <hr/>
           <form id="boardReply">
             <div id="replyDiv" class="form-row align-items-center">
-              <input type="hidden" name="b_no" value="<c:out value='${board.b_no }'/>"/>
+              <input type="hidden" name="b_no"/>
               <input type="hidden" name="r_ref" value="0"/>
               <input type="hidden" name="r_level" value="0"/>
               <div class="col-sm-2 my-1">
@@ -182,7 +222,7 @@ const DetailForm = () => {
               <div class="col-sm-8 my-2"> 
               <table fullWidth>
                 <tr fullWidth>
-                  <td width="90%"><TextField id="comment" placeholder="댓글을 등록해주세요!" variant="outlined" fullWidth/></td>
+                  <td width="90%"><TextField id="comment" placeholder="Leave your comment" variant="outlined" fullWidth/></td>
                   <td width="10%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit" onClick={clickUpdate}>comment</Button></td>
                 </tr>
               </table>

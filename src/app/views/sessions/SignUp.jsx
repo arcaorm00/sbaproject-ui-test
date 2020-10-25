@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
+import { Link, useHistory } from 'react-router-dom'
 import axios from 'axios'
 
 /*
@@ -177,6 +178,8 @@ const SignUp = () => {
     age: ''
   })
 
+  const history = useHistory()
+
   const handleChange = e => {
     e.persist();
     setForm({
@@ -301,7 +304,7 @@ const SignUp = () => {
                     <Button
                       className="capitalize"
                       onClick={() =>
-                        this.props.history.push("/session/signin")
+                        history.push("/session/signin")
                       }
                     >
                       Sign in

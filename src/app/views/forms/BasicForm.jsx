@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { useEffect, useState } from "react"
 import { Breadcrumb } from "matx"
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 
@@ -25,30 +25,30 @@ const useStyles = makeStyles({
   }
 })
 
-const read_all_articles = () => {
-  axios.get('http://localhost:8080/api/boards/list')
-  .then( res => {
-    console.log(res.data)
-    return res.data
-  })
-  .catch( err => {
-    alert(`ERROR: ${err}`)
-  })
-}
-
 const createData = (id, title, email, regdate) => {
   return { id, title, email, regdate };
 }
-
-const rows = [
-  createData(159, 'Frozen yoghurt', 6.0, 24)
-]
 
 const BasicForm = () => {
 
   const classes = useStyles();
 
-  const article = read_all_articles()
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/boards')
+    .then( res => {
+      setData(res.data)
+    })
+    .catch( err => {
+      alert('list Fail')
+      throw(err)
+    })
+  }, [])
+  const clickTitle = (id) => {
+    alert(id)
+    // window.location.href('/form/detail/'+id)
+  }
 
   return (
   <div className="m-sm-30">
@@ -87,15 +87,13 @@ const BasicForm = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {data.map((row, idx) => (
             
             <TableRow key={row.title}>
               <TableCell align="left" width="10%">{row.id}</TableCell>
-              <Link className="flex flex-middle" to="/forms/detail?board-id=${row.id}">
-              <TableCell align='left' width="100%">
+              <TableCell align='left' width="100%" onClick={() => {clickTitle(row.id)}} style={{cursor: 'pointer'}}>
                 {row.title}
               </TableCell>
-              </Link>
               <TableCell align="center" width="20%">{row.email}</TableCell>
               <TableCell align="center" width="10%">{row.regdate}</TableCell>
             </TableRow>
