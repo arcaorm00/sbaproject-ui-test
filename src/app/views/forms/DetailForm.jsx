@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { useState, useEffect } from "react"
 import { Breadcrumb } from "matx"
 import { Button, TextField } from "@material-ui/core"
 import { withStyles, makeStyles } from '@material-ui/core/styles'
@@ -81,6 +81,21 @@ const DetailForm = () => {
 
   const classes = useStyles();
 
+  const [article, setArticle] = useState()
+  useEffect(() => {
+    const id = window.location.href.split("/").reverse()[0]
+    axios.get(`http://localhost:8080/api/board/${id}`)
+    .then(res => {
+      setArticle(res.data[0])
+      console.log(article)
+    })
+    .catch(e => {
+      alert(`article Fail`)
+      throw(e)
+    })
+  })
+
+
   // board
   const clickUpdate = () => {
 
@@ -149,7 +164,7 @@ const DetailForm = () => {
           <tr>
             <td width="60%" align="left">
               <Typography variant="h6" color="inherit" noWrap>
-                글 제목
+                글제목
               </Typography>
             </td>
             <td width="20%" align="center">
@@ -167,7 +182,7 @@ const DetailForm = () => {
         <TableBody>
           <tr>
             <td colspan="4" height="500px">
-              <div className={classes.contents_padding}>글 내용</div>
+              <div className={classes.contents_padding}>글내용</div>
             </td>
           </tr>     
         </TableBody>

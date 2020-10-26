@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import React, { Component, useState } from "react";
+import { withRouter, useHistory } from "react-router-dom";
 import {
   Icon,
   IconButton,
@@ -19,6 +19,8 @@ import { Link } from "react-router-dom";
 import EnterAdmin from "../SharedCompoents/EnterAdmin";
 import VpnKeyRoundedIcon from '@material-ui/icons/VpnKeyRounded';
 
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
 
 const styles = theme => ({
   root: {
@@ -26,11 +28,14 @@ const styles = theme => ({
   }
 });
 
-class Layout1Topbar extends Component {
-  state = {};
+const Layout1Topbar = props => {
+  
+  const state = {};
 
-  updateSidebarMode = sidebarSettings => {
-    let { settings, setLayoutSettings } = this.props;
+  const history = useHistory()
+
+  const updateSidebarMode = sidebarSettings => {
+    let { settings, setLayoutSettings } = sidebarSettings;
 
     setLayoutSettings({
       ...settings,
@@ -44,8 +49,8 @@ class Layout1Topbar extends Component {
     });
   };
 
-  handleSidebarToggle = () => {
-    let { settings } = this.props;
+  const handleSidebarToggle = () => {
+    let { settings } = props;
     let { layout1Settings } = settings;
 
     let mode;
@@ -54,15 +59,16 @@ class Layout1Topbar extends Component {
     } else {
       mode = layout1Settings.leftSidebar.mode === "full" ? "close" : "full";
     }
-    this.updateSidebarMode({ mode });
+    updateSidebarMode({ mode });
   };
 
-  handleSignOut = () => {
-    this.props.logoutUser();
+  const handleSignOut = () => {
+    sessionStorage.removeItem("sessionMember")
+    window.location.reload()
+    props.logoutUser();
   };
 
-  render() {
-    let { theme, settings, className, style } = this.props;
+    let { theme, settings, className, style } = props;
     const topbarTheme =
       settings.themes[settings.layout1Settings.topbar.theme] || theme;
     return (
@@ -74,7 +80,7 @@ class Layout1Topbar extends Component {
           >
             <div className="flex flex-space-between flex-middle h-100">
               <div className="flex">
-                <IconButton onClick={this.handleSidebarToggle} className="hide-on-lg">
+                <IconButton onClick={handleSidebarToggle} className="hide-on-lg">
                   <Icon>menu</Icon>
                 </IconButton>
 
@@ -82,6 +88,7 @@ class Layout1Topbar extends Component {
                   <IconButton>
                     <Link className="flex flex-middle" to="/session/signin">
                       <Icon><VpnKeyRoundedIcon></VpnKeyRoundedIcon></Icon>
+                      {/* 이 부분이 나중에 NASDAQ / KOSPI 넘나드는 버튼으로 바뀔 예정 */}
                     </Link>
                   </IconButton>
 
@@ -101,6 +108,8 @@ class Layout1Topbar extends Component {
 
                 <EnterAdmin></EnterAdmin>
 
+                {props.isAuth !== null
+                ?
                 <MatxMenu
                   menuButton={
                     <img
@@ -138,7 +147,7 @@ class Layout1Topbar extends Component {
                     </Link>
                   </MenuItem>
                   <MenuItem
-                    onClick={this.handleSignOut}
+                    onClick={handleSignOut}
                     className="flex flex-middle"
                     style={{ minWidth: 185 }}
                   >
@@ -146,13 +155,46 @@ class Layout1Topbar extends Component {
                     <span className="pl-16"> Logout </span>
                   </MenuItem>
                 </MatxMenu>
+                :
+                <MatxMenu
+                  menuButton={
+                    <img
+                      className="mx-8 text-middle circular-image-small cursor-pointer"
+                      src="/assets/images/face-6.jpg"
+                      alt="user"
+                    />
+                  }
+                >
+                  <MenuItem style={{ minWidth: 185 }}>
+                    <Link className="flex flex-middle" to="/">
+                      <Icon> home </Icon>
+                      <span className="pl-16"> Home </span>
+                    </Link>
+                  </MenuItem>
+                  <MenuItem style={{ minWidth: 185 }}>
+                    <Link
+                      className="flex flex-middle"
+                      to="/session/signup"
+                    >
+                      <Icon><CheckCircleIcon/></Icon>
+                      <span className="pl-16"> Sign up </span>
+                    </Link>
+                  </MenuItem>
+                  <MenuItem style={{ minWidth: 185 }}>
+                    <Link className="flex flex-middle" to="/session/signin">
+                      <Icon> <VpnKeyRoundedIcon/> </Icon>
+                      <span className="pl-16"> Sign in </span>
+                    </Link>
+                  </MenuItem>
+                </MatxMenu>
+                }
+                
               </div>
             </div>
           </div>
         </div>
       </MuiThemeProvider>
     );
-  }
 }
 
 Layout1Topbar.propTypes = {

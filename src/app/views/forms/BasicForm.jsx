@@ -50,7 +50,7 @@ const BasicForm = () => {
   const clickTitle = (id) => {
     alert(id)
     // window.location.href('/form/detail/'+id)
-    window.location.href(`/form/detail`)
+    window.location.href(`/form/detail/${id}`)
   }
 
   return (
