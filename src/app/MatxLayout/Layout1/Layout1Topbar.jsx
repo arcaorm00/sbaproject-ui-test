@@ -17,8 +17,8 @@ import { isMdScreen } from "utils";
 import NotificationBar from "../SharedCompoents/NotificationBar";
 import { Link } from "react-router-dom";
 import EnterAdmin from "../SharedCompoents/EnterAdmin";
-import VpnKeyRoundedIcon from '@material-ui/icons/VpnKeyRounded';
 
+import VpnKeyRoundedIcon from '@material-ui/icons/VpnKeyRounded';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 

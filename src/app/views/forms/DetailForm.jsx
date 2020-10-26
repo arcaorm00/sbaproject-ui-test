@@ -164,17 +164,17 @@ const DetailForm = () => {
           <tr>
             <td width="60%" align="left">
               <Typography variant="h6" color="inherit" noWrap>
-                글제목
+                { article !== undefined? article.title: '글 제목' }
               </Typography>
             </td>
             <td width="20%" align="center">
               <Typography variant="subtitle1" color="inherit" noWrap>
-                작성자
+                { article !== undefined? article.email.split('@')[0]: '작성자' }
               </Typography>
             </td>
             <td width="20%" align="center">
               <Typography variant="subtitle1" color="inherit" noWrap>
-                작성일자
+                { article !== undefined? article.regdate: ':' }
               </Typography>
             </td>
           </tr>
@@ -182,7 +182,9 @@ const DetailForm = () => {
         <TableBody>
           <tr>
             <td colspan="4" height="500px">
-              <div className={classes.contents_padding}>글내용</div>
+              <div className={classes.contents_padding}>
+                { article !== undefined? article.content: '' }
+              </div>
             </td>
           </tr>     
         </TableBody>

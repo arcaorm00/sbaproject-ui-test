@@ -62,7 +62,7 @@ const Layout1 = (props) => {
       <AppContext.Consumer>
         {({ routes }) => (
           <div className={classList(layoutClasses)}>
-            {layout1Settings.leftSidebar.show && <Layout1Sidenav />}
+            {layout1Settings.leftSidebar.show && <Layout1Sidenav isAuth={loggedIn}/>}
 
             <div className="content-wrap position-relative">
               {layout1Settings.topbar.show && layout1Settings.topbar.fixed && (
