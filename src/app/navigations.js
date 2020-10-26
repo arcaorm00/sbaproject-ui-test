@@ -88,20 +88,20 @@ export const navigations = [
   //     }
   //   ]
   // },
-  {
-    name: "회원 관리",
-    icon: "trending_up",
-    children: [
-      {
-        name: "Sign in",
-        iconText: "SI",
-        path: "/session/signin"
-      },
-      {
-        name: "Sign up",
-        iconText: "SU",
-        path: "/session/signup"
-      },
+  // {
+  //   name: "회원 관리",
+  //   icon: "trending_up",
+  //   children: [
+  //     {
+  //       name: "Sign in",
+  //       iconText: "SI",
+  //       path: "/session/signin"
+  //     },
+  //     {
+  //       name: "Sign up",
+  //       iconText: "SU",
+  //       path: "/session/signup"
+  //     },
       // {
       //   name: "Forgot password",
       //   iconText: "FP",
@@ -112,8 +112,8 @@ export const navigations = [
       //   iconText: "404",
       //   path: "/session/404"
       // }
-    ]
-  },
+  //   ]
+  // },
 
   // {
   //   name: "UI Kits",

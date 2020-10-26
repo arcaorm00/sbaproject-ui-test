@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Breadcrumb } from "matx"
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -75,6 +75,36 @@ const AccountSetting = () => {
     setActiveStep(activeStep - 1);
   };
 
+  const sessionMember = sessionStorage.getItem("sessionMember")
+  const [member, setMemberInfo] = useState({
+    email: '',
+    password: '',
+    name: '',
+    profile: '', 
+    geography: '', 
+    gender: '', 
+    age: 0, 
+    tenure: 0, 
+    stock_qty: 0, 
+    balance: 0.0, 
+    has_credit: 0, 
+    credit_score: 0, 
+    is_active_member: 1, 
+    estimated_salary: 0.0, 
+    role: ''
+  })
+
+  useEffect(()=> {
+    axios.get(`http://localhost:8080/api/member/${sessionMember}`)
+    .then( res => {
+      setMemberInfo(res.data[0])
+    })
+    .catch( e => {
+      alert('BYE')
+      throw e
+    })
+  })
+
   return (
     <React.Fragment>
       <div className="m-sm-30">
@@ -91,7 +121,7 @@ const AccountSetting = () => {
       <AppBar position="absolute" color="default" className={classes.appBar}>
         <Toolbar >
           <Typography variant="h6" color="inherit" noWrap>
-            OO 회원님 환영합니다.
+            {member.name} 회원님 환영합니다.
           </Typography>
         </Toolbar>
       </AppBar>
@@ -134,6 +164,7 @@ const AccountSetting = () => {
                       id="email"
                       name="email"
                       label="Email"
+                      value={member.email}
                       fullWidth
                       disabled
                       autoComplete="given-name"
@@ -145,7 +176,10 @@ const AccountSetting = () => {
                       id="password"
                       name="password"
                       label="Password"
+                      type="password"
+                      value={member.password}
                       fullWidth
+                      disabled
                       autoComplete="password"
                     />
                   </Grid>
@@ -165,7 +199,9 @@ const AccountSetting = () => {
                       id="name"
                       name="name"
                       label="Name"
+                      value={member.name}
                       fullWidth
+                      disabled
                       autoComplete="family-name"
                     />
                   </Grid>
@@ -174,6 +210,7 @@ const AccountSetting = () => {
                       id="geography"
                       name="geography"
                       label="Geography"
+                      value={member.geography}
                       fullWidth
                       autoComplete="geography"
                     />
@@ -183,6 +220,7 @@ const AccountSetting = () => {
                       id="gender"
                       name="gender"
                       label="Gender"
+                      value={member.gender}
                       fullWidth
                       autoComplete="gender"
                     />
@@ -192,6 +230,7 @@ const AccountSetting = () => {
                       id="age"
                       name="age"
                       label="Age"
+                      value={member.age}
                       fullWidth
                       autoComplete="age"
                     />
@@ -201,7 +240,9 @@ const AccountSetting = () => {
                       id="creditScore"
                       name="creditScore"
                       label="CreditScore"
+                      value={member.credit_score}
                       fullWidth
+                      disabled
                       autoComplete="CreditScore"
                     />
                   </Grid>
@@ -210,6 +251,7 @@ const AccountSetting = () => {
                       id="salary"
                       name="salary"
                       label="Salary"
+                      value={member.estimated_salary}
                       fullWidth
                       autoComplete="salary"
                     />

@@ -6,7 +6,9 @@ import {
   Fab,
 } from "@material-ui/core";
 
-const StatCards2 = () => {
+const StatCards2 = (props) => {
+  const member = props.session
+  console.log(member)
   return (
     <Grid container spacing={3} className="mb-24">
       <Grid item xs={12} md={6}>
@@ -23,7 +25,7 @@ const StatCards2 = () => {
             </h5>
           </div>
           <div className="pt-16 flex flex-middle">
-            <h2 className="m-0 text-muted flex-grow-1">$20,000</h2>
+            <h2 className="m-0 text-muted flex-grow-1">${member.balance}</h2>
             <div className="ml-12 small-circle bg-green text-white">
               <Icon className="small-icon">expand_less</Icon>
             </div>
@@ -45,7 +47,7 @@ const StatCards2 = () => {
             </h5>
           </div>
           <div className="pt-16 flex flex-middle">
-            <h2 className="m-0 text-muted flex-grow-1">$0</h2>
+            <h2 className="m-0 text-muted flex-grow-1">${member.balance < 0 ? member.balance*-1 : 0}</h2>
             <div className="ml-12 small-circle bg-error text-white">
               <Icon className="small-icon">expand_more</Icon>
             </div>

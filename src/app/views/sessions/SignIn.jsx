@@ -51,7 +51,7 @@ const SignIn = (props) => {
       window.location.reload()
     })
     .catch(err => {
-      alert(`${err}\nPlease check your ID or password!`)
+      alert(`Please check your ID or password!`)
       window.location.reload()
     })
   };

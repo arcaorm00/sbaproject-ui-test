@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from "react"
+import React, { Component, Fragment, useState, useEffect } from "react"
+import { useHistory } from 'react-router-dom'
 import {
   Grid,
   Card
@@ -17,7 +18,40 @@ import { withStyles } from "@material-ui/styles"
 
 import axios from 'axios'
 
-const Mypage =()=> {
+const Mypage =(props)=> {
+
+  const history = useHistory()
+  const sessionMember = sessionStorage.getItem("sessionMember")
+
+  const [member, setMemberInfo] = useState({
+    email: '',
+    password: '',
+    name: '',
+    profile: '', 
+    geography: '', 
+    gender: '', 
+    age: 0, 
+    tenure: 0, 
+    stock_qty: 0, 
+    balance: 0.0, 
+    has_credit: 0, 
+    credit_score: 0, 
+    is_active_member: 1, 
+    estimated_salary: 0.0, 
+    role: ''
+  })
+
+  useEffect(()=> {
+    axios.get(`http://localhost:8080/api/member/${sessionMember}`)
+    .then( res => {
+      setMemberInfo(res.data[0])
+    })
+    .catch( e => {
+      alert('BYE')
+      throw e
+    })
+  })
+
   return (
     <>
     <div className="pb-86 pt-30 px-30 bg-secondary">
@@ -55,9 +89,9 @@ const Mypage =()=> {
         {/* <Grid item lg={8} md={8} sm={12} xs={12}> */}
           {/* Top Selling Products */}
           <TableCard/>
-          <h4 className="card-title text-muted mb-16">OO님을 위한 종목 추천</h4>
+          <h4 className="card-title text-muted mb-16">{member.name||''}님을 위한 종목 추천</h4>
           <StatCards />
-          <StatCards2/>
+          <StatCards2 session={member}/>
           {/* <RowCards /> */}
 
         {/* </Grid> */}
