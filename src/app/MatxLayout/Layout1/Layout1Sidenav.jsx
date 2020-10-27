@@ -16,7 +16,7 @@ import {
   setDefaultSettings
 } from "app/redux/actions/LayoutActions";
 import { logoutUser } from "app/redux/actions/UserActions";
-import { withRouter, useHistory } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { MatxMenu } from "matx";
 import Sidenav from "../SharedCompoents/Sidenav";
 import Brand from "../SharedCompoents/Brand";
@@ -27,6 +27,7 @@ import { Link } from 'react-router-dom'
 
 import VpnKeyRoundedIcon from '@material-ui/icons/VpnKeyRounded';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+
 
 const styles = theme => ({});
 
@@ -44,33 +45,29 @@ const IconSmall = withStyles(() => ({
   }
 }))(Icon);
 
-const Layout1Sidenav = (props) => {
-
-  const history = useHistory()
-
-  const sessionMember = sessionStorage.getItem("sessionMember")
-  const state = {
+class Layout1Sidenav extends Component {
+  state = {
     sidenavToggleChecked: false,
     // hidden: true
-  };
+  }; 
 
-  // const componentWillMount = () => {
+  componentWillMount() {
 
-  //   // CLOSE SIDENAV ON ROUTE CHANGE ON MOBILE
-  //   unlistenRouteChange = props.history.listen((location, action) => {
-  //     if (isMdScreen()) {
-  //       updateSidebarMode({ mode: "close" });
-  //     }
-  //   });
+    // CLOSE SIDENAV ON ROUTE CHANGE ON MOBILE
+    this.unlistenRouteChange = this.props.history.listen((location, action) => {
+      if (isMdScreen()) {
+        this.updateSidebarMode({ mode: "close" });
+      }
+    });
 
-  // }
+  }
 
-  // const componentWillUnmount = () => {
-  //   unlistenRouteChange();
-  // }
+  componentWillUnmount() {
+    this.unlistenRouteChange();
+  }
 
-  const updateSidebarMode = sidebarSettings => {
-    let { settings, setLayoutSettings, setDefaultSettings } = sidebarSettings;
+  updateSidebarMode = sidebarSettings => {
+    let { settings, setLayoutSettings, setDefaultSettings } = this.props;
     const updatedSettings = {
       ...settings,
       layout1Settings: {
@@ -85,34 +82,34 @@ const Layout1Sidenav = (props) => {
     setDefaultSettings(updatedSettings);
   };
 
-  const handleSidenavToggle = () => {
-    let { sidenavToggleChecked } = state;
+  handleSidenavToggle = () => {
+    let { sidenavToggleChecked } = this.state;
     let mode = sidenavToggleChecked ? "full" : "compact";
     this.updateSidebarMode({ mode });
     this.setState({ sidenavToggleChecked: !sidenavToggleChecked });
   };
 
-  const handleSignOut = () => {
+  handleSignOut = () => {
     sessionStorage.removeItem("sessionMember")
     window.location.reload()
-    props.logoutUser();
-  }
+    this.props.logoutUser();
+  };
 
-  
-
-  const renderLogoSwitch = () => (
+  renderLogoSwitch = () => (
     // Open Brand component file to replace logo and text
     <Brand>
       <Switch
         className="sidenav__toggle show-on-lg"
-        onChange={handleSidenavToggle}
-        checked={!state.sidenavToggleChecked}
+        onChange={this.handleSidenavToggle}
+        checked={!this.state.sidenavToggleChecked}
         color="secondary"
       />
     </Brand>
   );
 
-  const renderUser = () => {
+  renderUser = () => {
+
+    const sessionMember = sessionStorage.getItem("sessionMember")
     
     // let { user } = this.props;
     return (
@@ -120,7 +117,7 @@ const Layout1Sidenav = (props) => {
         {/* <div className="username-photo">
           <img src={user.photoURL} alt="user" />
         </div> */}
-        {props.isAuth !== null
+        {sessionMember !== null
         ?
         <div className="ml-8">
           <span className="username">
@@ -167,7 +164,7 @@ const Layout1Sidenav = (props) => {
                 aria-label="Delete"
                 className=""
                 size="small"
-                onClick={handleSignOut}
+                onClick={this.handleSignOut}
               >
                 <IconSmall>exit_to_app</IconSmall>
               </IconButtonWhite>
@@ -212,25 +209,27 @@ const Layout1Sidenav = (props) => {
     );
   };
 
-  let { theme, settings } = props;
-  const sidenavTheme =
-    settings.themes[settings.layout1Settings.leftSidebar.theme] || theme;
-  return (
-    <MuiThemeProvider theme={sidenavTheme}>
-      <SidenavTheme theme={sidenavTheme} settings={settings} />
+  render() {
+    let { theme, settings } = this.props;
+    const sidenavTheme =
+      settings.themes[settings.layout1Settings.leftSidebar.theme] || theme;
+    return (
+      <MuiThemeProvider theme={sidenavTheme}>
+        <SidenavTheme theme={sidenavTheme} settings={settings} />
 
-      <div className="sidenav">
-        <div className="sidenav__hold">
-          {(
-            <Fragment>
-              {renderLogoSwitch()}
-              <Sidenav>{renderUser()}</Sidenav>
-            </Fragment>
-          )}
+        <div className="sidenav">
+          <div className="sidenav__hold">
+            {(
+              <Fragment>
+                {this.renderLogoSwitch()}
+                <Sidenav>{this.renderUser()}</Sidenav>
+              </Fragment>
+            )}
+          </div>
         </div>
-      </div>
-    </MuiThemeProvider>
-  );
+      </MuiThemeProvider>
+    );
+  }
 }
 
 Layout1Sidenav.propTypes = {

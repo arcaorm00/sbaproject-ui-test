@@ -82,6 +82,8 @@ const DetailForm = () => {
   const classes = useStyles();
 
   const [article, setArticle] = useState()
+  const [commentList, setCommentList] = useState([])
+
   useEffect(() => {
     const id = window.location.href.split("/").reverse()[0]
     axios.get(`http://localhost:8080/api/board/${id}`)
@@ -91,6 +93,14 @@ const DetailForm = () => {
     })
     .catch(e => {
       alert(`article Fail`)
+      throw(e)
+    })
+
+    axios.get(`http://localhost:8080/api/comments/${id}`)
+    .then(res => {
+      setCommentList(res.data)
+    })
+    .catch(e => {
       throw(e)
     })
   })
@@ -108,20 +118,45 @@ const DetailForm = () => {
   // comment
 
   const [comment, setComment] = useState('')
-  const session = sessionStorage.getItem("sessionMember")
+  const sessionMember = sessionStorage.getItem("sessionMember")
 
   let today = new Date()
+
+  const getTime = () => {
+    let yyyy = today.getFullYear().toString()
+    let mm = (today.getMonth() + 1).toString()
+    let dd = today.getDate().toString()
+
+    let hours = today.getHours().toString()
+    let minutes = today.getMinutes().toString()
+    let seconds = today.getSeconds().toString()
+
+    let result = yyyy + '/' + (mm[1] ? mm : '0' + mm[0]) + '/' + (dd[1] ? dd : '0' + dd[0]) + ' ' 
+    + (hours[1] ? hours : '0' + hours[0]) + ':' + (minutes[1] ? minutes : '0' + minutes[0]) + ':' + (seconds[1] ? seconds : '0' + seconds[0])
+    return result
+  }
   
+  today = getTime()
 
   // comment 버튼 클릭 이벤트 => 항상 모댓글
-  const clickComment = () => {
+  const clickComment = (e) => {
+    e.preventDefault()
+    alert(today)
     const data = {board_id: article.id, 
-      email: session, 
+      email: sessionMember, 
       comment: comment, 
       regdate: today,
       comment_ref: article.id, 
       comment_level: 0, 
       comment_step: 0 }
+    axios.post('http://localhost:8080/api/comment', data)
+    .then(res => {
+      alert('댓글이 등록되었습니다.')
+      window.location.reload()
+    })
+    .catch(e => {
+      alert(e)
+    })
   }
 
   const clickCommentUpdate = () => {
@@ -242,8 +277,8 @@ const DetailForm = () => {
           </li>
         </div>
       </ul>
-          <form id="boardReply">
-            <div id="replyDiv" class="form-row align-items-center">
+          <form id="boardComment">
+            <div id="commentDiv" class="form-row align-items-center">
               <input type="hidden" name="b_no"/>
               <input type="hidden" name="r_ref" value="0"/>
               <input type="hidden" name="r_level" value="0"/>
@@ -254,7 +289,11 @@ const DetailForm = () => {
               <table fullWidth>
                 <tr fullWidth>
                   <td width="90%"><TextField id="comment" placeholder="Leave your comment" variant="outlined" fullWidth onChange={e=> setComment(e.target.value)}/></td>
-                  <td width="10%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit" onClick={clickComment}>comment</Button></td>
+                  {sessionMember !== null 
+                  ? <td width="10%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit" onClick={clickComment}>comment</Button></td> 
+                  : <td width="10%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit" disabled>comment</Button></td>
+                  }
+                  
                 </tr>
               </table>
               </div>
