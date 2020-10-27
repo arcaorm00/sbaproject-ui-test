@@ -92,13 +92,13 @@ const DetailForm = () => {
       console.log(article)
     })
     .catch(e => {
-      alert(`article Fail`)
       throw(e)
     })
 
     axios.get(`http://localhost:8080/api/comments/${id}`)
     .then(res => {
       setCommentList(res.data)
+      console.log(commentList)
     })
     .catch(e => {
       throw(e)
@@ -141,21 +141,21 @@ const DetailForm = () => {
   // comment 버튼 클릭 이벤트 => 항상 모댓글
   const clickComment = (e) => {
     e.preventDefault()
-    alert(today)
-    const data = {board_id: article.id, 
+    // alert(today)
+    const data = {
+      board_id: article.id, 
       email: sessionMember, 
       comment: comment, 
       regdate: today,
-      comment_ref: article.id, 
-      comment_level: 0, 
+      comment_ref: article.id,
+      comment_level: 0,
       comment_step: 0 }
     axios.post('http://localhost:8080/api/comment', data)
     .then(res => {
       alert('댓글이 등록되었습니다.')
-      window.location.reload()
     })
     .catch(e => {
-      alert(e)
+      throw(e)
     })
   }
 
@@ -268,14 +268,18 @@ const DetailForm = () => {
         <br/>
       <h4 className={classes.lineBottom}>Comments</h4>
       <ul id="replyList" class="list-group list-group-flush" className={classes.commentsUl}>
+      {commentList.map((row, idx) => (
         <div className={classes.commentsDiv}>
-          <li className={classes.comments}>
-            <td width="15%" align="left"><b>댓글 작성자</b></td>
-            <td width="75%" align="left">댓글내용</td>
-            <td width="10%" align="center" onClick={clickCommentUpdate}>수정</td>
-            <td width="5%" align="left" onClick={clickCommentDelete}>X</td>
-          </li>
+          
+            <li className={classes.comments}>
+              <td width="15%" align="left"><b>{row.email.split('@')[0]}</b>&nbsp;&nbsp;</td>
+              <td width="75%" align="left">{row.comment}</td>
+              <td width="10%" align="center" onClick={clickCommentUpdate}>수정</td>
+              <td width="5%" align="left" onClick={clickCommentDelete}>X</td>
+            </li>
+          
         </div>
+      ))}
       </ul>
           <form id="boardComment">
             <div id="commentDiv" class="form-row align-items-center">
