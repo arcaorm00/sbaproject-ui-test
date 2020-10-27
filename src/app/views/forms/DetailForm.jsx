@@ -13,6 +13,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 
 import Paper from '@material-ui/core/Paper'
 import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles({
   table: {
@@ -56,15 +57,6 @@ const useStyles = makeStyles({
   }
 });
 
-const get_article = (id) => {
-  axios.get('', {id: id})
-  .then( res => {
-    console.log(res.data)
-    return res.data
-  }).catch( err => {
-    alert(err)
-  })
-}
 const createData = (name, calories, fat, carbs, protein) => {
   return { name, calories, fat, carbs, protein };
 }
@@ -80,6 +72,7 @@ const rows = [
 const DetailForm = () => {
 
   const classes = useStyles();
+  const history = useHistory()
 
   const [article, setArticle] = useState()
   const [commentList, setCommentList] = useState([])
@@ -163,8 +156,16 @@ const DetailForm = () => {
 
   }
 
-  const clickCommentDelete = () => {
+  const clickCommentDelete = (row) => {
+    alert(row.id)
+    const data = {id: row.id}
+    // axios.delete('http://localhost:8080/api/comment', data)
+    // .then(res => {
 
+    // })
+    // .catch(e => {
+
+    // })
   }
 
   return (
@@ -260,7 +261,7 @@ const DetailForm = () => {
           className="capitalize mr-10"
           variant="contained"
           color="secondary"
-          onClick={clickDelete}
+          onClick={() => {history.push('/forms/basic')}}
         >
           목록
         </Button>	
@@ -275,7 +276,7 @@ const DetailForm = () => {
               <td width="15%" align="left"><b>{row.email.split('@')[0]}</b>&nbsp;&nbsp;</td>
               <td width="75%" align="left">{row.comment}</td>
               <td width="10%" align="center" onClick={clickCommentUpdate}>수정</td>
-              <td width="5%" align="left" onClick={clickCommentDelete}>X</td>
+              <td width="5%" align="left" onClick={() => clickCommentDelete(row)}>X</td>
             </li>
           
         </div>

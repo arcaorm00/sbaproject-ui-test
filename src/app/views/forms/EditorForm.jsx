@@ -6,11 +6,15 @@ import StateManager from "react-select"
 
 const EditorForm = () => {
   const [title, setTitle] = useState()
-  const [content, setContent] = useState()
+  const [bodycontent, setBodyContent] = useState()
 
   const clickSubmit = (e) => {
     e.preventDefault()
-    alert(`${title}`)
+    const data = {
+      title: document.getElementById('title').value,
+      content: '',
+    }
+    console.log(data)
   }
 
   // const contentChange = (e) => {
@@ -35,7 +39,6 @@ const EditorForm = () => {
         fullWidth
         type="text"
         placeholder="Title"
-        onChange={e => {setTitle(e.target.velue)}}
     />
     <p/>
     <RichTextEditor

@@ -19,8 +19,8 @@ import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    margin: '0px 8px 16px 0px',
+    minWidth: 150,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -195,6 +195,7 @@ const SignUp = () => {
     gender: '',
     age: ''
   })
+  const [agreement, setAgreement] = useState(0)
 
   const history = useHistory()
 
@@ -209,6 +210,7 @@ const SignUp = () => {
 
   const handleFormSubmit = e => {
     e.preventDefault()
+    alert(form.agreement)
     axios.post('http://localhost:8080/api/auth', 
     {email: form.email, 
       password: form.password, 
@@ -228,7 +230,8 @@ const SignUp = () => {
     }
     )
     .then( res => {
-      alert(res.data)
+      // alert(res.data)
+      history.push('/session/signin')
     }).catch( e => {
       alert('회원가입 실패')
       throw e
@@ -237,16 +240,24 @@ const SignUp = () => {
 
   const gender_option = [
     {
-      label: "Etc.",
-      velue: "Etc"
+      label: "Etc.", velue: "Etc"
     },
     {
-      label: "Male",
-      velue: "Male"
+      label: "Male", velue: "Male"
     },
     {
-      label: "Female",
-      velue: "Female"
+      label: "Female", velue: "Female"
+    },
+  ]
+  const geography_option = [
+    {
+      label: "France", velue: "France"
+    },
+    {
+      label: "Germany", velue: "Germany"
+    },
+    {
+      label: "Spain", velue: "Spain"
     },
   ]
 
@@ -302,34 +313,41 @@ const SignUp = () => {
                     validators={["required"]}
                     errorMessages={["this field is required"]}
                   />
-                  <TextValidator
-                    className="mb-24 w-100"
-                    variant="outlined"
-                    label="Geography"
-                    onChange={handleChange}
-                    type="text"
-                    name="geography"
-                    value={form.geography||''}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
-                  />
-                  <FormControl 
-                    variant="outlined"
-                    className={classes.formControl}
-                    validators={["required"]}
-                    errorMessages={["this field is required"]}
-                  >
-                    <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
+                  <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel htmlFor="outlined-geography-native-simple">Geography</InputLabel>
                     <Select
-                      labelId="demo-simple-select-outlined-label"
-                      id="demo-simple-select-outlined"
-                      value={form.gender||''} 
-                      name="gender"
+                      native
+                      value={form.geography}
+                      onChange={handleChange}
+                      label="Geography"
+                      inputProps={{
+                        name: 'geography',
+                        id: 'outlined-gender-native-simple',
+                      }}
+                      validators={["required"]} errorMessages={["this field is required"]}
+                    >
+                      <option aria-label="None" value="" />
+                      {geography_option.map((row, idx) => (
+                        <option value={row.value}>{row.label}</option>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel htmlFor="outlined-age-native-simple">Gender</InputLabel>
+                    <Select
+                      native
+                      value={form.gender}
                       onChange={handleChange}
                       label="Gender"
+                      inputProps={{
+                        name: 'gender',
+                        id: 'outlined-gender-native-simple',
+                      }}
+                      validators={["required"]} errorMessages={["this field is required"]}
                     >
-                      {gender_option.map( g => (
-                        <MenuItem value={g.value}>{g.label}</MenuItem>
+                      <option aria-label="None" value="" />
+                      {gender_option.map((row, idx) => (
+                        <option value={row.value}>{row.label}</option>
                       ))}
                     </Select>
                   </FormControl>
@@ -357,9 +375,7 @@ const SignUp = () => {
                   />
                   <FormControlLabel
                     className="mb-16"
-                    name="agreement"
-                    onChange={handleChange}
-                    control={<Checkbox />}
+                    control={<Checkbox id="agreement" name="agreement" onChange={e=>{setAgreement(agreement)}}/>}
                     label="I have read and agree to the terms of service."
                   />
                   <div className="flex flex-middle">
