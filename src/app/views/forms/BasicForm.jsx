@@ -94,7 +94,7 @@ const BasicForm = () => {
             
             <TableRow key={row.title}>
               <TableCell align="left" width="10%">{row.id}</TableCell>
-              <TableCell align='left' width="100%" onClick={() => history.push("/forms/detail/"+row.id)} style={{cursor: 'pointer'}}>
+              <TableCell align='left' width="100%" onClick={() => history.push("/forms/detail/"+row.id)} style={{cursor: 'pointer'}} noWrap>
                 {row.title}
               </TableCell>
               <TableCell align="center" width="20%">{row.email}</TableCell>

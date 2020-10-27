@@ -106,7 +106,13 @@ const Layout1Topbar = props => {
 
                 <NotificationBar />
 
+                {props.isAuth == 'admin@stockpsychic.com'
+                ?
                 <EnterAdmin></EnterAdmin>
+                :
+                <></>
+                }
+                
 
                 {props.isAuth !== null
                 ?

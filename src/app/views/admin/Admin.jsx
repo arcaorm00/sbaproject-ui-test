@@ -24,7 +24,11 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { Button, TextField } from "@material-ui/core"
 
+import { useHistory } from 'react-router-dom'
 import axios from 'axios'
+
+const session = sessionStorage.getItem("sessionMember")
+
 
 const createData = (email, name, stock_qty, is_activate_member, exit) => {
   return { email, name, stock_qty, is_activate_member, exit };
@@ -379,7 +383,12 @@ const Admin = () => {
 }
 
 
-// ================================================== 회원 관리
+// ==============================================================================================================
+// ==============================================================================================================
+// ================================================== 회원 관리 ==================================================
+// ==============================================================================================================
+// ==============================================================================================================
+
 
  const descendingComparatorForMember = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
@@ -498,17 +507,23 @@ const MemberList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [data, setData] = useState([])
+  const history = useHistory()
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/members`)
-    .then(res => {
-      alert('list Success')
-      setData(res.data)
-    })
-    .catch(e => {
-      alert('list Fail')
-      throw(e)
-    })
+    if (session == 'admin@stockpsychic.com'){
+      axios.get(`http://localhost:8080/api/members`)
+      .then(res => {
+        setData(res.data)
+      })
+      .catch(e => {
+        alert('list Fail')
+        throw(e)
+      })
+    }else{
+      alert('접근 권한이 없습니다.')
+      history.push('/')
+    }
+      
   }, [])
 
   const handleRequestSort = (event, property) => {

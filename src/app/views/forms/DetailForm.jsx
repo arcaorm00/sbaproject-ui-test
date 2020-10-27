@@ -106,8 +106,22 @@ const DetailForm = () => {
   }
 
   // comment
-  const clickComment = () => {
 
+  const [comment, setComment] = useState('')
+  const session = sessionStorage.getItem("sessionMember")
+
+  let today = new Date()
+  
+
+  // comment 버튼 클릭 이벤트 => 항상 모댓글
+  const clickComment = () => {
+    const data = {board_id: article.id, 
+      email: session, 
+      comment: comment, 
+      regdate: today,
+      comment_ref: article.id, 
+      comment_level: 0, 
+      comment_step: 0 }
   }
 
   const clickCommentUpdate = () => {
@@ -124,7 +138,7 @@ const DetailForm = () => {
       <Breadcrumb
         routeSegments={[
           { name: "게시판", path: "/forms/basic" },
-          { name: "글 제목" }
+          { name: '게시글' }
         ]}
       />
     </div>
@@ -163,13 +177,13 @@ const DetailForm = () => {
         <TableHead className={classes.tablehead}>
           <tr>
             <td width="60%" align="left">
-              <Typography variant="h6" color="inherit" noWrap>
-                { article !== undefined? article.title: '글 제목' }
+              <Typography variant="h6" color="inherit">
+                { article !== undefined? article.title: '' }
               </Typography>
             </td>
             <td width="20%" align="center">
               <Typography variant="subtitle1" color="inherit" noWrap>
-                { article !== undefined? article.email.split('@')[0]: '작성자' }
+                { article !== undefined? article.email.split('@')[0]: '' }
               </Typography>
             </td>
             <td width="20%" align="center">
@@ -186,7 +200,7 @@ const DetailForm = () => {
                 { article !== undefined? article.content: '' }
               </div>
             </td>
-          </tr>     
+          </tr>
         </TableBody>
       </Table>
       <div class="mb-3">			
@@ -223,8 +237,8 @@ const DetailForm = () => {
           <li className={classes.comments}>
             <td width="15%" align="left"><b>댓글 작성자</b></td>
             <td width="75%" align="left">댓글내용</td>
-            <td width="10%" align="center">수정</td>
-            <td width="5%" align="left">X</td>
+            <td width="10%" align="center" onClick={clickCommentUpdate}>수정</td>
+            <td width="5%" align="left" onClick={clickCommentDelete}>X</td>
           </li>
         </div>
       </ul>
@@ -239,8 +253,8 @@ const DetailForm = () => {
               <div class="col-sm-8 my-2"> 
               <table fullWidth>
                 <tr fullWidth>
-                  <td width="90%"><TextField id="comment" placeholder="Leave your comment" variant="outlined" fullWidth/></td>
-                  <td width="10%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit" onClick={clickUpdate}>comment</Button></td>
+                  <td width="90%"><TextField id="comment" placeholder="Leave your comment" variant="outlined" fullWidth onChange={e=> setComment(e.target.value)}/></td>
+                  <td width="10%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit" onClick={clickComment}>comment</Button></td>
                 </tr>
               </table>
               </div>
