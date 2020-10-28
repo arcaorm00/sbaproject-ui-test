@@ -57,21 +57,9 @@ const useStyles = makeStyles({
   }
 });
 
-const createData = (name, calories, fat, carbs, protein) => {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 const DetailForm = () => {
 
-  const classes = useStyles();
+  const classes = useStyles()
   const history = useHistory()
 
   const [article, setArticle] = useState()
@@ -146,6 +134,7 @@ const DetailForm = () => {
     axios.post('http://localhost:8080/api/comment', data)
     .then(res => {
       alert('댓글이 등록되었습니다.')
+      document.getElementById('comment').value = ''
     })
     .catch(e => {
       throw(e)
@@ -159,13 +148,13 @@ const DetailForm = () => {
   const clickCommentDelete = (row) => {
     alert(row.id)
     const data = {id: row.id}
-    // axios.delete('http://localhost:8080/api/comment', data)
-    // .then(res => {
+    axios.delete('http://localhost:8080/api/comment', data)
+    .then(res => {
 
-    // })
-    // .catch(e => {
+    })
+    .catch(e => {
 
-    // })
+    })
   }
 
   return (
@@ -275,8 +264,17 @@ const DetailForm = () => {
             <li className={classes.comments}>
               <td width="15%" align="left"><b>{row.email.split('@')[0]}</b>&nbsp;&nbsp;</td>
               <td width="75%" align="left">{row.comment}</td>
+              { sessionMember == row.email 
+              ? <>
               <td width="10%" align="center" onClick={clickCommentUpdate}>수정</td>
               <td width="5%" align="left" onClick={() => clickCommentDelete(row)}>X</td>
+              </>
+              : <>
+              <td width="10%" align="center"></td>
+              <td width="5%" align="left"></td>
+              </>
+              }
+              
             </li>
           
         </div>

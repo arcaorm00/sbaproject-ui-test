@@ -12,18 +12,7 @@ export const navigations = [
   {
     name: "게시판",
     icon: "description",
-    children: [
-      {
-        name: "글 목록",
-        path: "/forms/basic",
-        iconText: "B"
-      },
-      {
-        name: "글쓰기",
-        path: "/forms/editor",
-        iconText: "W"
-      }
-    ]
+    path: "/forms/basic"
   },
   // {
   //   name: "관심 종목",

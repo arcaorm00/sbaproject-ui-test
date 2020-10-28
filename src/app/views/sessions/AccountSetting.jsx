@@ -5,6 +5,10 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 import { makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -62,7 +66,8 @@ const steps = ['회원 정보'];
 const AccountSetting = () => {
 
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [isPasswordEdit, setIsPasswordEdit] = useState(false)
 
   const handleNext = () => {
     let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
@@ -76,6 +81,7 @@ const AccountSetting = () => {
   };
 
   const sessionMember = sessionStorage.getItem("sessionMember")
+
   const [member, setMemberInfo] = useState({
     email: '',
     password: '',
@@ -93,8 +99,22 @@ const AccountSetting = () => {
     estimated_salary: 0.0, 
     role: ''
   })
+  const [newPwd, setNewPwd] = useState('')
+  const [confirmPwd, setConfirmPwd] = useState('')
 
-  useEffect(()=> {
+  const gender_option = [
+    {
+      label: "Etc.", velue: "Etc."
+    },
+    {
+      label: "Male", velue: "Male"
+    },
+    {
+      label: "Female", velue: "Female"
+    },
+  ]
+
+  useEffect(() => {
     axios.get(`http://localhost:8080/api/member/${sessionMember}`)
     .then( res => {
       setMemberInfo(res.data[0])
@@ -103,7 +123,26 @@ const AccountSetting = () => {
       alert('BYE')
       throw e
     })
-  })
+  }, [])
+  
+  const clickEditPassword = () => {
+    if (isPasswordEdit == true) {
+      document.getElementById('pwdEditBtn').innerText ='비밀번호 수정'
+      setIsPasswordEdit(false)
+    }else{
+      document.getElementById('pwdEditBtn').innerText ='수정 취소'
+      setIsPasswordEdit(true)
+    }
+  }
+
+  const handleChange = e => {
+    e.persist();
+    setMemberInfo({
+      ...member,
+      [e.target.name]: e.target.value
+    })
+    console.log(member)
+  };
 
   return (
     <React.Fragment>
@@ -168,9 +207,10 @@ const AccountSetting = () => {
                       fullWidth
                       disabled
                       autoComplete="given-name"
+                      onChange={handleChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} sm={9}>
                     <TextField
                       required
                       id="password"
@@ -181,19 +221,49 @@ const AccountSetting = () => {
                       fullWidth
                       disabled
                       autoComplete="password"
+                      style={{display: 'inline-block'}}
+                      onChange={handleChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <Button 
+                    id="pwdEditBtn"
+                    size="small"
+                    fullWidth
+                    className="m-0"
+                    variant="outlined"
+                    color="default"
+                    onClick={clickEditPassword}
+                    >
+                      비밀번호 수정
+                    </Button>
+                  </Grid>
+                  {isPasswordEdit == true 
+                  ? <>
+                  <Grid item xs={12}>
+                    <TextField
+                      id="newPassword"
+                      name="newpassword"
+                      label="NewPassword"
+                      fullWidth
+                      autoComplete="new-password"
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
-                      id="newpassword"
-                      name="newpassword"
-                      label="NewPassword"
+                      id="confirmNewPassword"
+                      name="Confirmpassword"
+                      label="ConfirmPassword"
                       fullWidth
-                      hidden
-                      autoComplete="new-password"
+                      autoComplete="confirm-new-password"
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  </>
+                  :
+                  null 
+                  }
+                  
+                  <Grid item xs={12}>
                     <TextField
                       required
                       id="name"
@@ -203,6 +273,7 @@ const AccountSetting = () => {
                       fullWidth
                       disabled
                       autoComplete="family-name"
+                      onChange={handleChange}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -213,17 +284,36 @@ const AccountSetting = () => {
                       value={member.geography}
                       fullWidth
                       autoComplete="geography"
+                      onChange={handleChange}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
+                    <FormControl className={classes.formControl} fullWidth>
+                    <InputLabel htmlFor="outlined-age-native-simple">Gender</InputLabel>
+                    <Select
+                      native
+                      value={member.gender}
+                      onChange={handleChange}
+                      label="Gender"
+                      inputProps={{
+                        name: 'gender',
+                        id: 'gender',
+                      }}
+                      validators={["required"]} errorMessages={["this field is required"]}
+                    >
+                      {gender_option.map((row, idx) => (
+                        <option value={row.value}>{row.label}</option>
+                      ))}
+                    </Select>
+                    </FormControl>
+                    {/* <TextField
                       id="gender"
                       name="gender"
                       label="Gender"
                       value={member.gender}
                       fullWidth
                       autoComplete="gender"
-                    />
+                    /> */}
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
@@ -233,17 +323,7 @@ const AccountSetting = () => {
                       value={member.age}
                       fullWidth
                       autoComplete="age"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      id="creditScore"
-                      name="creditScore"
-                      label="CreditScore"
-                      value={member.credit_score}
-                      fullWidth
-                      disabled
-                      autoComplete="CreditScore"
+                      onChange={handleChange}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -254,6 +334,7 @@ const AccountSetting = () => {
                       value={member.estimated_salary}
                       fullWidth
                       autoComplete="salary"
+                      onChange={handleChange}
                     />
                   </Grid>
                   {/* <Grid item xs={12}>
