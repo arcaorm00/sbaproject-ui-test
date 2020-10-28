@@ -202,7 +202,7 @@ const BasicForm = () => {
                 {row.title}
               </TableCell>
               <TableCell align="center" width="20%">{row.email}</TableCell>
-              <TableCell align="center" width="10%">{row.regdate}</TableCell>
+              <TableCell align="center" width="10%">{row.regdate.slice(0, 16)}</TableCell>
             </TableRow>
           ))}
 

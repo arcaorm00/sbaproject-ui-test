@@ -62,7 +62,13 @@ const DetailForm = () => {
   const classes = useStyles()
   const history = useHistory()
 
-  const [article, setArticle] = useState()
+  const [article, setArticle] = useState({
+    id: 0,
+    email: '',
+    article_type: '',
+    title: '',
+    content: ''
+  })
   const [commentList, setCommentList] = useState([])
 
   useEffect(() => {
@@ -71,6 +77,9 @@ const DetailForm = () => {
     .then(res => {
       setArticle(res.data[0])
       console.log(article)
+      if(document.getElementById('contentDiv') !== null){
+        document.getElementById('contentDiv').innerHTML = article.content
+      }
     })
     .catch(e => {
       throw(e)
@@ -221,8 +230,8 @@ const DetailForm = () => {
         <TableBody>
           <tr>
             <td colspan="4" height="500px">
-              <div className={classes.contents_padding}>
-                { article !== undefined? article.content: '' }
+              <div id='contentDiv' className={classes.contents_padding}>
+                {/* { article !== undefined? article.content: '' } */}
               </div>
             </td>
           </tr>

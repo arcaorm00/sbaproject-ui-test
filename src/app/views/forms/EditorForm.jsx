@@ -58,6 +58,7 @@ const EditorForm = () => {
     axios.post(`http://localhost:8080/api/board/${id}`, data)
     .then(res => {
       alert(res)
+      history.push('/forms/basic')
     })
     .catch(e => {
       throw(e)
