@@ -28,14 +28,11 @@ const styles = theme => ({
   }
 });
 
-const Layout1Topbar = props => {
-  
-  const state = {};
+class Layout1Topbar extends Component {
+  state = {};
 
-  const history = useHistory()
-
-  const updateSidebarMode = sidebarSettings => {
-    let { settings, setLayoutSettings } = sidebarSettings;
+  updateSidebarMode = sidebarSettings => {
+    let { settings, setLayoutSettings } = this.props;
 
     setLayoutSettings({
       ...settings,
@@ -49,8 +46,8 @@ const Layout1Topbar = props => {
     });
   };
 
-  const handleSidebarToggle = () => {
-    let { settings } = props;
+  handleSidebarToggle = () => {
+    let { settings } = this.props;
     let { layout1Settings } = settings;
 
     let mode;
@@ -59,16 +56,17 @@ const Layout1Topbar = props => {
     } else {
       mode = layout1Settings.leftSidebar.mode === "full" ? "close" : "full";
     }
-    updateSidebarMode({ mode });
+    this.updateSidebarMode({ mode });
   };
 
-  const handleSignOut = () => {
+
+  handleSignOut = () => {
     sessionStorage.removeItem("sessionMember")
     window.location.reload()
-    props.logoutUser();
+    this.props.logoutUser();
   };
-
-    let { theme, settings, className, style } = props;
+  render() {
+    let { theme, settings, className, style } = this.props;
     const topbarTheme =
       settings.themes[settings.layout1Settings.topbar.theme] || theme;
     return (
@@ -80,7 +78,7 @@ const Layout1Topbar = props => {
           >
             <div className="flex flex-space-between flex-middle h-100">
               <div className="flex">
-                <IconButton onClick={handleSidebarToggle} className="hide-on-lg">
+                <IconButton onClick={this.handleSidebarToggle} className="hide-on-lg">
                   <Icon>menu</Icon>
                 </IconButton>
 
@@ -106,7 +104,7 @@ const Layout1Topbar = props => {
 
                 <NotificationBar />
 
-                {props.isAuth == 'admin@stockpsychic.com'
+                {this.props.isAuth == 'admin@stockpsychic.com'
                 ?
                 <EnterAdmin></EnterAdmin>
                 :
@@ -114,7 +112,7 @@ const Layout1Topbar = props => {
                 }
                 
 
-                {props.isAuth !== null
+                {this.props.isAuth !== null
                 ?
                 <MatxMenu
                   menuButton={
@@ -153,7 +151,7 @@ const Layout1Topbar = props => {
                     </Link>
                   </MenuItem>
                   <MenuItem
-                    onClick={handleSignOut}
+                    onClick={this.handleSignOut}
                     className="flex flex-middle"
                     style={{ minWidth: 185 }}
                   >
@@ -201,6 +199,7 @@ const Layout1Topbar = props => {
         </div>
       </MuiThemeProvider>
     );
+  }
 }
 
 Layout1Topbar.propTypes = {

@@ -157,13 +157,13 @@ const AccountSetting = () => {
       </div>
 
       <CssBaseline />
-      <AppBar position="absolute" color="default" className={classes.appBar}>
+      {/* <AppBar color="default" className={classes.appBar}>
         <Toolbar >
           <Typography variant="h6" color="inherit" noWrap>
             {member.name} 회원님 환영합니다.
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <main className={classes.layout}>
         <Paper className={classes.paper}>
           <Typography component="h1" variant="h4" align="center">
