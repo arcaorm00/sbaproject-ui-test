@@ -69,10 +69,19 @@ const AccountSetting = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isPasswordEdit, setIsPasswordEdit] = useState(false)
 
-  const handleNext = () => {
+  const updateBtn = () => {
     let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
     if (re){
-      setActiveStep(activeStep + 1);
+      axios.post('http://localhost:8080/api/auth', member)
+      .then( res => {
+        console.log(res.data)
+        setActiveStep(activeStep + 1);
+      })
+      .catch(e => {
+        throw(e)
+      })
+
+      
     }    
   };
 
@@ -103,15 +112,14 @@ const AccountSetting = () => {
   const [confirmPwd, setConfirmPwd] = useState('')
 
   const gender_option = [
-    {
-      label: "Etc.", velue: "Etc."
-    },
-    {
-      label: "Male", velue: "Male"
-    },
-    {
-      label: "Female", velue: "Female"
-    },
+    { label: "Etc.", velue: "Etc." },
+    { label: "Male", velue: "Male" },
+    { label: "Female", velue: "Female" },
+  ]
+  const geography_option = [
+    { label: "France", velue: "France" },
+    { label: "Germany", velue: "Germany" },
+    { label: "Spain", velue: "Spain" },
   ]
 
   useEffect(() => {
@@ -147,13 +155,13 @@ const AccountSetting = () => {
   return (
     <React.Fragment>
       <div className="m-sm-30">
-          <div  className="mb-sm-30">
-            <Breadcrumb
-              routeSegments={[
-                { name: "계정 관리" }
-              ]}
-            />
-          </div>
+        <div  className="mb-sm-30">
+        <Breadcrumb
+          routeSegments={[
+            { name: "계정 관리" }
+          ]}
+        /> 
+        </div>
       </div>
 
       <CssBaseline />
@@ -277,15 +285,24 @@ const AccountSetting = () => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      id="geography"
-                      name="geography"
-                      label="Geography"
+                  <FormControl className={classes.formControl} fullWidth>
+                    <InputLabel htmlFor="outlined-geography-native-simple">Geography</InputLabel>
+                    <Select
+                      native
                       value={member.geography}
-                      fullWidth
-                      autoComplete="geography"
                       onChange={handleChange}
-                    />
+                      label="Geography"
+                      inputProps={{
+                        name: 'geography',
+                        id: 'geography',
+                      }}
+                      validators={["required"]} errorMessages={["this field is required"]}
+                    >
+                      {geography_option.map((row, idx) => (
+                        <option value={row.value}>{row.label}</option>
+                      ))}
+                    </Select>
+                  </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <FormControl className={classes.formControl} fullWidth>
@@ -320,6 +337,7 @@ const AccountSetting = () => {
                       id="age"
                       name="age"
                       label="Age"
+                      type="number"
                       value={member.age}
                       fullWidth
                       autoComplete="age"
@@ -328,9 +346,11 @@ const AccountSetting = () => {
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      id="salary"
-                      name="salary"
+                      id="estimated_salary"
+                      name="estimated_salary"
                       label="Salary"
+                      type="number" 
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                       value={member.estimated_salary}
                       fullWidth
                       autoComplete="salary"
@@ -354,7 +374,7 @@ const AccountSetting = () => {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleNext}
+                    onClick={updateBtn}
                     className={classes.button}
                   >
                     {activeStep === steps.length - 1 ? '저장' : '저장'}
