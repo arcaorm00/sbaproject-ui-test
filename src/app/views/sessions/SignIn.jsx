@@ -48,8 +48,8 @@ const SignIn = (props) => {
       alert(`Welcome! ${res.data["name"]}`)
       sessionStorage.setItem("sessionMember", res.data['email'])
       
-      window.location.reload()
       history.push("/")
+      window.location.reload()    
     })
     .catch(err => {
       alert(`Please check your ID or password!`)

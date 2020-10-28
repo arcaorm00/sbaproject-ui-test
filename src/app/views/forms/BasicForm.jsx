@@ -108,6 +108,7 @@ const BasicForm = () => {
 
   const classes = useStyles()
   const history = useHistory()
+  const sessionMember = sessionStorage.getItem('sessionMember')
 
   const [data, setData] = useState([])
 
@@ -148,15 +149,20 @@ const BasicForm = () => {
       />
     </div>
     <div style={{display: 'inline-block', float: 'right', margin: '0px 30px 0px 0px'}}>
-      <Button
-          className="capitalize mr-10"
-          variant="contained"
-          color="secondary"
-          type="submit"
-          onClick={() => {history.push('/forms/editor')}}
-      >
-        글 작성
-      </Button>
+      {sessionMember == 'admin@stockpsychic.com' ? 
+        <Button
+        className="capitalize mr-10"
+        variant="contained"
+        color="secondary"
+        type="submit"
+        onClick={() => {history.push('/forms/editor')}}
+        >
+          글 작성
+        </Button>
+      : 
+      null
+      }
+      
     </div>
     {/* <SimpleForm /> */}
     <TableContainer className={classes.container} component={Paper}>

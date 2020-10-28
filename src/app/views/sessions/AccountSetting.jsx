@@ -22,6 +22,7 @@ import Button from '@material-ui/core/Button'
 import Link from '@material-ui/core/Link'
 
 import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -69,27 +70,8 @@ const AccountSetting = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isPasswordEdit, setIsPasswordEdit] = useState(false)
 
-  const updateBtn = () => {
-    let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
-    if (re){
-      axios.post('http://localhost:8080/api/auth', member)
-      .then( res => {
-        console.log(res.data)
-        setActiveStep(activeStep + 1);
-      })
-      .catch(e => {
-        throw(e)
-      })
-
-      
-    }    
-  };
-
-  const handleBack = () => {
-    setActiveStep(activeStep - 1);
-  };
-
   const sessionMember = sessionStorage.getItem("sessionMember")
+  const history = useHistory()
 
   const [member, setMemberInfo] = useState({
     email: '',
@@ -111,6 +93,26 @@ const AccountSetting = () => {
   const [newPwd, setNewPwd] = useState('')
   const [confirmPwd, setConfirmPwd] = useState('')
 
+  const updateBtn = () => {
+    let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
+    if (re){
+      axios.put(`http://localhost:8080/api/member/${sessionMember}`, member)
+      .then( res => {
+        console.log(res.data)
+        setActiveStep(activeStep + 1);
+      })
+      .catch(e => {
+        throw(e)
+      })
+
+      
+    }    
+  };
+
+  const handleBack = () => {
+    setActiveStep(activeStep - 1);
+  };
+
   const gender_option = [
     { label: "Etc.", velue: "Etc." },
     { label: "Male", velue: "Male" },
@@ -123,12 +125,15 @@ const AccountSetting = () => {
   ]
 
   useEffect(() => {
+    if (sessionMember == null){
+      alert('로그인 후 이용 가능한 서비스입니다.')
+      history.push('/session/signin')
+    }
     axios.get(`http://localhost:8080/api/member/${sessionMember}`)
     .then( res => {
       setMemberInfo(res.data[0])
     })
     .catch( e => {
-      alert('BYE')
       throw e
     })
   }, [])
@@ -191,6 +196,7 @@ const AccountSetting = () => {
                 <Typography variant="h5" gutterBottom>
                   회원님의 정보가 수정되었습니다.
                 </Typography>
+                <br/>
                 <Typography variant="subtitle1">
                   입력하신 내용대로 수정이 반영되었습니다.<br/>
                   항상 함께 해주셔서 감사합니다.
