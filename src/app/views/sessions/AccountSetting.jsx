@@ -104,14 +104,28 @@ const AccountSetting = () => {
       .catch(e => {
         throw(e)
       })
-
-      
     }    
-  };
+  }
+
+  const clickWithdrawBtn = () => {
+    let re = window.confirm('회원 탈퇴를 요청하셨습니다.\n이후 같은 계정으로 회원가입 및 로그인이 불가능합니다.\n정말로 탈퇴하시겠습니까?');
+    if (re){
+      axios.delete(`http://localhost:8080/api/member/${sessionMember}`, member)
+      .then( res => {
+        console.log(res.data)
+        sessionStorage.removeItem('sessionMember')
+        alert('탈퇴 처리 되었습니다. 이용해주셔서 감사합니다.')
+        history.push('/')
+      })
+      .catch(e => {
+        throw(e)
+      })
+    }    
+  }
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
-  };
+  }
 
   const gender_option = [
     { label: "Etc.", velue: "Etc." },
@@ -134,7 +148,7 @@ const AccountSetting = () => {
       setMemberInfo(res.data[0])
     })
     .catch( e => {
-      throw e
+      throw(e)
     })
   }, [])
   
@@ -386,7 +400,7 @@ const AccountSetting = () => {
                     {activeStep === steps.length - 1 ? '저장' : '저장'}
                   </Button>
                 </div>
-                <Button className="border-radius-4 bg-light-error text-white px-8 py-2">탈퇴하기</Button>
+                <Button className="border-radius-4 bg-light-error text-white px-8 py-2" onClick={clickWithdrawBtn}>탈퇴하기</Button>
               </React.Fragment>
             )}
           </React.Fragment>

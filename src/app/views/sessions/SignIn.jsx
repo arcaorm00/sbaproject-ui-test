@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import {
   Card,
   Checkbox,
@@ -12,6 +12,7 @@ import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { withRouter, useHistory } from "react-router-dom";
+import { context as c } from '../../../context'
 import axios from 'axios'
 
 import { loginWithEmailAndPassword } from "../../redux/actions/LoginActions";
@@ -39,6 +40,26 @@ const SignIn = (props) => {
   const [agreement, setAgreement] = useState('')
 
   const history = useHistory()
+
+  const login = useCallback(async e =>{
+    e.preventDefault()
+    alert(`${email}, ${password}`)
+    try{
+      const req = {
+        method: c.post,
+        url: `${c.url}/api/access`,
+        data: {email, password},
+        auth: c.auth
+      }
+      const res = await axios(req)
+      alert(`Welcome! ${res.data["name"]}`)
+      sessionStorage.setItem("sessionMember", res.data['email'])
+      history.push("/") 
+    }catch (error){
+      alert(`Please check your ID or password!`)
+      window.location.reload()
+    }
+  }, [])
 
   const handleFormSubmit = event => {
     event.preventDefault()

@@ -1,4 +1,4 @@
-import React, { Component, useState, useRef } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import {
   Card,
   Checkbox,
@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { connect } from "react-redux";
 import { Link, useHistory } from 'react-router-dom'
+import { context as c } from '../../../context'
 import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
@@ -208,6 +209,38 @@ const SignUp = () => {
     console.log(form)
   };
 
+  const submitBulk = useCallback(async e =>{
+    e.preventDefault()
+    const data = {email: form.email, 
+      password: form.password, 
+      name: form.name, 
+      geography: form.geography, 
+      gender: form.gender, 
+      age: form.age,
+      profile: 'noimage.png',
+      tenure: 0,
+      stock_qty: 0,
+      balance: 0,
+      has_credit: 0,
+      credit_score: 0,
+      is_active_member: 1,
+      estimated_salary: 0,
+      role: 'ROLE_USER',
+      probability_churn: -1,
+      exited: 0
+    }
+    try{
+      const req = {
+        method: c.get,
+        url: `${c.url}/api/auth`,
+        data: data
+      }
+      const res = await axios(req)
+    } catch (error){
+
+    }
+  }, [])
+
   const handleFormSubmit = e => {
     e.preventDefault()
     alert(form.agreement)
@@ -226,11 +259,14 @@ const SignUp = () => {
       credit_score: 0,
       is_active_member: 1,
       estimated_salary: 0,
-      role: 'ROLE_USER'
+      role: 'ROLE_USER',
+      probability_churn: -1,
+      exited: 0
     }
     )
     .then( res => {
       // alert(res.data)
+      alert('WELCOME!')
       history.push('/session/signin')
     }).catch( e => {
       alert('회원가입 실패')
@@ -276,7 +312,7 @@ const SignUp = () => {
             </Grid>
             <Grid item lg={7} md={7} sm={7} xs={12}>
               <div className="p-36 h-100">
-                <ValidatorForm ref={refForm} onSubmit={handleFormSubmit}>
+                <ValidatorForm ref={refForm} onSubmit={submitBulk}>
                   <TextValidator
                     className="mb-24 w-100"
                     variant="outlined"

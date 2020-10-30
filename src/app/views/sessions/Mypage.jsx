@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState, useEffect } from "react"
+import React, { useCallback, Fragment, useState, useEffect } from "react"
 import { useHistory } from 'react-router-dom'
 import {
   Grid,
@@ -16,6 +16,7 @@ import UpgradeCard from "./shared/UpgradeCard"
 import Campaigns from "./shared/Campaigns"
 import { withStyles } from "@material-ui/styles"
 
+import { context as c } from '../../../context'
 import axios from 'axios'
 
 const Mypage =(props)=> {
