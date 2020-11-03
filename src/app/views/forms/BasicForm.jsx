@@ -26,6 +26,8 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import { Link, useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { boardActions } from '../../redux/actions/boardAction'
 
 
 const useStyles = makeStyles({
@@ -110,19 +112,21 @@ const BasicForm = () => {
 
   const classes = useStyles()
   const history = useHistory()
+  const dispatch = useDispatch()
   const sessionMember = sessionStorage.getItem('sessionMember')
 
   const [data, setData] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/boards')
-    .then( res => {
-      setData(res.data)
-    })
-    .catch( err => {
-      alert('list Fail')
-      throw(err)
-    })
+    dispatch(boardActions.getAllArticles())
+    // axios.get('http://localhost:8080/api/boards')
+    // .then( res => {
+    //   setData(res.data)
+    // })
+    // .catch( err => {
+    //   alert('list Fail')
+    //   throw(err)
+    // })
   }, [])
 
   // 페이징
