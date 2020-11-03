@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useCallback, useState, useEffect } from "react";
 import {
   Card,
   Icon,
@@ -10,7 +10,31 @@ import {
   TableBody
 } from "@material-ui/core";
 
+import { context as c } from '../../../../context'
+import axios from 'axios'
+
 const TableCard = () => {
+
+  const [tradeStock, setTradeStock] = useState([])
+  const sessionMember = sessionStorage.getItem("sessionMember")
+
+  useEffect(() => { getTrading() }, [])
+
+  const getTrading = useCallback(async e => {
+    try{
+      const req = {
+        method: c.get,
+        url: `${c.url}/api/tradings/${sessionMember}`,
+      }
+      const res = await axios(req)
+      console.log(res.data)
+      setTradeStock(res.data)
+    }catch (err){
+      alert('FAIL')
+      throw(err)
+    }
+  }, [])
+
   const productList = [
     {
       name: "temp",
@@ -58,16 +82,16 @@ const TableCard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productList.map((product, index) => (
+            {tradeStock.map((product, index) => (
               <TableRow key={index}>
                 <TableCell className="px-0" colSpan={4}>
                   <IconButton>
-                    {product.name}
+                    <h4>{product.stock_ticker}</h4>
                   </IconButton>
                 </TableCell>
 
                 <TableCell className="px-0" align="left" colSpan={2}>
-                  {product.available ? (
+                  {/* {product.available ? (
                     product.available < 20 ? (
                       <small className="border-radius-4 bg-secondary text-white px-8 py-2 ">
                         {product.available} available
@@ -81,7 +105,8 @@ const TableCard = () => {
                     <small className="border-radius-4 bg-error text-white px-8 py-2 ">
                       out of stock
                     </small>
-                  )}
+                  )} */}
+                  {product.stock_qty} 주
                 </TableCell>
                 
                 <TableCell className="px-0 capitalize" align="left" colSpan={2}>

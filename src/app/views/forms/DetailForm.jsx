@@ -62,6 +62,7 @@ const DetailForm = () => {
 
   const classes = useStyles()
   const history = useHistory()
+  const id = window.location.href.split("/").reverse()[0]
 
   const [article, setArticle] = useState({
     id: 0,
@@ -73,27 +74,39 @@ const DetailForm = () => {
   const [commentList, setCommentList] = useState([])
 
   useEffect(() => {
-    const id = window.location.href.split("/").reverse()[0]
-    axios.get(`http://localhost:8080/api/board/${id}`)
-    .then(res => {
+    getArticle()
+    getComments()
+  })
+
+  const getArticle = useCallback(async e => {
+    try{
+      const req = {
+        method: c.get,
+        url: `${c.url}/api/board/${id}`,
+      }
+      const res = await axios(req)
       setArticle(res.data[0])
       console.log(article)
       if(document.getElementById('contentDiv') !== null){
         document.getElementById('contentDiv').innerHTML = article.content
       }
-    })
-    .catch(e => {
-      throw(e)
-    })
+    }catch (err){
+      throw(err)
+    }    
+  })
 
-    axios.get(`http://localhost:8080/api/comments/${id}`)
-    .then(res => {
+  const getComments = useCallback(async e => {
+    try{
+      const req = {
+        method: c.get,
+        url: `${c.url}/api/comments/${id}`,
+      }
+      const res = await axios(req)
       setCommentList(res.data)
       console.log(commentList)
-    })
-    .catch(e => {
-      throw(e)
-    })
+    }catch (err){
+      throw(err)
+    }
   })
 
 
@@ -102,9 +115,23 @@ const DetailForm = () => {
 
   }
 
-  const clickDelete = () => {
-
-  }
+  const clickDelete = useCallback(async e => {
+    let re = window.confirm('게시물을 삭제하시겠습니까?')
+    if (re){
+      try{
+        const req = {
+          method: c.delete,
+          url: `${c.url}/api/board/${id}`
+        }
+        const res = await axios(req)
+        alert('삭제완료')
+        history.push('/forms/basic')
+      }catch (err){
+        alert('Delete Fail')
+        throw(err)
+      }
+    } 
+  })
 
   // comment
 

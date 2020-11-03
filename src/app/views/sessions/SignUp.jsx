@@ -209,7 +209,7 @@ const SignUp = () => {
     console.log(form)
   };
 
-  const submitBulk = useCallback(async e =>{
+  const saveMember = useCallback(async e =>{
     e.preventDefault()
     const data = {email: form.email, 
       password: form.password, 
@@ -231,9 +231,10 @@ const SignUp = () => {
     }
     try{
       const req = {
-        method: c.get,
+        method: c.post,
         url: `${c.url}/api/auth`,
-        data: data
+        data: data,
+        auth: c.auth
       }
       const res = await axios(req)
     } catch (error){
@@ -243,7 +244,6 @@ const SignUp = () => {
 
   const handleFormSubmit = e => {
     e.preventDefault()
-    alert(form.agreement)
     axios.post('http://localhost:8080/api/auth', 
     {email: form.email, 
       password: form.password, 
@@ -275,26 +275,14 @@ const SignUp = () => {
   };
 
   const gender_option = [
-    {
-      label: "Etc.", velue: "Etc"
-    },
-    {
-      label: "Male", velue: "Male"
-    },
-    {
-      label: "Female", velue: "Female"
-    },
+    { label: "Etc.", velue: "Etc" },
+    { label: "Male", velue: "Male" },
+    { label: "Female", velue: "Female" },
   ]
   const geography_option = [
-    {
-      label: "France", velue: "France"
-    },
-    {
-      label: "Germany", velue: "Germany"
-    },
-    {
-      label: "Spain", velue: "Spain"
-    },
+    { label: "France", velue: "France" },
+    { label: "Germany", velue: "Germany" },
+    { label: "Spain", velue: "Spain" },
   ]
 
   return (
@@ -312,7 +300,7 @@ const SignUp = () => {
             </Grid>
             <Grid item lg={7} md={7} sm={7} xs={12}>
               <div className="p-36 h-100">
-                <ValidatorForm ref={refForm} onSubmit={submitBulk}>
+                <ValidatorForm ref={refForm} onSubmit={handleFormSubmit}>
                   <TextValidator
                     className="mb-24 w-100"
                     variant="outlined"
@@ -320,7 +308,7 @@ const SignUp = () => {
                     onChange={handleChange}
                     type="text"
                     name="name"
-                    value={form.name||''}
+                    value={form.name}
                     validators={["required"]}
                     errorMessages={["this field is required"]}
                   />
@@ -331,7 +319,7 @@ const SignUp = () => {
                     onChange={handleChange}
                     type="email"
                     name="email"
-                    value={form.email||''}
+                    value={form.email}
                     validators={["required", "isEmail"]}
                     errorMessages={[
                       "this field is required",
@@ -345,7 +333,7 @@ const SignUp = () => {
                     onChange={handleChange}
                     name="password"
                     type="password"
-                    value={form.password||''}
+                    value={form.password}
                     validators={["required"]}
                     errorMessages={["this field is required"]}
                   />

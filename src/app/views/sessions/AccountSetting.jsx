@@ -88,7 +88,9 @@ const AccountSetting = () => {
     credit_score: 0, 
     is_active_member: 1, 
     estimated_salary: 0.0, 
-    role: ''
+    role: '',
+    probability_churn: 0.0,
+    exited: 0
   })
   const [newPwd, setNewPwd] = useState('')
   const [confirmPwd, setConfirmPwd] = useState('')
@@ -110,7 +112,9 @@ const AccountSetting = () => {
   const clickWithdrawBtn = () => {
     let re = window.confirm('회원 탈퇴를 요청하셨습니다.\n이후 같은 계정으로 회원가입 및 로그인이 불가능합니다.\n정말로 탈퇴하시겠습니까?');
     if (re){
-      axios.delete(`http://localhost:8080/api/member/${sessionMember}`, member)
+      member.exited = 1
+      console.log(member)
+      axios.put(`http://localhost:8080/api/member/${sessionMember}`, member)
       .then( res => {
         console.log(res.data)
         sessionStorage.removeItem('sessionMember')
@@ -142,14 +146,15 @@ const AccountSetting = () => {
     if (sessionMember == null){
       alert('로그인 후 이용 가능한 서비스입니다.')
       history.push('/session/signin')
+    }else{
+      axios.get(`http://localhost:8080/api/member/${sessionMember}`)
+      .then( res => {
+        setMemberInfo(res.data[0])
+      })
+      .catch( e => {
+        throw(e)
+      })
     }
-    axios.get(`http://localhost:8080/api/member/${sessionMember}`)
-    .then( res => {
-      setMemberInfo(res.data[0])
-    })
-    .catch( e => {
-      throw(e)
-    })
   }, [])
   
   const clickEditPassword = () => {

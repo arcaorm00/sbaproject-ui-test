@@ -43,15 +43,22 @@ const Mypage =(props)=> {
   })
 
   useEffect(()=> {
-    axios.get(`http://localhost:8080/api/member/${sessionMember}`)
-    .then( res => {
-      setMemberInfo(res.data[0])
-    })
-    .catch( e => {
-      alert('BYE')
-      throw e
-    })
-  })
+    if (sessionMember == null){
+      alert('로그인 후 이용 가능한 서비스입니다.')
+      history.push('/session/signin')
+    }else{
+      axios.get(`http://localhost:8080/api/member/${sessionMember}`)
+      .then( res => {
+        setMemberInfo(res.data[0])
+      })
+      .catch( e => {
+        throw e
+      })
+    }
+  }, [])
+
+  
+
 
   return (
     <>

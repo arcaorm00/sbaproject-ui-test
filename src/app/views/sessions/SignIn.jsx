@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
   Card,
   Checkbox,
@@ -9,7 +9,7 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { PropTypes } from "prop-types";
 import { withRouter, useHistory } from "react-router-dom";
 import { context as c } from '../../../context'
@@ -34,12 +34,19 @@ const styles = theme => ({
 const SignIn = (props) => {
 
   const refForm = useRef();
+  const sessionMember = sessionStorage.getItem('sessionMember')
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [agreement, setAgreement] = useState('')
 
+  const dispatch = useDispatch()
   const history = useHistory()
+
+  useEffect(() => {
+    if (sessionMember != null){ history.push('/')}
+  })
+
 
   const login = useCallback(async e =>{
     e.preventDefault()
@@ -54,26 +61,35 @@ const SignIn = (props) => {
       const res = await axios(req)
       alert(`Welcome! ${res.data["name"]}`)
       sessionStorage.setItem("sessionMember", res.data['email'])
-      history.push("/") 
+      window.location.reload()
+      history.push("/")
     }catch (error){
       alert(`Please check your ID or password!`)
-      window.location.reload()
     }
   }, [])
+
+
+  // const login = e => {
+  //   e.preventDefault()
+  //   dispatch(loginWithEmailAndPassword({email, password}))
+  // }
 
   const handleFormSubmit = event => {
     event.preventDefault()
     alert(`${email}, ${password}`)
     axios.post(`http://localhost:8080/api/access`, {email, password})
     .then(res => {
-      alert(`Welcome! ${res.data["name"]}`)
-      sessionStorage.setItem("sessionMember", res.data['email'])
-      
-      history.push("/") 
+      if (res.data == 500){
+        alert('Please check your ID or password!')
+      }else{
+        alert(`Welcome! ${res.data["name"]}`)
+        sessionStorage.setItem("sessionMember", res.data['email'])
+        history.push("/") 
+        window.location.reload()
+      }
     })
     .catch(err => {
       alert(`Please check your ID or password!`)
-      window.location.reload()
     })
   };
 

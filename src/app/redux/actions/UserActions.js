@@ -18,12 +18,12 @@ export function logoutUser() {
   return dispatch => {
     jwtAuthService.logout();
 
-    history.push({
-      pathname: "/session/signin"
-    });
-
     dispatch({
       type: USER_LOGGED_OUT
+    });
+
+    history.push({
+      pathname: "/session/signin"
     });
   };
 }

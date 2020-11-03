@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Breadcrumb } from "matx"
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -36,21 +36,7 @@ const createData = (email, name, stock_qty, is_activate_member, exit) => {
 }
 
 
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-];
+const rows = [];
 
  const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
@@ -83,7 +69,7 @@ const headCells = [
   { id: 'name', numeric: true, disablePadding: false, label: '이름' },
   { id: 'stock_qty', numeric: true, disablePadding: false, label: '보유주식 수' },
   { id: 'is_activate_member', numeric: true, disablePadding: false, label: '활성 여부' },
-  { id: 'exit', numeric: true, disablePadding: false, label: '이탈 확률' },
+  { id: 'probability_churn', numeric: true, disablePadding: false, label: '이탈 확률' },
 ];
 
 const EnhancedTableHead = (props) => {
@@ -238,12 +224,33 @@ const useStyles = makeStyles((theme) => ({
 
 const Admin = () => {
   const classes = useStyles();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('exit');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('exit');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [data, setData] = useState([])
+  const history = useHistory()
+
+
+  useEffect(() => {
+    if (session == 'admin@stockpsychic.com'){
+      axios.get(`http://localhost:8080/api/highchurnmembers`)
+      .then(res => {
+        setData(res.data)
+      })
+      .catch(e => {
+        alert('list Fail')
+        throw(e)
+      })
+    }else{
+      alert('접근 권한이 없습니다.')
+      history.push('/')
+    }
+      
+  }, [])
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -253,7 +260,7 @@ const Admin = () => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = data.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -295,7 +302,7 @@ const Admin = () => {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   return (
     <div className="m-sm-30">
@@ -323,10 +330,10 @@ const Admin = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={data.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(data, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -353,8 +360,8 @@ const Admin = () => {
                       </TableCell>
                       <TableCell align="right">{row.name}</TableCell>
                       <TableCell align="right">{row.stock_qty}</TableCell>
-                      <TableCell align="right">{row.is_activate_member}</TableCell>
-                      <TableCell align="right">{row.exit}</TableCell>
+                      <TableCell align="right">{row.is_active_member}</TableCell>
+                      <TableCell align="right">{row.probability_churn.toFixed(4)}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -369,7 +376,7 @@ const Admin = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10]}
           component="div"
-          count={rows.length}
+          count={data.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
@@ -512,20 +519,27 @@ const MemberList = () => {
 
   useEffect(() => {
     if (session == 'admin@stockpsychic.com'){
-      axios.get(`http://localhost:8080/api/members`)
-      .then(res => {
-        setData(res.data)
-      })
-      .catch(e => {
-        alert('list Fail')
-        throw(e)
-      })
+      getMembers()
     }else{
       alert('접근 권한이 없습니다.')
       history.push('/')
     }
       
   }, [])
+
+  const getMembers = useCallback(async e => {
+    try{
+      const req = {
+        method: c.get,
+        url: `${c.url}/api/members`
+      }
+      const res = await axios(req)
+      setData(res.data)
+    }catch (err) {
+      alert('FAIL')
+      throw(err)
+    }
+  })
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
