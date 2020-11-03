@@ -111,9 +111,19 @@ const DetailForm = () => {
 
 
   // board
-  const clickUpdate = () => {
-
-  }
+  const clickUpdate = useCallback(async e => {
+    try{
+      const req = {
+        method: c.get,
+        url: `${c.url}/api/board/${id}`
+      }
+      alert('수정~')
+      const res = await axios(req)
+      history.push({pathname: '/forms/editor', state: {detail: res.data[0]}})
+    }catch (err){
+      throw(err)
+    }
+  }, [])
 
   const clickDelete = useCallback(async e => {
     let re = window.confirm('게시물을 삭제하시겠습니까?')
@@ -124,14 +134,14 @@ const DetailForm = () => {
           url: `${c.url}/api/board/${id}`
         }
         const res = await axios(req)
-        alert('삭제완료')
+        alert('삭제되었습니다.')
         history.push('/forms/basic')
       }catch (err){
         alert('Delete Fail')
         throw(err)
       }
     } 
-  })
+  }, [])
 
   // comment
 

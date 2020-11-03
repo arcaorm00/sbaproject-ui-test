@@ -12,12 +12,16 @@ const EditorForm = () => {
   const history = useHistory()
   const [title, setTitle] = useState()
   const [bodycontent, setBodyContent] = useState()
+  const [updateArticle, setUpdateArticle] = useState({id: 0, email: '', article_type: '', title: '', content: '', regdate: ''})
 
   useEffect(() => {
     if (session !== 'admin@stockpsychic.com'){
       history.push('/')
     }
-  })
+    if (history.location['state']){
+      setUpdateArticle(history.location['state']['detail'])
+    }
+  }, [])
 
   let today = new Date()
 
@@ -66,6 +70,10 @@ const EditorForm = () => {
     })
   }
 
+  const clickUpdate = useCallback(async e => {
+    alert('수정!')
+  })
+
   // const contentChange = (e) => {
   //   e.preventDefault(e.target)
   //   console.log(e.target.value)
@@ -74,12 +82,22 @@ const EditorForm = () => {
   return (
     <div className="m-sm-30">
     <div  className="mb-sm-30">
-      <Breadcrumb
+    { updateArticle.id == 0
+    ?
+      <Breadcrumb        
         routeSegments={[
           { name: "게시판", path: "/forms/basic" },
           { name: "글작성" }
         ]}
       />
+      :
+      <Breadcrumb        
+        routeSegments={[
+          { name: "게시판", path: "/forms/basic" },
+          { name: "글수정" }
+        ]}
+      />
+    }
     </div>
     <TextField
         id="title"
@@ -96,6 +114,8 @@ const EditorForm = () => {
       placeholder="insert text here..."
     />
     <br/>
+    { updateArticle.id == 0
+    ?
     <Button
       className="capitalize mr-10"
       variant="contained"
@@ -105,6 +125,18 @@ const EditorForm = () => {
     >
       등록
     </Button>
+    :
+    <Button
+      className="capitalize mr-10"
+      variant="contained"
+      color="primary"
+      type="submit"
+      onClick={clickUpdate}
+    >
+      수정
+    </Button>
+    }
+    
     <Button
       className="capitalize"
       variant="contained"
