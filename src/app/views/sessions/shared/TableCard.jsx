@@ -81,7 +81,17 @@ const TableCard = () => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          {tradeStock.length < 1
+            ?
+            <TableBody>
+              <TableRow>
+                <TableCell className="px-0" align="center" colSpan={8}>
+                  <h5 className="text-muted mt-40 mb-40">아직 투자 중인 종목이 없습니다.</h5>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+            :
+            <TableBody>
             {tradeStock.map((product, index) => (
               <TableRow key={index}>
                 <TableCell className="px-0" colSpan={4}>
@@ -118,6 +128,7 @@ const TableCard = () => {
               </TableRow>
             ))}
           </TableBody>
+          }
         </Table>
       </div>
     </Card>

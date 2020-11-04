@@ -24,6 +24,12 @@ export const boardConstants = {
     DELETE_FAILURE: 'BOARD_DELETE_FAILURE',
 }
 
+// export const getAllSuccess = createAction(boardConstants.GETALL_SUCCESS)
+
+// const boardReducer = handleActions(
+//     {[boardConstants.GETALL_SUCCESS]: (state, action) => ({board: action.board})}
+// )
+
 export const boardActions = {
     getAllArticles,
     // getArticle,
@@ -46,3 +52,5 @@ function getAllArticles() {
     function success(boards) {return {type: boardConstants.GETALL_SUCCESS, boards}}
     function failure(error) {return {type: boardConstants.GETALL_FAILURE, error}}
 }
+
+// export default boardReducer

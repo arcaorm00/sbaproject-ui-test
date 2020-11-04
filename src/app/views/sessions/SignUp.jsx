@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 import {
   Card,
   Checkbox,
@@ -197,8 +197,14 @@ const SignUp = () => {
     age: ''
   })
   const [agreement, setAgreement] = useState(0)
+  const [isAlready, setIsAlready] = useState(false)
 
   const history = useHistory()
+
+  const sessionMember = sessionStorage.getItem('sessionMember')
+  useEffect(() => {
+    if (sessionMember != null){ history.push('/')}
+  })
 
   const handleChange = e => {
     e.persist();
@@ -209,70 +215,69 @@ const SignUp = () => {
     console.log(form)
   };
 
-  const saveMember = useCallback(async e =>{
-    e.preventDefault()
-    const data = {email: form.email, 
-      password: form.password, 
-      name: form.name, 
-      geography: form.geography, 
-      gender: form.gender, 
-      age: form.age,
-      profile: 'noimage.png',
-      tenure: 0,
-      stock_qty: 0,
-      balance: 0,
-      has_credit: 0,
-      credit_score: 0,
-      is_active_member: 1,
-      estimated_salary: 0,
-      role: 'ROLE_USER',
-      probability_churn: -1,
-      exited: 0
-    }
+  const isExistMember = useCallback(async e => {
     try{
       const req = {
-        method: c.post,
-        url: `${c.url}/api/auth`,
-        data: data,
-        auth: c.auth
+        method: c.get,
+        url: `${c.url}/api/member/${form.email}`
       }
       const res = await axios(req)
-    } catch (error){
+      console.log(res.data)
+      alert(`isExistMember? ==> ${res.data.length > 0}`)
+      if (res.data.length > 0){
+        setIsAlready(true)
+      }
+    }catch(err){
 
     }
-  }, [])
+  })
 
-  const handleFormSubmit = e => {
-    e.preventDefault()
-    axios.post('http://localhost:8080/api/auth', 
-    {email: form.email, 
-      password: form.password, 
-      name: form.name, 
-      geography: form.geography, 
-      gender: form.gender, 
-      age: form.age,
-      profile: 'noimage.png',
-      tenure: 0,
-      stock_qty: 0,
-      balance: 0,
-      has_credit: 0,
-      credit_score: 0,
-      is_active_member: 1,
-      estimated_salary: 0,
-      role: 'ROLE_USER',
-      probability_churn: -1,
-      exited: 0
-    }
-    )
-    .then( res => {
-      // alert(res.data)
-      alert('WELCOME!')
-      history.push('/session/signin')
-    }).catch( e => {
+  const handleFormSubmit = useCallback(async e => {
+    try{
+      e.preventDefault()
+      isExistMember()
+      const data = {
+        email: form.email, 
+        password: form.password, 
+        name: form.name, 
+        geography: form.geography, 
+        gender: form.gender, 
+        age: form.age,
+        profile: 'noimage.png',
+        tenure: 0,
+        stock_qty: 0,
+        balance: 0,
+        has_credit: 0,
+        credit_score: 0,
+        is_active_member: 1,
+        estimated_salary: 0,
+        role: 'ROLE_USER',
+        probability_churn: -1,
+        exited: 0
+      }
+
+      alert(isAlready)
+
+      if (data.age < 18 || data.age > 99){
+        alert('입력하신 나이를 확인해주세요.')
+      }else if(isAlready){
+        alert('이미 존재하는 계정이거나 사용할 수 없는 계정입니다.')
+      }else{
+        const req = {
+          method: c.post,
+          url: `${c.url}/api/auth`,
+          data: data,
+          auth: c.auth
+        }
+        const res = await axios(req)
+        alert('WELCOME!')
+        history.push('/session/signin')
+      } 
+    }catch(err){
       alert('회원가입 실패')
-      throw e
-    })
-  };
+      throw(err)
+    }
+  })
 
   const gender_option = [
     { label: "Etc.", velue: "Etc" },

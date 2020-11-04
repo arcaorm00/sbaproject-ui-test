@@ -655,23 +655,25 @@ const MemberList = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <table style={{float: 'right'}}> {/* 이 친구 왜 float이든 align이든 right만 먹이면 paper 밖으로 빠지는지? */}
-          <tr  fullWidth>
-            <td width="40%"><TextField id="comment" placeholder="회원 검색" variant="outlined" fullWidth/></td>
-            <td width="20%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit">search</Button></td>
-            <td width="50%">
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 20, 30]}
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
-            </td>
-          </tr>
-        </table>
+        <TableContainer className={classes.container}>
+          <Table className={classes.table}>
+            <TableRow fullWidth>
+                <TableCell width="40%"><TextField id="comment" placeholder="회원 검색" variant="outlined" fullWidth/></TableCell>
+                <TableCell width="20%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit">search</Button></TableCell>
+                <TableCell width="50%">
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 20, 30]}
+                    component="div"
+                    count={data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                  />  
+                </TableCell>
+            </TableRow>
+          </Table>
+        </TableContainer>
       </Paper>
       
     </div>

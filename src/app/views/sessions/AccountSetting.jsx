@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Breadcrumb } from "matx"
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
@@ -23,6 +23,7 @@ import Link from '@material-ui/core/Link'
 
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
+import { context as c } from '../../../context'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -109,23 +110,26 @@ const AccountSetting = () => {
     }    
   }
 
-  const clickWithdrawBtn = () => {
-    let re = window.confirm('회원 탈퇴를 요청하셨습니다.\n이후 같은 계정으로 회원가입 및 로그인이 불가능합니다.\n정말로 탈퇴하시겠습니까?');
-    if (re){
-      member.exited = 1
-      console.log(member)
-      axios.put(`http://localhost:8080/api/member/${sessionMember}`, member)
-      .then( res => {
+  const clickWithdrawBtn = useCallback(async e => {
+    try{
+      let re = window.confirm('회원 탈퇴를 요청하셨습니다.\n이후 같은 계정으로 회원가입 및 로그인이 불가능합니다.\n정말로 탈퇴하시겠습니까?')
+      if (re){
+        member.exited = 1
+        const req = {
+          method: c.put,
+          url: `${c.url}/api/member/${sessionMember}`,
+          data: member
+        }
+        const res = await axios(req)
         console.log(res.data)
         sessionStorage.removeItem('sessionMember')
         alert('탈퇴 처리 되었습니다. 이용해주셔서 감사합니다.')
         history.push('/')
-      })
-      .catch(e => {
-        throw(e)
-      })
-    }    
-  }
+      }
+    }catch(err){
+      throw(e)
+    }
+  })
 
   const handleBack = () => {
     setActiveStep(activeStep - 1);
@@ -280,6 +284,7 @@ const AccountSetting = () => {
                       label="NewPassword"
                       fullWidth
                       autoComplete="new-password"
+                      onChange={e => setNewPwd(e.target.value)}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -289,6 +294,7 @@ const AccountSetting = () => {
                       label="ConfirmPassword"
                       fullWidth
                       autoComplete="confirm-new-password"
+                      onChange={e => setConfirmPwd(e.target.value)}
                     />
                   </Grid>
                   </>

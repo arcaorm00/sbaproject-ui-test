@@ -74,6 +74,7 @@ const EditorForm = () => {
       history.push('/forms/basic')
 
     }catch (err){
+      alert('insert FAIL')
       throw(err)
     }
   })

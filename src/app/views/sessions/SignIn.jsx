@@ -48,37 +48,25 @@ const SignIn = (props) => {
   })
 
 
-  const login = useCallback(async e =>{
-    e.preventDefault()
-    alert(`${email}, ${password}`)
-    try{
-      const req = {
-        method: c.post,
-        url: `${c.url}/api/access`,
-        data: {email, password},
-        auth: c.auth
-      }
-      const res = await axios(req)
-      alert(`Welcome! ${res.data["name"]}`)
-      sessionStorage.setItem("sessionMember", res.data['email'])
-      window.location.reload()
-      history.push("/")
-    }catch (error){
-      alert(`Please check your ID or password!`)
-    }
-  }, [])
-
-
   // const login = e => {
   //   e.preventDefault()
   //   dispatch(loginWithEmailAndPassword({email, password}))
   // }
 
-  const handleFormSubmit = event => {
-    event.preventDefault()
-    alert(`${email}, ${password}`)
-    axios.post(`http://localhost:8080/api/access`, {email, password})
-    .then(res => {
+  const handleFormSubmit = useCallback(async e => {
+    try{
+      e.preventDefault()
+      alert(`${email}, ${password}`)
+
+      const data = {email: email, password: password}
+
+      const req = {
+        method: c.post,
+        url: `${c.url}/api/access`, 
+        data: data,
+        auth: c.auth
+      }
+      const res = await axios(req)
       if (res.data == 500){
         alert('Please check your ID or password!')
       }else{
@@ -87,11 +75,11 @@ const SignIn = (props) => {
         history.push("/") 
         window.location.reload()
       }
-    })
-    .catch(err => {
+    }catch(err){
       alert(`Please check your ID or password!`)
-    })
-  };
+      throw(err) 
+    }   
+  })
 
   let { classes } = props;
   return (

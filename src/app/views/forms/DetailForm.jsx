@@ -87,7 +87,9 @@ const DetailForm = () => {
       const res = await axios(req)
       setArticle(res.data[0])
       console.log(article)
-      document.getElementById('contentDiv').innerHTML = article.content
+      if (document.getElementById('contentDiv') != null) {
+        document.getElementById('contentDiv').innerHTML = article.content
+      }
     }catch (err){
       throw(err)
     }    
@@ -144,6 +146,7 @@ const DetailForm = () => {
 
   const [comment, setComment] = useState('')
   const sessionMember = sessionStorage.getItem("sessionMember")
+  let isCommentUpdate = false
 
   let today = new Date()
 
@@ -186,6 +189,7 @@ const DetailForm = () => {
       }
       const res = await axios(req)
       alert('댓글이 등록되었습니다.')
+
     }catch (err){
       throw(err)
     }
@@ -193,7 +197,7 @@ const DetailForm = () => {
 
   const clickCommentUpdate = useCallback(async e => {
     try{
-
+      isCommentUpdate = true
     }catch(err){
       throw(err)
     }
@@ -205,7 +209,7 @@ const DetailForm = () => {
       
       const req = {
         method: c.delete,
-        url: `${c.url}/api/comment/${id}`
+        url: `${c.url}/api/comment/${row.id}`
       }
       const res = await axios(req)
       alert('댓글을 삭제했습니다.')
@@ -326,11 +330,13 @@ const DetailForm = () => {
           
             <li className={classes.comments}>
               <td width="15%" align="left"><b>{row.email.split('@')[0]}</b>&nbsp;&nbsp;</td>
-              <td width="75%" align="left">{row.comment}</td>
+              <td width="60%" align="left">{row.comment}</td>
+              
+              <td width="15%" align="left"><small>{row.regdate}</small></td>
               { sessionMember == row.email 
               ? <>
-              <td width="10%" align="center" onClick={clickCommentUpdate}>수정</td>
-              <td width="5%" align="left" onClick={() => clickCommentDelete(row)}>X</td>
+              <td width="10%" align="center" style={{cursor: 'pointer'}} onClick={clickCommentUpdate}>수정</td>
+              <td width="5%" align="left" style={{cursor: 'pointer'}} onClick={() => clickCommentDelete(row)}>X</td>
               </>
               : <>
               <td width="10%" align="center"></td>
