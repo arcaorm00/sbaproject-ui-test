@@ -12,14 +12,17 @@ const EditorForm = () => {
   const history = useHistory()
   const [title, setTitle] = useState()
   const [bodycontent, setBodyContent] = useState()
-  const [updateArticle, setUpdateArticle] = useState({id: 0, email: '', article_type: '', title: '', content: '', regdate: ''})
-
+  
   useEffect(() => {
     if (session !== 'admin@stockpsychic.com'){
       history.push('/')
     }
     if (history.location['state']){
-      setUpdateArticle(history.location['state']['detail'])
+      const data = history.location['state']['detail']
+      alert(data.id)
+      document.getElementById('boardid').value = data.id
+      document.getElementById('title').value = data.title
+      setBodyContent(data.content)
     }
   }, [])
 
@@ -41,37 +44,71 @@ const EditorForm = () => {
   
   today = getTime()
 
-  const clickSubmit = (e) => {
-    e.preventDefault()
+  const clickSubmit = useCallback(async e => {
+    try{
+      e.preventDefault()
     
-    // RichTextEditor의 content 가져오기
-    let content = document.getElementsByClassName('quill')[0].innerHTML
-    const divIndex = content.indexOf('<div class="ql-editor"')
-    const divEndIndex = content.indexOf('</div><div class="ql-clipboard"')
-    content = content.slice(divIndex, divEndIndex)
-    content = content.slice(content.indexOf('>')+1)
-    // alert(content)
+      // RichTextEditor의 content 가져오기
+      let content = document.getElementsByClassName('quill')[0].innerHTML
+      const divIndex = content.indexOf('<div class="ql-editor"')
+      const divEndIndex = content.indexOf('</div><div class="ql-clipboard"')
+      content = content.slice(divIndex, divEndIndex)
+      content = content.slice(content.indexOf('>')+1)
+      // alert(content)
 
-    const data = {
-      email: session,
-      article_type: 'Notice',
-      title: document.getElementById('title').value,
-      content: content,
-      regdate: today
-    }
-    const id = 0
-    axios.post(`http://localhost:8080/api/board/${id}`, data)
-    .then(res => {
-      alert(res)
+      const data = {
+        email: session,
+        article_type: 'Notice',
+        title: document.getElementById('title').value,
+        content: content,
+        regdate: today
+      }
+      const id = 0
+      const req = {
+        method: c.post,
+        url: `${c.url}/api/board/${id}`,
+        data: data
+      }
+      const res = await axios(req)
+      alert('게시물이 등록되었습니다.')
       history.push('/forms/basic')
-    })
-    .catch(e => {
-      throw(e)
-    })
-  }
+
+    }catch (err){
+      throw(err)
+    }
+  })
 
   const clickUpdate = useCallback(async e => {
-    alert('수정!')
+    try{
+      // RichTextEditor의 content 가져오기
+      let content = document.getElementsByClassName('quill')[0].innerHTML
+      const divIndex = content.indexOf('<div class="ql-editor"')
+      const divEndIndex = content.indexOf('</div><div class="ql-clipboard"')
+      content = content.slice(divIndex, divEndIndex)
+      content = content.slice(content.indexOf('>')+1)
+
+      const id = history.location['state']['detail'].id
+
+      const data = {
+        id: id,
+        email: session,
+        article_type: 'Notice',
+        title: document.getElementById('title').value,
+        content: content,
+        regdate: today
+      }
+      const req = {
+        method: c.put,
+        url: `${c.url}/api/board/${id}`,
+        data: data
+      }
+      const res = await axios(req)
+      alert('게시물이 수정되었습니다.')
+      history.push('/forms/basic')
+    }catch (err){
+      alert('update FAIL')
+      throw(err)
+    }
   })
 
   // const contentChange = (e) => {
@@ -82,23 +119,24 @@ const EditorForm = () => {
   return (
     <div className="m-sm-30">
     <div  className="mb-sm-30">
-    { updateArticle.id == 0
+    { history.location['state']
     ?
-      <Breadcrumb        
-        routeSegments={[
-          { name: "게시판", path: "/forms/basic" },
-          { name: "글작성" }
-        ]}
-      />
-      :
-      <Breadcrumb        
-        routeSegments={[
-          { name: "게시판", path: "/forms/basic" },
-          { name: "글수정" }
-        ]}
-      />
+    <Breadcrumb        
+      routeSegments={[
+        { name: "게시판", path: "/forms/basic" },
+        { name: "글수정" }
+      ]}
+    />
+    :
+    <Breadcrumb        
+      routeSegments={[
+        { name: "게시판", path: "/forms/basic" },
+        { name: "글작성" }
+      ]}
+    />
     }
     </div>
+    <input type="hidden" id="boardid" name="boardid" value='0'></input>
     <TextField
         id="title"
         name="title"
@@ -112,20 +150,11 @@ const EditorForm = () => {
       id="editorContent"
       name="editorContent"
       placeholder="insert text here..."
+      content={bodycontent}
     />
     <br/>
-    { updateArticle.id == 0
+    { history.location['state']
     ?
-    <Button
-      className="capitalize mr-10"
-      variant="contained"
-      color="primary"
-      type="submit"
-      onClick={clickSubmit}
-    >
-      등록
-    </Button>
-    :
     <Button
       className="capitalize mr-10"
       variant="contained"
@@ -135,6 +164,16 @@ const EditorForm = () => {
     >
       수정
     </Button>
+    :
+    <Button
+    className="capitalize mr-10"
+    variant="contained"
+    color="primary"
+    type="submit"
+    onClick={clickSubmit}
+  >
+    등록
+  </Button>
     }
     
     <Button

@@ -87,9 +87,7 @@ const DetailForm = () => {
       const res = await axios(req)
       setArticle(res.data[0])
       console.log(article)
-      if(document.getElementById('contentDiv') !== null){
-        document.getElementById('contentDiv').innerHTML = article.content
-      }
+      document.getElementById('contentDiv').innerHTML = article.content
     }catch (err){
       throw(err)
     }    
@@ -117,7 +115,6 @@ const DetailForm = () => {
         method: c.get,
         url: `${c.url}/api/board/${id}`
       }
-      alert('수정~')
       const res = await axios(req)
       history.push({pathname: '/forms/editor', state: {detail: res.data[0]}})
     }catch (err){
@@ -167,42 +164,55 @@ const DetailForm = () => {
   today = getTime()
 
   // comment 버튼 클릭 이벤트 => 항상 모댓글
-  const clickComment = (e) => {
-    e.preventDefault()
-    // alert(today)
-    const data = {
-      board_id: article.id, 
-      email: sessionMember, 
-      comment: comment, 
-      regdate: today,
-      comment_ref: article.id,
-      comment_level: 0,
-      comment_step: 0 }
-    axios.post('http://localhost:8080/api/comment', data)
-    .then(res => {
+  const clickComment = useCallback(async e => {
+
+    try{
+      e.preventDefault()
+      // alert(today)
+      const id = 0
+      const data = {
+        board_id: article.id, 
+        email: sessionMember, 
+        comment: comment, 
+        regdate: today,
+        comment_ref: article.id,
+        comment_level: 0,
+        comment_step: 0 }
+
+      const req = {
+        method: c.post,
+        url: `${c.url}/api/comment/${id}`,
+        data: data
+      }
+      const res = await axios(req)
       alert('댓글이 등록되었습니다.')
-      document.getElementById('comment').value = ''
-    })
-    .catch(e => {
-      throw(e)
-    })
-  }
+    }catch (err){
+      throw(err)
+    }
+  })
 
-  const clickCommentUpdate = () => {
+  const clickCommentUpdate = useCallback(async e => {
+    try{
 
-  }
+    }catch(err){
+      throw(err)
+    }
+  })
 
-  const clickCommentDelete = (row) => {
-    alert(row.id)
-    const data = {id: row.id}
-    axios.delete('http://localhost:8080/api/comment', data)
-    .then(res => {
-
-    })
-    .catch(e => {
-
-    })
-  }
+  const clickCommentDelete = useCallback(async row => {
+    try{
+      alert(row.id)
+      
+      const req = {
+        method: c.delete,
+        url: `${c.url}/api/comment/${id}`
+      }
+      const res = await axios(req)
+      alert('댓글을 삭제했습니다.')
+      }catch(err){
+        throw(err)
+      }
+  })
 
   return (
   <div className="m-sm-30">
@@ -275,7 +285,9 @@ const DetailForm = () => {
           </tr>
         </TableBody>
       </Table>
-      <div class="mb-3">			
+      <div class="mb-3">
+      {sessionMember == 'admin@stockpsychic.com' 
+      ? <>
         <Button
           className="capitalize mr-10"
           variant="contained"
@@ -292,7 +304,11 @@ const DetailForm = () => {
           onClick={clickDelete}
         >
           삭제
-        </Button>		
+        </Button>
+        </>
+      : null
+      }		
+          		
         <Button
           className="capitalize mr-10"
           variant="contained"

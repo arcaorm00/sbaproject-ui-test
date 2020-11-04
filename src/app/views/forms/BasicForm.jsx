@@ -118,15 +118,17 @@ const BasicForm = () => {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    dispatch(boardActions.getAllArticles())
-    // axios.get('http://localhost:8080/api/boards')
-    // .then( res => {
-    //   setData(res.data)
-    // })
-    // .catch( err => {
-    //   alert('list Fail')
-    //   throw(err)
-    // })
+    const boards = dispatch(boardActions.getAllArticles())
+    // setData(boards)
+    // console.log(data)
+    axios.get('http://localhost:8080/api/boards')
+    .then( res => {
+      setData(res.data)
+    })
+    .catch( err => {
+      alert('list Fail')
+      throw(err)
+    })
   }, [])
 
   // 페이징
