@@ -76,7 +76,7 @@ const DetailForm = () => {
   useEffect(() => {
     getArticle()
     getComments()
-  })
+  }, [])
 
   const getArticle = useCallback(async e => {
     try{
@@ -85,15 +85,20 @@ const DetailForm = () => {
         url: `${c.url}/api/board/${id}`,
       }
       const res = await axios(req)
-      setArticle(res.data[0])
-      console.log(article)
-      if (document.getElementById('contentDiv') != null) {
-        document.getElementById('contentDiv').innerHTML = article.content
+      if (res.data == null) { 
+        history.push('/session/404')
+      }else{
+        setArticle(res.data[0])
+        console.log(article)
       }
+      
+      // if (document.getElementById('contentDiv') != null) {
+      //   document.getElementById('contentDiv').innerHTML = article.content
+      // }
     }catch (err){
       throw(err)
     }    
-  })
+  }, [])
 
   const getComments = useCallback(async e => {
     try{
@@ -103,11 +108,10 @@ const DetailForm = () => {
       }
       const res = await axios(req)
       setCommentList(res.data)
-      console.log(commentList)
     }catch (err){
       throw(err)
     }
-  })
+  }, [])
 
 
   // board
@@ -133,7 +137,7 @@ const DetailForm = () => {
           url: `${c.url}/api/board/${id}`
         }
         const res = await axios(req)
-        alert('삭제되었습니다.')
+        alert('게시물이 삭제되었습니다.')
         history.push('/forms/basic')
       }catch (err){
         alert('Delete Fail')
@@ -146,7 +150,7 @@ const DetailForm = () => {
 
   const [comment, setComment] = useState('')
   const sessionMember = sessionStorage.getItem("sessionMember")
-  let isCommentUpdate = false
+  const [isCommentUpdate, setIsCommentUpdate] = useState(false)
 
   let today = new Date()
 
@@ -195,24 +199,19 @@ const DetailForm = () => {
     }
   })
 
-  const clickCommentUpdate = useCallback(async e => {
-    try{
-      isCommentUpdate = true
-    }catch(err){
-      throw(err)
-    }
-  })
+  const clickCommentUpdateBtn = (row) => {
+    setIsCommentUpdate(true)
+    alert(`update => ${isCommentUpdate}`)
+  }
 
   const clickCommentDelete = useCallback(async row => {
-    try{
-      alert(row.id)
-      
+    try{      
       const req = {
         method: c.delete,
         url: `${c.url}/api/comment/${row.id}`
       }
       const res = await axios(req)
-      alert('댓글을 삭제했습니다.')
+      alert('댓글이 삭제되었습니다.')
       }catch(err){
         throw(err)
       }
@@ -264,17 +263,17 @@ const DetailForm = () => {
           <tr>
             <td width="60%" align="left">
               <Typography variant="h6" color="inherit">
-                { article !== undefined? article.title: '' }
+                { article !== undefined ? article.title : '' }
               </Typography>
             </td>
             <td width="20%" align="center">
               <Typography variant="subtitle1" color="inherit" noWrap>
-                { article !== undefined? article.email.split('@')[0]: '' }
+                { article !== undefined ? article.email.split('@')[0] : '' }
               </Typography>
             </td>
             <td width="20%" align="center">
               <Typography variant="subtitle1" color="inherit" noWrap>
-                { article !== undefined? article.regdate: ':' }
+                { article !== undefined ? article.regdate : ':' }
               </Typography>
             </td>
           </tr>
@@ -284,6 +283,7 @@ const DetailForm = () => {
             <td colspan="4" height="500px">
               <div id='contentDiv' className={classes.contents_padding}>
                 {/* { article !== undefined? article.content: '' } */}
+                <div dangerouslySetInnerHTML={ {__html: article.content} }></div>
               </div>
             </td>
           </tr>
@@ -335,7 +335,7 @@ const DetailForm = () => {
               <td width="15%" align="left"><small>{row.regdate}</small></td>
               { sessionMember == row.email 
               ? <>
-              <td width="10%" align="center" style={{cursor: 'pointer'}} onClick={clickCommentUpdate}>수정</td>
+              <td width="10%" align="center" style={{cursor: 'pointer'}} onClick={() => clickCommentUpdateBtn(row)}>수정</td>
               <td width="5%" align="left" style={{cursor: 'pointer'}} onClick={() => clickCommentDelete(row)}>X</td>
               </>
               : <>

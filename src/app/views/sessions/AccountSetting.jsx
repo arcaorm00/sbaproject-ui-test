@@ -20,6 +20,8 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Link from '@material-ui/core/Link'
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
+import InputAdornment from '@material-ui/core/InputAdornment'
 
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
@@ -412,6 +414,13 @@ const AccountSetting = () => {
                       fullWidth
                       autoComplete="salary"
                       onChange={handleChange}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <AttachMoneyIcon fontSize="small"/>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   </Grid>
                   {/* <Grid item xs={12}>
@@ -420,6 +429,17 @@ const AccountSetting = () => {
                       label="Use this address for payment details"
                     />
                   </Grid> */}
+                  {member.has_credit == 0
+                  ? 
+                  <Grid item xs={12} sm={12}>
+                    <Button variant="outlined" color="default" fullWidth>신용카드 등록</Button>
+                  </Grid>
+                  :
+                  <Grid item xs={12} sm={12}>
+                    <Button variant="outlined" color="default" fullWidth>등록 카드 정보 수정</Button>
+                  </Grid>
+                  }
+                  
                 </Grid>
 
                 <div className={classes.buttons}>
