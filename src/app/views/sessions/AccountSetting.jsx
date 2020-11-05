@@ -96,19 +96,36 @@ const AccountSetting = () => {
   const [newPwd, setNewPwd] = useState('')
   const [confirmPwd, setConfirmPwd] = useState('')
 
-  const updateBtn = () => {
-    let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
-    if (re){
-      axios.put(`http://localhost:8080/api/member/${sessionMember}`, member)
-      .then( res => {
+  const updateBtn = useCallback(async e => {
+    try{
+      if (isPasswordEdit){
+        if (newPwd != confirmPwd){
+          alert('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.\n다시 한번 확인해주십시오.')
+          return
+        }else if(newPwd.length < 4){
+          alert('비밀번호는 네 자리 이상이어야 합니다.')
+          return
+        }else{
+          member.password = newPwd
+        }
+      }
+
+      let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
+      if(re){
+        const req = {
+          method: c.put,
+          url: `${c.url}/api/member/${sessionMember}`,
+          data: member
+        }
+        const res = await axios(req)
         console.log(res.data)
-        setActiveStep(activeStep + 1);
-      })
-      .catch(e => {
-        throw(e)
-      })
-    }    
-  }
+        setActiveStep(activeStep + 1);  
+      }
+    }catch(err){
+      alert('회원 정보 수정에 실패했습니다.')
+      throw(err)
+    }
+  })
 
   const clickWithdrawBtn = useCallback(async e => {
     try{
@@ -151,13 +168,20 @@ const AccountSetting = () => {
       alert('로그인 후 이용 가능한 서비스입니다.')
       history.push('/session/signin')
     }else{
-      axios.get(`http://localhost:8080/api/member/${sessionMember}`)
-      .then( res => {
-        setMemberInfo(res.data[0])
-      })
-      .catch( e => {
-        throw(e)
-      })
+      getMember()
+    }
+  }, [])
+
+  const getMember = useCallback(async e => {
+    try{
+      const req = {
+        method: c.get,
+        url:`${c.url}/api/member/${sessionMember}`
+      }
+      const res = await axios(req)
+      setMemberInfo(res.data[0])
+    }catch(err){
+      throw(e)
     }
   }, [])
   
@@ -282,6 +306,7 @@ const AccountSetting = () => {
                       id="newPassword"
                       name="newpassword"
                       label="NewPassword"
+                      type="password"
                       fullWidth
                       autoComplete="new-password"
                       onChange={e => setNewPwd(e.target.value)}
@@ -292,6 +317,7 @@ const AccountSetting = () => {
                       id="confirmNewPassword"
                       name="Confirmpassword"
                       label="ConfirmPassword"
+                      type="password"
                       fullWidth
                       autoComplete="confirm-new-password"
                       onChange={e => setConfirmPwd(e.target.value)}

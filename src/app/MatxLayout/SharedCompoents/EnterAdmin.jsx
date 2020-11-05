@@ -76,12 +76,12 @@ const EnterAdmin = (props) => {
         }}
         width='300px'
       >
-        <div className="mini-cart">
+        <div className="mini-cart" align='center'>
           <div className="cart__topbar flex flex-middle p-16 mb-24">
-            <Icon color="primary">apps</Icon>
+            <Icon color="primary">dashboard</Icon>
             <h5 className="ml-8 my-0 font-weight-500">Admin Code</h5>
           </div>
-          <div className="flex flex-middle flex-space-between py-16 px-8">
+          <div className="flex-middle flex-space-between py-16 px-8">
             <form>
               <TextField
                 id="adminCodeInput"
@@ -90,7 +90,7 @@ const EnterAdmin = (props) => {
                 autoComplete="current-password"
                 onChange={ e => {setAdminCode(`${e.target.value}`)}}
               /><p/>
-              <div className="flex flex-middle">
+              <div className="flex-middle m-10">
                 <Button
                   className="capitalize"
                   variant="contained"

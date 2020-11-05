@@ -27,7 +27,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
-import { boardActions } from '../../redux/actions/boardAction'
+import { boardActions } from '../../redux/actions/BoardAction'
 
 
 const useStyles = makeStyles({
@@ -118,7 +118,7 @@ const BasicForm = () => {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    const boards = dispatch(boardActions.getAllArticles())
+    // const boards = dispatch(boardActions.getAllArticles())
     // setData(boards)
     // console.log(data)
     axios.get('http://localhost:8080/api/boards')
