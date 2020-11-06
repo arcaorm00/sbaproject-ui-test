@@ -24,6 +24,10 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 
 import { Button, TextField } from "@material-ui/core"
 
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+
 import { useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
 import axios from 'axios'
@@ -151,7 +155,7 @@ const EnhancedTableToolbar = (props) => {
 
   const clickDelete = () => {
     // 체크박스 선택된 행 있는지 확인 후 삭제 로직
-    alert('DELETE!!!!!!!')
+    alert('프로모션 메일 발송!')
   }
 
   return (
@@ -517,6 +521,8 @@ const MemberList = () => {
   const [data, setData] = useState([])
   const history = useHistory()
 
+  const [choice, setChoice] = useState('email')
+
   useEffect(() => {
     if (session == 'admin@stockpsychic.com'){
       getMembers()
@@ -540,6 +546,47 @@ const MemberList = () => {
       throw(err)
     }
   })
+
+  const memberSearch = useCallback(async e => {
+    try{
+      const searchInput = document.getElementById('searchInput').value
+      if(searchInput == ''){
+        getMembers()
+      }else if(choice == 'email'){
+        const req = {
+          method: c.get,
+          url: `${c.url}/api/member/${searchInput}`,
+        }
+        const res = await axios(req)
+        if (res.data == null){
+          alert('검색에 해당하는 회원이 존재하지 않습니다.')
+          return
+        }else{
+          setData(res.data)
+        }
+      }else if(choice == 'name'){
+        const req = {
+          method: c.get,
+          url: `${c.url}/api/member-by-name/${searchInput}`,
+        }
+        const res = await axios(req)
+        console.log(res.data)
+        if (res.data == null){
+          alert('검색에 해당하는 회원이 존재하지 않습니다.')
+          return
+        }else{
+          setData(res.data)
+        }
+      }
+    }catch(err){
+      throw(err)
+    }
+  })
+
+  const choice_option = [
+    { label: "이메일", value: "email" },
+    { label: "이름", value: "name" }
+  ]
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -640,7 +687,7 @@ const MemberList = () => {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.email}
                       </TableCell>
-                      <TableCell align="right">{row.name}</TableCell>
+                      <TableCell align="left">{row.name}</TableCell>
                       <TableCell align="right">{row.stock_qty}</TableCell>
                       <TableCell align="right">{row.is_active_member}</TableCell>
                       <TableCell align="right">{row.role}</TableCell>
@@ -657,20 +704,34 @@ const MemberList = () => {
         </TableContainer>
         <TableContainer className={classes.container}>
           <Table className={classes.table}>
-            <TableRow fullWidth>
-                <TableCell width="40%"><TextField id="comment" placeholder="회원 검색" variant="outlined" fullWidth/></TableCell>
-                <TableCell width="20%"><Button className="capitalize mr-10" variant="contained" color="primary" type="submit">search</Button></TableCell>
-                <TableCell width="50%">
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 20, 30]}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                  />  
-                </TableCell>
+            <TableRow fullWidth style={{verticalAlign: "middle"}}>
+              <TableCell style={{verticalAlign: "middle"}} fullWidth>
+                <FormControl style={{width: "20%"}} variant="outlined" className={classes.formControl}>
+                  <Select
+                    native
+                    value={choice}
+                    onChange={(e) => {setChoice(e.target.value)}}
+                    validators={["required"]} errorMessages={["this field is required"]}
+                  >
+                    {choice_option.map((row, idx) => (
+                      <option value={row.value}>{row.label}</option>
+                    ))}
+                  </Select>
+                </FormControl>&nbsp;&nbsp;
+                <TextField style={{width: "60%"}} id="searchInput" placeholder="회원 검색" variant="outlined"/>&nbsp;&nbsp;
+                <Button style={{width: "10%"}} className="capitalize mr-10" variant="contained" color="primary" type="submit" onClick={memberSearch}>search</Button>
+              </TableCell>
+              <TableCell width="50%">
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 20, 30]}
+                  component="div"
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                />  
+              </TableCell>
             </TableRow>
           </Table>
         </TableContainer>
@@ -687,7 +748,7 @@ const EnhancedTableToolbarForMember = (props) => {
 
   const clickDelete = () => {
     // 체크박스 선택된 행 있는지 확인 후 삭제 로직
-    alert('DELETE!!!!!!!')
+    alert('활성화/비활성화')
   }
 
   return (

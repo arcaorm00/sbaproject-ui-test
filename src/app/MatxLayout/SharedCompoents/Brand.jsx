@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from 'react-router-dom'
 
 class Brand extends Component {
   state = {};
@@ -6,8 +7,10 @@ class Brand extends Component {
     return (
       <div className="flex flex-middle flex-space-between brand-area">
         <div className="flex flex-middle brand">
-          <img src="/assets/images/logo.png" alt="company-logo" />
-          <span className="brand__text">Matx</span>
+          <Link to="/">
+            <img src="/assets/images/logo.png" alt="company-logo"/>
+            <span className="brand__text">Stock Psychic</span>
+          </Link>
         </div>
         {this.props.children}
       </div>

@@ -76,7 +76,7 @@ const DetailForm = () => {
   useEffect(() => {
     getArticle()
     getComments()
-  }, [])
+  })
 
   const getArticle = useCallback(async e => {
     try{
@@ -193,8 +193,10 @@ const DetailForm = () => {
       }
       const res = await axios(req)
       alert('댓글이 등록되었습니다.')
+      document.getElementById('comment').value = ''
 
     }catch (err){
+      alert('댓글 등록에 실패했습니다.')
       throw(err)
     }
   })
@@ -213,6 +215,7 @@ const DetailForm = () => {
       const res = await axios(req)
       alert('댓글이 삭제되었습니다.')
       }catch(err){
+        alert('댓글 삭제에 실패했습니다.')
         throw(err)
       }
   })

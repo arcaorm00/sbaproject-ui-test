@@ -20,7 +20,7 @@ const Footer = ({ theme, settings }) => {
       </Helmet>
       <div className="footer flex flex-middle">
         <div className="flex flex-middle container px-sm-30 w-100">
-          <a href="https://ui-lib.com/downloads/matx-react-material-design-admin-template/" className="mr-8">
+          {/* <a href="https://ui-lib.com/downloads/matx-react-material-design-admin-template/" className="mr-8">
             <Button variant="contained" color="error">
               Download Matx
             </Button>
@@ -29,10 +29,11 @@ const Footer = ({ theme, settings }) => {
             <Button variant="contained" color="secondary">
               Get MatX Pro
             </Button>
-          </a>
+          </a> */}
           <span className="m-auto"></span>
           <p className="m-0">
-            Design and Developed by <a href="http://ui-lib.com">UI Lib</a>
+            {/* Design and Developed by <a href="http://ui-lib.com">UI Lib</a> */}
+            Stock Psychic
           </p>
         </div>
       </div>

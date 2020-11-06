@@ -44,11 +44,11 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(10),
     padding: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
       marginTop: theme.spacing(6),
-      marginBottom: theme.spacing(6),
+      marginBottom: theme.spacing(10),
       padding: theme.spacing(3),
     },
   },
@@ -107,13 +107,16 @@ const AccountSetting = () => {
         }else if(newPwd.length < 4){
           alert('비밀번호는 네 자리 이상이어야 합니다.')
           return
-        }else{
-          member.password = newPwd
         }
+      }
+      if (member.age < 18 || member.age > 99){
+        alert('입력하신 나이를 확인해주십시오.')
+        return
       }
 
       let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
       if(re){
+        member.password = newPwd
         const req = {
           method: c.put,
           url: `${c.url}/api/member/${sessionMember}`,

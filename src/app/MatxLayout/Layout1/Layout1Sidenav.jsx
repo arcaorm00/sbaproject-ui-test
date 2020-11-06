@@ -152,6 +152,13 @@ class Layout1Sidenav extends Component {
               </MenuItem>
             </MatxMenu>
 
+            {/* <Modal
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="simple-modal-title"
+              aria-describedby="simple-modal-description"
+            ></Modal> */}
+
             <Tooltip title="mypage">
               <IconButtonWhite aria-label="Delete" className="" size="small">
               <Link className="flex flex-middle" to="/session/mypage">
