@@ -76,7 +76,7 @@ const DetailForm = () => {
   useEffect(() => {
     getArticle()
     getComments()
-  })
+  }, [])
 
   const getArticle = useCallback(async e => {
     try{
@@ -207,18 +207,21 @@ const DetailForm = () => {
   }
 
   const clickCommentDelete = useCallback(async row => {
-    try{      
-      const req = {
-        method: c.delete,
-        url: `${c.url}/api/comment/${row.id}`
-      }
-      const res = await axios(req)
-      alert('댓글이 삭제되었습니다.')
+    let re = window.confirm('댓글을 삭제하시겠습니까?')
+    if(re){
+      try{      
+        const req = {
+          method: c.delete,
+          url: `${c.url}/api/comment/${row.id}`
+        }
+        const res = await axios(req)
+        alert('댓글이 삭제되었습니다.')
       }catch(err){
         alert('댓글 삭제에 실패했습니다.')
         throw(err)
       }
-  })
+    }
+  }, [])
 
   return (
   <div className="m-sm-30">

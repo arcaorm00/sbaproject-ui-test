@@ -5,10 +5,10 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 
 import { makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -22,6 +22,11 @@ import Button from '@material-ui/core/Button'
 import Link from '@material-ui/core/Link'
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
 import InputAdornment from '@material-ui/core/InputAdornment'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
@@ -97,6 +102,7 @@ const AccountSetting = () => {
   })
   const [newPwd, setNewPwd] = useState('')
   const [confirmPwd, setConfirmPwd] = useState('')
+  const [modalopen, setModalOpen] = useState(false)
 
   const updateBtn = useCallback(async e => {
     try{
@@ -435,7 +441,31 @@ const AccountSetting = () => {
                   {member.has_credit == 0
                   ? 
                   <Grid item xs={12} sm={12}>
-                    <Button variant="outlined" color="default" fullWidth>신용카드 등록</Button>
+                    <Button variant="outlined" color="default" fullWidth onClick={() => {setModalOpen(true)}}>신용카드 등록</Button>
+                    <Dialog open={modalopen} onClose={() => {setModalOpen(false)}} fullWidth maxWidth='sm' aria-labelledby="form-dialog-title">
+                      <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          신용카드 정보를 입력해주세요.
+                        </DialogContentText>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="credit_info"
+                          label="Credit Card"
+                          type="number"
+                          fullWidth
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={() => {setModalOpen(false)}} color="default">
+                          취소
+                        </Button>
+                        <Button onClick={() => {setModalOpen(false)}} color="primary">
+                          등록
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </Grid>
                   :
                   <Grid item xs={12} sm={12}>
