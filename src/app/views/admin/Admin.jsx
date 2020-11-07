@@ -1,32 +1,33 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react"
 import { Breadcrumb } from "matx"
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import PropTypes from 'prop-types'
+import clsx from 'clsx'
+import { lighten, makeStyles } from '@material-ui/core/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TablePagination from '@material-ui/core/TablePagination'
+import TableRow from '@material-ui/core/TableRow'
+import TableSortLabel from '@material-ui/core/TableSortLabel'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
+import Checkbox from '@material-ui/core/Checkbox'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
+import DeleteIcon from '@material-ui/icons/Delete'
+import FilterListIcon from '@material-ui/icons/FilterList'
+import MailIcon from '@material-ui/icons/Mail'
 
 import { Button, TextField } from "@material-ui/core"
 
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
 
 import { useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
@@ -177,16 +178,18 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton aria-label="delete">
-            <DeleteIcon onClick={clickDelete} />
+            <MailIcon onClick={clickDelete} />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null
+      // (
+      //   <Tooltip title="Filter list">
+      //     <IconButton aria-label="filter list">
+      //       <FilterListIcon />
+      //     </IconButton>
+      //   </Tooltip>
+      // )
+      }
     </Toolbar>
   );
 };
@@ -364,8 +367,8 @@ const Admin = () => {
                       </TableCell>
                       <TableCell align="right">{row.name}</TableCell>
                       <TableCell align="right">{row.stock_qty}</TableCell>
-                      <TableCell align="right">{row.is_active_member}</TableCell>
-                      <TableCell align="right">{row.probability_churn.toFixed(4)}</TableCell>
+                      <TableCell align="right">{row.is_active_member == 0 ? 'N' : 'Y'}</TableCell>
+                      <TableCell align="right">{(row.probability_churn * 100).toFixed(2)}%</TableCell>
                     </TableRow>
                   );
                 })}
@@ -430,7 +433,9 @@ const stableSortForMember = (array, comparator) => {
 
 const headCellsForMembers = [
   { id: 'email', numeric: false, disablePadding: true, label: '계정' },
-  { id: 'name', numeric: false, disablePadding: false, label: '이름' },
+  { id: 'name', numeric: true, disablePadding: false, label: '이름' },
+  { id: 'gender', numeric: true, disablePadding: false, label: '성별' },
+  { id: 'age', numeric: true, disablePadding: false, label: '나이' },
   { id: 'stock_qty', numeric: true, disablePadding: false, label: '보유주식 수' },
   { id: 'is_active_member', numeric: true, disablePadding: false, label: '활성 여부' },
   { id: 'role', numeric: true, disablePadding: false, label: '권한' },
@@ -445,14 +450,14 @@ const EnhancedTableHeadForMember = (props) => {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        {/* <TableCell padding="checkbox">
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ 'aria-label': 'select all desserts' }}
           />
-        </TableCell>
+        </TableCell> */}
         {headCellsForMembers.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -671,25 +676,27 @@ const MemberList = () => {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
+                      // onClick={(event) => handleClick(event, row.name)}
+                      // role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      // key={row.name}
                       selected={isItemSelected}
                     >
-                      <TableCell padding="checkbox">
+                      {/* <TableCell>
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      </TableCell> */}
+                      <TableCell component="th" id={labelId}>
                         {row.email}
                       </TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="right">{row.name}</TableCell>
+                      <TableCell align="right">{row.gender}</TableCell>
+                      <TableCell align="right">{row.age}</TableCell>
                       <TableCell align="right">{row.stock_qty}</TableCell>
-                      <TableCell align="right">{row.is_active_member}</TableCell>
+                      <TableCell align="right">{row.is_active_member == 0 ? 'N' : 'Y'}</TableCell>
                       <TableCell align="right">{row.role}</TableCell>
                     </TableRow>
                   );
@@ -770,16 +777,11 @@ const EnhancedTableToolbarForMember = (props) => {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton aria-label="delete">
-            <DeleteIcon onClick={clickDelete} />
+            <MailIcon onClick={clickDelete} />
           </IconButton>
         </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      ) : null
+      }
     </Toolbar>
   );
 };

@@ -36,7 +36,6 @@ const useStyles = makeStyles({
     padding: '40px',
   },
   contents_padding: {
-    height: '450px',
     padding: '20px'
   },
   lineBottom: {
@@ -203,8 +202,12 @@ const DetailForm = () => {
 
   const clickCommentUpdateBtn = (row) => {
     setIsCommentUpdate(true)
-    alert(`update => ${isCommentUpdate}`)
+    updateComment(row)
   }
+
+  const updateComment = useCallback(async row => {
+    alert(`update => ${isCommentUpdate}`)
+  }, [])
 
   const clickCommentDelete = useCallback(async row => {
     let re = window.confirm('댓글을 삭제하시겠습니까?')
@@ -286,8 +289,8 @@ const DetailForm = () => {
         </TableHead>
         <TableBody>
           <tr>
-            <td colspan="4" height="500px">
-              <div id='contentDiv' className={classes.contents_padding}>
+            <td colspan="4">
+              <div id='contentDiv' className={classes.contents_padding} style={{minHeight: '400px'}}>
                 {/* { article !== undefined? article.content: '' } */}
                 <div dangerouslySetInnerHTML={ {__html: article.content} }></div>
               </div>
