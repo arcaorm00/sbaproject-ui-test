@@ -4,6 +4,7 @@ import NotFound from "./NotFound";
 import ForgotPassword from "./ForgotPassword"
 import Mypage from './Mypage'
 import AccountSetting from './AccountSetting'
+import Trading from './TradingTest'
 
 const settings = {
   activeLayout: "layout1",
@@ -50,6 +51,10 @@ const sessionRoutes = [
   {
     path: "/session/accountsetting",
     component: AccountSetting
+  },
+  {
+    path: "/session/tradingtest",
+    component: Trading
   },
   {
     path: "/session/404",

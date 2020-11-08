@@ -202,12 +202,8 @@ const DetailForm = () => {
 
   const clickCommentUpdateBtn = (row) => {
     setIsCommentUpdate(true)
-    updateComment(row)
-  }
-
-  const updateComment = useCallback(async row => {
     alert(`update => ${isCommentUpdate}`)
-  }, [])
+  }
 
   const clickCommentDelete = useCallback(async row => {
     let re = window.confirm('댓글을 삭제하시겠습니까?')

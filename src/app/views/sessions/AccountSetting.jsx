@@ -103,8 +103,10 @@ const AccountSetting = () => {
   const [newPwd, setNewPwd] = useState('')
   const [confirmPwd, setConfirmPwd] = useState('')
   const [modalopen, setModalOpen] = useState(false)
+  const [credit, setCredit] = useState('')
 
   const updateBtn = useCallback(async e => {
+    alert(credit)
     try{
       if (isPasswordEdit){
         if (newPwd != confirmPwd){
@@ -113,7 +115,7 @@ const AccountSetting = () => {
         }else if(newPwd.length < 4){
           alert('비밀번호는 네 자리 이상이어야 합니다.')
           return
-        }
+        }else{ member.password = newPwd }
       }
       if (member.age < 18 || member.age > 99){
         alert('입력하신 나이를 확인해주십시오.')
@@ -122,7 +124,14 @@ const AccountSetting = () => {
 
       let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
       if(re){
-        member.password = newPwd
+        if (credit != ''){
+          const max = 850
+          const min = 0
+          member.has_credit = 1
+          member.credit_score = Math.random() * (max - min) + min
+          max = 250898
+          member.balance = Math.floor(Math.random() * (max - min)) + min
+        }
         const req = {
           method: c.put,
           url: `${c.url}/api/member/${sessionMember}`,
@@ -441,37 +450,39 @@ const AccountSetting = () => {
                   {member.has_credit == 0
                   ? 
                   <Grid item xs={12} sm={12}>
-                    <Button variant="outlined" color="default" fullWidth onClick={() => {setModalOpen(true)}}>신용카드 등록</Button>
-                    <Dialog open={modalopen} onClose={() => {setModalOpen(false)}} fullWidth maxWidth='sm' aria-labelledby="form-dialog-title">
-                      <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>
-                          신용카드 정보를 입력해주세요.
-                        </DialogContentText>
-                        <TextField
-                          autoFocus
-                          margin="dense"
-                          id="credit_info"
-                          label="Credit Card"
-                          type="number"
-                          fullWidth
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={() => {setModalOpen(false)}} color="default">
-                          취소
-                        </Button>
-                        <Button onClick={() => {setModalOpen(false)}} color="primary">
-                          등록
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
+                    <Button variant="outlined" color="default" fullWidth onClick={() => {setModalOpen(true)}}>거래 계좌 등록</Button>
                   </Grid>
                   :
                   <Grid item xs={12} sm={12}>
-                    <Button variant="outlined" color="default" fullWidth>등록 카드 정보 수정</Button>
+                    <Button variant="outlined" color="default" fullWidth onClick={() => {setModalOpen(true)}}>등록 카드 변경</Button>
                   </Grid>
                   }
+
+                  <Dialog open={modalopen} onClose={() => {setModalOpen(false)}} fullWidth maxWidth='sm' aria-labelledby="form-dialog-title">
+                    <DialogTitle id="form-dialog-title">거래 계좌 등록</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        {member.has_credit == 0 ? '카드 정보를 입력해주세요.' : '새로 등록할 카드 정보를 입력해주세요.'}
+                      </DialogContentText>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="credit_info"
+                        label="Credit Card"
+                        type="number"
+                        fullWidth
+                        onChange={(e) => setCredit(e.target.value)}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={() => {setModalOpen(false)}} color="default">
+                        취소
+                      </Button>
+                      <Button onClick={() => {setModalOpen(false)}} color="primary">
+                        등록
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                   
                 </Grid>
 
