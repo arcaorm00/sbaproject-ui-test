@@ -12,6 +12,13 @@ import dragAndDropRoute from "./views/Drag&Drop/DragAndDropRoute";
 import formsRoutes from "./views/forms/FormsRoutes";
 import mapRoutes from "./views/map/MapRoutes";
 
+// const redirectRoute = [
+//   {
+//     path: "/",
+//     exact: true,
+//     component: () => <Redirect to="/stock-psychic" />
+//   }
+// ];
 const redirectRoute = [
   {
     path: "/",
