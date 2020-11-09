@@ -56,9 +56,9 @@ const StatCards2 = (props) => {
           </div>
           <div className="pt-16 flex flex-middle">
             <h2 className="m-0 text-muted flex-grow-1">$ {withholdings.toFixed(2)}</h2>
-            <div className="ml-12 small-circle bg-green text-white">
+            {/* <div className="ml-12 small-circle bg-green text-white">
               <Icon className="small-icon">expand_less</Icon>
-            </div>
+            </div> */}
             {/* <span className="font-size-13 text-green ml-4"> (+21%)</span> */}
           </div>
         </Card>
@@ -79,9 +79,9 @@ const StatCards2 = (props) => {
           <div className="pt-16 flex flex-middle">
             {/* <h2 className="m-0 text-muted flex-grow-1">${member.balance < 0 ? member.balance*-1 : 0}</h2> */}
             <h2 className="m-0 text-muted flex-grow-1">$ {(member.balance - withholdings).toFixed(2)}</h2>
-            <div className="ml-12 small-circle bg-error text-white">
+            {/* <div className="ml-12 small-circle bg-error text-white">
               <Icon className="small-icon">expand_more</Icon>
-            </div>
+            </div> */}
             {/* <span className="font-size-13 text-error ml-4">(+21%)</span> */}
           </div>
         </Card>

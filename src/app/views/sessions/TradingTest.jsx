@@ -29,7 +29,14 @@ const Trading = () => {
         exited: 0
     })
     
-    const [tradings, setTradings] = useState([])
+    const [tradings, setTradings] = useState({
+        id: 0,
+        email: '',
+        stock_type: '',
+        stock_ticker: '',
+        stock_qty: 0,
+        trading_date: ''
+    })
     const [isTraded, setIsTraded] = useState(false)
     const [withholdings, setWithholdings] = useState(0)
     const [balance, setBalance] = useState(0)
@@ -65,11 +72,11 @@ const Trading = () => {
             }
             const res = await axios(req)
             console.log(res.data)
-            setTradings(res.data)
 
             let temp_num = 0
             // 해당 멤버가 거래한 종목 중 이 화면의 해당 종목이 있는지 확인해서 반환 (현재는 임의로 테슬라)
             const isAlready = res.data.filter(function(t){ return t['stock_ticker'] == 'TSLA' })
+            setTradings(isAlready[0])
             if (isAlready.length > 0){
                 setIsTraded(true)
                 // 예수금 구하기
@@ -87,7 +94,7 @@ const Trading = () => {
         }catch(err){
             throw(err)
         }
-    }, [])
+    })
 
     // 잔금 구하기
     const getBalance = () => {setBalance((member.balance - withholdings).toFixed(2))}
@@ -112,6 +119,7 @@ const Trading = () => {
 
     // 매수
     const buyStock = () => {
+        alert(isTraded)
         if(isTraded){
             updateBuyTrading()
         }else{
@@ -120,13 +128,13 @@ const Trading = () => {
     }
 
     const insertBuyTrading = useCallback(async e => {
-        const balance = document.getElementById('balance').value
-        alert(buyQty*temp_price)
-        if((buyQty*temp_price) > balance){
-            alert('잔금이 부족합니다.')
-            return
-        }
         try{
+            const balance = document.getElementById('balance').value
+            alert(buyQty*temp_price)
+            if((buyQty*temp_price) > balance){
+                alert('잔금이 부족합니다.')
+                return
+            }
             const data = {
                 email: sessionMember,
                 stock_type: 'NASDAQ',
@@ -137,13 +145,13 @@ const Trading = () => {
             }
             const req = {
                 method: c.post,
-                url: `${c.url}/api/trading/${sessionMember}`,
-                data: data,
-                auth: c.auth
+                url: `${c.url}/api/trading/0`,
+                data: data
             }
             const res = await axios(req)
             updateMember()
             alert('매수되었습니다.')
+            setBuyQty(1)
         }catch(err){
             alert('매수에 실패했습니다.')
             throw(err)
@@ -152,28 +160,31 @@ const Trading = () => {
 
     const updateBuyTrading = useCallback(async e => {
         const balance = document.getElementById('balance').value
-        alert(buyQty*temp_price)
         if((buyQty*temp_price) > balance){
             alert('잔금이 부족합니다.')
             return
         }
         try{
+            console.log(tradings)
             const data = {
+                id: tradings.id,
                 email: sessionMember,
                 stock_type: 'NASDAQ',
                 stock_ticker: 'TSLA',
-                stock_qty: tradings.stock_qty + buyQty,
+                stock_qty: ((tradings.stock_qty*1) + (buyQty * 1)),
                 price: ( (tradings.price * tradings.stock_qty) + (temp_price * buyQty) ) / (tradings.stock_qty + buyQty),
                 trading_date: today
             }
+            console.log(data)
             const req = {
                 method: c.put,
-                url: `${c.url}/api/trading/${sessionMember}`,
+                url: `${c.url}/api/trading/${tradings.id}`,
                 data: data,
-                auth: c.auth
+
             }
             const res = await axios(req)
             alert('매수되었습니다.')
+            setBuyQty(1)
         }catch(err){
             alert('매수에 실패했습니다.')
             throw(err)
@@ -197,20 +208,26 @@ const Trading = () => {
 
     //매도
     const sellStock = () => {
+        alert(tradings.stock_qty)
         if(tradings.stock_qty > sellQty){
-            member.balance = balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
+            member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
             updateSellTrading()
+            // updateSellMember()
         }else if(tradings.stock_qty == sellQty){
-            member.balance = balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
+            member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
             member.stock_qty = member.stock_qty - 1
             deleteTradings()
+            // updateSellMember()
+        }else{
+            alert('보유하신 주보다 많이 매도할 수 없습니다.')
         }
-        updateSellMember() 
     }
 
     const updateSellTrading = useCallback(async e => {
+        alert(tradings.stock_qty)
         try{
             const data = {
+                id: tradings.id,
                 email: sessionMember,
                 stock_type: 'NASDAQ',
                 stock_ticker: 'TSLA',
@@ -218,14 +235,16 @@ const Trading = () => {
                 price: ( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) / (tradings.stock_qty - sellQty),
                 trading_date: today
             }
+            console.log(data)
             const req = {
                 method: c.put,
-                url: `${c.url}/api/trading/${sessionMember}`,
+                url: `${c.url}/api/trading/${tradings.id}`,
                 data: data,
                 auth: c.auth
             }
             const res = await axios(req)
             alert('매도 되었습니다.')
+            setSellQty(1)
         }catch(err){
             alert('매도에 실패했습니다.')
             throw(err)
@@ -236,10 +255,11 @@ const Trading = () => {
         try{
             const req = {
                 method: c.delete,
-                url: `${c.url}/api/trading/${sessionMember}`
+                url: `${c.url}/api/trading/${tradings.id}`
             }
             const res = await axios(req)
             alert('매도 되었습니다.')
+            setSellQty(1)
         }catch(err){
             alert('매도에 실패했습니다.')
             throw(err)
@@ -271,6 +291,7 @@ const Trading = () => {
                 name="buyQty"
                 label="수량"
                 type="number"
+                min="1"
                 value={buyQty}
                 autoComplete="buyQty"
                 onChange={ e => {setBuyQty(e.target.value)}}
@@ -285,6 +306,7 @@ const Trading = () => {
                 name="sellQty"
                 label="수량"
                 type="number"
+                min="1"
                 value={sellQty}
                 autoComplete="sellQty"
                 onChange={ e => {setSellQty(e.target.value)}}

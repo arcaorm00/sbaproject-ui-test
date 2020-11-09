@@ -125,7 +125,7 @@ const AccountSetting = () => {
       let re = window.confirm('회원 정보 수정을 요청하셨습니다. 계속해서 진행하시겠습니까?');
       if(re){
         if (credit != ''){
-          const max = 850
+          let max = 850
           const min = 0
           member.has_credit = 1
           member.credit_score = Math.random() * (max - min) + min
@@ -216,13 +216,23 @@ const AccountSetting = () => {
   }
 
   const handleChange = e => {
-    e.persist();
+    e.persist()
     setMemberInfo({
       ...member,
       [e.target.name]: e.target.value
     })
     console.log(member)
-  };
+  }
+
+  const submitCredit = () => {
+    setModalOpen(false)
+  }
+
+  const cancelCredit = () => {
+    setModalOpen(false)
+    setCredit('')
+
+  }
 
   return (
     <React.Fragment>
@@ -470,15 +480,16 @@ const AccountSetting = () => {
                         id="credit_info"
                         label="Credit Card"
                         type="number"
+                        value={credit}
                         fullWidth
                         onChange={(e) => setCredit(e.target.value)}
                       />
                     </DialogContent>
                     <DialogActions>
-                      <Button onClick={() => {setModalOpen(false)}} color="default">
+                      <Button onClick={cancelCredit} color="default">
                         취소
                       </Button>
-                      <Button onClick={() => {setModalOpen(false)}} color="primary">
+                      <Button onClick={submitCredit} color="primary">
                         등록
                       </Button>
                     </DialogActions>
