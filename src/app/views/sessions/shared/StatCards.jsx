@@ -42,8 +42,8 @@ const StatCards = ({theme}) => {
           <Card className="play-card p-sm-24 bg-paper" elevation={6}>
             <div className="flex flex-middle">
               <div className="ml-12">
-                <h5 className="text-muted inlineblock">{row.stock_ticker}&nbsp;&nbsp;<small className="text-muted">{row.stock_type}</small></h5>
-                <h6 className="m-0 mt-4 text-primary font-weight-500">3050</h6>
+                <h5 className="text-primary inlineblock">{row.stock_ticker}&nbsp;&nbsp;<small className="text-muted">{row.stock_type}</small></h5>
+                {/* <h6 className="m-0 mt-4 text-primary font-weight-500">3050</h6> */}
               </div>
             </div>
             <Tooltip title="View Details" placement="top">

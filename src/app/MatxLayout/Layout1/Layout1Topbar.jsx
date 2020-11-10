@@ -90,19 +90,19 @@ class Layout1Topbar extends Component {
                     </Link>
                   </IconButton>
 
-                  <IconButton>
+                  {/* <IconButton>
                     <Icon>web_asset</Icon>
                   </IconButton>
 
                   <IconButton>
                     <Icon>star_outline</Icon>
-                  </IconButton>
+                  </IconButton> */}
                 </div>
               </div>
               <div className="flex flex-middle">
                 <MatxSearchBox />
 
-                <NotificationBar />
+                {/* <NotificationBar /> */}
 
                 {this.props.isAuth == 'admin@stockpsychic.com'
                 ?

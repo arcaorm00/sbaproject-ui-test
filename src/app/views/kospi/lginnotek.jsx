@@ -1,17 +1,20 @@
-/* App.js */
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 import CanvasJSReact from './canvasjs.stock.react';
+import { Breadcrumb } from "matx"
+import { Grid, Card, Icon, IconButton, Tooltip } from "@material-ui/core"
+import {axios} from 'axios'
 import ReactEcharts from "echarts-for-react";
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
+
  
 class Lginnotek extends Component {
   constructor(props) {
     super(props);
     this.state = { dataPoints1: [], dataPoints2: [], dataPoints3: [], isLoaded: false };
   }
- 
+  
   componentDidMount() {
     //Reference: https://reactjs.org/docs/faq-ajax.html#example-using-ajax-results-to-set-local-state
     // fetch("https://canvasjs.com/data/docs/ltcusd2018.json")
@@ -41,13 +44,18 @@ class Lginnotek extends Component {
           });
         }
       )
+
+      fetch(`http://localhost:8080/kospi/lgchemnews`)
+      .then(res => res.json())
+      .then(data => {
+      })
   }
  
   render() {
     const options = {
       theme: "light2",
       title:{
-        text:"LG Innotek Co.,Ltd.(011070.KS)"
+        text:"LG Innotek, Ltd.(011070.KS)"
       },
       subtitles: [{
         text: "Price-Volume Trend"
@@ -103,7 +111,7 @@ class Lginnotek extends Component {
           name: "Volume",
           yValueFormatString: "#,###.## ₩",
           type: "column",
-          dataPoints : this.state.dataPoints1
+          dataPoints : this.state.dataPoints2
         }]
       }],
       navigator: {
@@ -121,130 +129,159 @@ class Lginnotek extends Component {
       height: "450px",
       margin: "auto"
     };
+
+
     return (
-      <div> 
-        <div>
-          {
-            // Reference: https://reactjs.org/docs/conditional-rendering.html#inline-if-with-logical--operator
-            this.state.isLoaded && 
-            <CanvasJSStockChart containerProps={containerProps} options = {options}
-              /* onRef = {ref => this.chart = ref} */
-            />
-          }
+      <>
+      <div className="m-sm-30">
+        <div  className="mb-sm-30" style={{display: 'inline-block'}}>
+          <Breadcrumb
+            routeSegments={[
+              { name: "LG 이노텍" }
+            ]}
+          />
+        </div>
+
+        <div> 
+          <div>
+            {
+              // Reference: https://reactjs.org/docs/conditional-rendering.html#inline-if-with-logical--operator
+              this.state.isLoaded && 
+              <CanvasJSStockChart containerProps={containerProps} options = {options}
+                /* onRef = {ref => this.chart = ref} */
+              />
+            }
+          </div>
+          <br/>
+          <Grid container spacing={3} className="mb-24">
+            <Grid item xs={12} md={6}>
+              <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                <div className="flex flex-middle">
+                  <div className="ml-12">
+                    <h5 className="text-primary inlineblock">LG 이노텍 뉴스</h5>
+                  </div>
+                  <div>
+                  </div>
+                </div>
+              </Card>
+            </Grid>
+          </Grid>
         </div>
       </div>
+      </>
+      
     );
+
+    
+    
   }
 }
 
-const DoughnutChart = ({ height, color = [], theme }) => {
-  const option = {
-    legend: {
-      show: true,
-      itemGap: 20,
-      icon: "circle",
-      bottom: 0,
-      textStyle: {
-        color: theme.palette.text.secondary,
-        fontSize: 13,
-        fontFamily: "roboto"
-      }
-    },
-    tooltip: {
-      show: false,
-      trigger: "item",
-      formatter: "{a} <br/>{b}: {c} ({d}%)"
-    },
-    xAxis: [
-      {
-        axisLine: {
-          show: false
-        },
-        splitLine: {
-          show: false
-        }
-      }
-    ],
-    yAxis: [
-      {
-        axisLine: {
-          show: false
-        },
-        splitLine: {
-          show: false
-        }
-      }
-    ],
+// const DoughnutChart = ({ height, color = [], theme }) => {
+//   const option = {
+//     legend: {
+//       show: true,
+//       itemGap: 20,
+//       icon: "circle",
+//       bottom: 0,
+//       textStyle: {
+//         color: theme.palette.text.secondary,
+//         fontSize: 13,
+//         fontFamily: "roboto"
+//       }
+//     },
+//     tooltip: {
+//       show: false,
+//       trigger: "item",
+//       formatter: "{a} <br/>{b}: {c} ({d}%)"
+//     },
+//     xAxis: [
+//       {
+//         axisLine: {
+//           show: false
+//         },
+//         splitLine: {
+//           show: false
+//         }
+//       }
+//     ],
+//     yAxis: [
+//       {
+//         axisLine: {
+//           show: false
+//         },
+//         splitLine: {
+//           show: false
+//         }
+//       }
+//     ],
 
-    series: [
-      {
-        name: "Traffic Rate",
-        type: "pie",
-        radius: ["45%", "72.55%"],
-        center: ["50%", "50%"],
-        avoidLabelOverlap: false,
-        hoverOffset: 5,
-        stillShowZeroSum: false,
-        label: {
-          normal: {
-            show: false,
-            position: "center", // shows the description data to center, turn off to show in right side
-            textStyle: {
-              color: theme.palette.text.secondary,
-              fontSize: 13,
-              fontFamily: "roboto"
-            },
-            formatter: "{a}"
-          },
-          emphasis: {
-            show: true,
-            textStyle: {
-              fontSize: "14",
-              fontWeight: "normal"
-              // color: "rgba(15, 21, 77, 1)"
-            },
-            formatter: "{b} \n{c} ({d}%)"
-          }
-        },
-        labelLine: {
-          normal: {
-            show: false
-          }
-        },
-        data: [
-          {
-            value: 65,
-            name: "Google"
-          },
-          {
-            value: 20,
-            name: "Facebook"
-          },
-          { value: 15, name: "Others" }
-        ],
-        itemStyle: {
-          emphasis: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)"
-          }
-        }
-      }
-    ]
-  };
+//     series: [
+//       {
+//         name: "Traffic Rate",
+//         type: "pie",
+//         radius: ["45%", "72.55%"],
+//         center: ["50%", "50%"],
+//         avoidLabelOverlap: false,
+//         hoverOffset: 5,
+//         stillShowZeroSum: false,
+//         label: {
+//           normal: {
+//             show: false,
+//             position: "center", // shows the description data to center, turn off to show in right side
+//             textStyle: {
+//               color: theme.palette.text.secondary,
+//               fontSize: 13,
+//               fontFamily: "roboto"
+//             },
+//             formatter: "{a}"
+//           },
+//           emphasis: {
+//             show: true,
+//             textStyle: {
+//               fontSize: "14",
+//               fontWeight: "normal"
+//               // color: "rgba(15, 21, 77, 1)"
+//             },
+//             formatter: "{b} \n{c} ({d}%)"
+//           }
+//         },
+//         labelLine: {
+//           normal: {
+//             show: false
+//           }
+//         },
+//         data: [
+//           {
+//             value: 65,
+//             name: "Google"
+//           },
+//           {
+//             value: 20,
+//             name: "Facebook"
+//           },
+//           { value: 15, name: "Others" }
+//         ],
+//         itemStyle: {
+//           emphasis: {
+//             shadowBlur: 10,
+//             shadowOffsetX: 0,
+//             shadowColor: "rgba(0, 0, 0, 0.5)"
+//           }
+//         }
+//       }
+//     ]
+//   };
 
-  return (
-    <ReactEcharts
-      style={{ height: height }}
-      option={{
-        ...option,
-        color: [...color]
-      }}
-    />
-  );
-};
-export default withStyles({}, { withTheme: true }(Lginnotek,DoughnutChart)); 
+//   return (
+//     <ReactEcharts
+//       style={{ height: height }}
+//       option={{
+//         ...option,
+//         color: [...color]
+//       }}
+//     />
+//   );
+// };
 
-
-
-
+export default withStyles({}, { withTheme: true } )(Lginnotek); 

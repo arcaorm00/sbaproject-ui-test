@@ -212,7 +212,7 @@ const Trading = () => {
         const re = window.confirm('매도하시겠습니까?')
         if (re) {
             if(tradings.stock_qty > sellQty){
-                member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
+                member.balance = (tradings.price * tradings.stock_qty) - (temp_price * sellQty) 
                 updateSellTrading()
             }else if(tradings.stock_qty == sellQty){
                 member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )

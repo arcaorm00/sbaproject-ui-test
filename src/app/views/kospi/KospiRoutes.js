@@ -3,22 +3,20 @@ import { MatxLoadable } from "matx";
 import { authRoles } from "../../auth/authRoles";
 
 const Lgchem = MatxLoadable({
-  loader: () => import("./Lgchem")
+  loader: () => import("./lgchem")
 })
 const Lginnotek = MatxLoadable({
-  loader: () => import("./Lginnotek")
+  loader: () => import("./lginnotek")
 })
 
 const kospiRoutes = [
   {
     path: "/kospi/lgchem",
     component: Lgchem,
-    auth: authRoles.admin
   },
   {
     path:"/kospi/lginnotek",
     component: Lginnotek,
-    auth: authRoles.admin
   }
 ];
 

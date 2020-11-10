@@ -1,6 +1,14 @@
 import { withStyles } from "@material-ui/styles";
-import React, { Component } from "react";
+import React, { Component, useCallback, useState, useEffect } from "react";
 import CanvasJSReact from './canvasjs.stock.react';
+import { Breadcrumb } from "matx"
+import { Grid, Card, Icon, IconButton, Tooltip } from "@material-ui/core"
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
+import Typography from '@material-ui/core/Typography'
 import {axios} from 'axios'
 import ReactEcharts from "echarts-for-react";
 var CanvasJS = CanvasJSReact.CanvasJS;
@@ -10,13 +18,13 @@ var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 class Lgchem extends Component {
   constructor(props) {
     super(props);
-    this.state = { dataPoints1: [], dataPoints2: [], dataPoints3: [], isLoaded: false };
+    this.state = { dataPoints1: [], dataPoints2: [], dataPoints3: [], isLoaded: false, news: [], covid: [] };
   }
   
   componentDidMount() {
     //Reference: https://reactjs.org/docs/faq-ajax.html#example-using-ajax-results-to-set-local-state
     // fetch("https://canvasjs.com/data/docs/ltcusd2018.json")
-    fetch(`http://localhost:8080/nasdaq/apple`)
+    fetch(`http://localhost:8080/kospi/lgchem`)
       .then(res => res.json())
       .then(
         (data) => {
@@ -42,6 +50,22 @@ class Lgchem extends Component {
           });
         }
       )
+
+      fetch(`http://localhost:8080/kospi/lgchemnews`)
+      .then(res => res.json())
+      .then(data => {
+        data = data.slice(0, 5)
+        console.log(data)
+        this.setState({news: data})
+      })
+
+      fetch(`http://localhost:8080/kospi/koreacovid`)
+      .then(res => res.json())
+      .then(data => {
+        data = data.slice(0, 5)
+        console.log(data)
+        this.setState({covid: data})
+      })
   }
  
   render() {
@@ -122,24 +146,135 @@ class Lgchem extends Component {
       height: "450px",
       margin: "auto"
     };
-    return (
-      <div> 
-        <div>
-          {
-            // Reference: https://reactjs.org/docs/conditional-rendering.html#inline-if-with-logical--operator
-            this.state.isLoaded && 
-            <CanvasJSStockChart containerProps={containerProps} options = {options}
-              /* onRef = {ref => this.chart = ref} */
-            />
-          }
-        </div>
-      </div>
-      
-    );
 
-    
-    
+
+    return (
+      <>
+      <div className="m-sm-30">
+        <div  className="mb-sm-30" style={{display: 'inline-block'}}>
+          <Breadcrumb
+            routeSegments={[
+              { name: "LG 화학" }
+            ]}
+          />
+        </div>
+
+        <div> 
+          <div>
+            {
+              // Reference: https://reactjs.org/docs/conditional-rendering.html#inline-if-with-logical--operator
+              this.state.isLoaded && 
+              <CanvasJSStockChart containerProps={containerProps} options = {options}
+                /* onRef = {ref => this.chart = ref} */
+              />
+            }
+          </div>
+          <br/>
+          
+            <Grid container spacing={3} className="mb-24">
+              
+              <Grid item xs={12} md={6}>
+                 <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                   <div>
+                     <div className="ml-12" style={{borderBottom: '1px solid lightgrey'}}>
+                       <TableHead>
+                        <h5 className="text-primary inlineblock">LG 화학 뉴스</h5>
+                       </TableHead>
+                     </div>
+                     <div>
+                     <TableBody>
+                     {this.state.news.map((row, idx) => (
+                       <TableRow key={row.id} fullWidth>
+                        <TableCell align="left" width="10%">{row.id}</TableCell>
+                        <TableCell align='left' width="80%" style={{cursor: 'pointer'}} noWrap>
+                          <a href={row.url}>{row.headline}</a>
+                        </TableCell>
+                        <TableCell align="right" width="10%">{row.date}</TableCell>
+                       </TableRow>
+                     ))}
+                     </TableBody>
+                     </div>
+                   </div>
+                 </Card>
+              </Grid>
+                 {/* covid */}
+                <Grid item xs={12} md={6}>
+                  <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                    <div>
+                      <div className="ml-12" style={{borderBottom: '1px solid lightgrey'}}>
+                        <TableHead>
+                          <h5 className="text-primary inlineblock">Covid-19 현황</h5>
+                        </TableHead>
+                        <TableHead>
+                        <TableRow>
+                            <TableCell align="left">
+                              <Typography variant="subtitle2" color="inherit" noWrap>
+                                서울 확진자
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="center">
+                              <Typography variant="subtitle2" color="inherit" noWrap>
+                                서울 사망자
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="center">
+                              <Typography variant="subtitle2" color="inherit" noWrap>
+                                전국 확진자
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="center">
+                              <Typography variant="subtitle2" color="inherit" noWrap>
+                                전국 사망자
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                      </div>
+                      <div>
+                      <TableBody>
+                      {this.state.covid.map((row, idx) => (
+                        <TableRow fullWidth>
+                          {/* <TableCell align='left' noWrap>{row.date}</TableCell> */}
+                          <TableCell align='left' noWrap>{row.seoul_cases}</TableCell>
+                          <TableCell align='left' noWrap>{row.seoul_deaths}</TableCell>
+                          <TableCell align='left' noWrap>{row.total_cases}</TableCell>
+                          <TableCell align='left' noWrap>{row.total_deaths}</TableCell>
+                        </TableRow>
+                      ))}
+                      </TableBody>
+                      </div>
+                    </div>
+                  </Card>
+                 </Grid>
+              </Grid>
+            </div>
+        </div>
+      </>  
+    );
   }
+}
+
+const LGchemNews = () => {
+
+  const [news, setNews] = useState(null)
+
+  return(
+    <div><p>{news}</p></div>
+    // <Grid container spacing={3} className="mb-24">
+    //   <Grid item xs={12} md={6}>
+    //     <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+    //       <div className="flex flex-middle">
+    //         <div className="ml-12">
+    //           <h5 className="text-primary inlineblock">LG 화학 뉴스</h5>
+    //         </div>
+    //         <div>
+    //           {news}
+    //         </div>
+    //       </div>
+    //     </Card>
+    //   </Grid>
+    // </Grid>
+  )
 }
 
 // const DoughnutChart = ({ height, color = [], theme }) => {

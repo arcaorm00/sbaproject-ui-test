@@ -12,6 +12,9 @@ import dragAndDropRoute from "./views/Drag&Drop/DragAndDropRoute";
 import formsRoutes from "./views/forms/FormsRoutes";
 import mapRoutes from "./views/map/MapRoutes";
 
+import kospiRoutes from "./views/kospi/KospiRoutes";
+import kospipredRoutes from "./views/kospi_pred/kospipredRoutes";
+
 // const redirectRoute = [
 //   {
 //     path: "/",
@@ -38,6 +41,8 @@ const routes = [
   ...sessionRoutes,
   ...dashboardRoutes,
   ...materialRoutes,
+  ...kospiRoutes,
+  ...kospipredRoutes,
   ...utilitiesRoutes,
   ...dragAndDropRoute,
   ...formsRoutes,

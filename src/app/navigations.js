@@ -78,15 +78,16 @@ export const navigations = [
   },
 
   {
-    name: "공지",
+    name: "Notice",
     icon: "description",
     path: "/forms/basic"
   },
-  {
-    name: "거래",
-    icon: "format_list_bulleted",
-    path: "/session/tradingtest"
-  },
+  // {
+  //   name: "거래",
+  //   icon: "format_list_bulleted",
+  //   path: "/session/tradingtest"
+  // },
+
   // {
   //   name: "관심 종목",
   //   icon: "control_camera",
