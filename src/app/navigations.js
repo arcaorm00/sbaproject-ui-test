@@ -1,16 +1,84 @@
 export const navigations = [
-  // {
-  //   name: "KOSPI",
-  //   path: "/dashboard/analytics",
-  //   icon: "dashboard"
-  // },
-  // {
-  //   name: "NASDOQ",
-  //   path: "/dashboard/analytics",
-  //   icon: "dashboard"
-  // },
   {
-    name: "게시판",
+    name: "NASDOQ",
+    icon: "dashboard",
+    children: [
+      {
+        name: "Current Market",
+        children:[
+          {
+            name: "Apple",
+            icon: 'apple',
+            path: "/nasdaq/apple"
+          },
+          {
+            name: "Tesla",
+            icon : 'drive_eta',
+            path: "/nasdaq/tesla"
+          }
+        ]
+      },
+      {
+      name: "Stock Prediction",
+      icon: "show_chart",
+      children: [
+      {
+        name: "Apple",
+        // icon: ()=> <AppleIcon/>,
+        icon: "phone_iphone",
+        path: "/nasdaq/pred_apple",
+        iconText: "C"
+      },
+      {
+        name: "Tesla",
+        icon: "battery_charging_full",
+        path: "/nasdaq/pred_tesla",
+        iconText: "D"
+      }
+    ]
+    }]
+  },
+  {
+    name: "Kospi",
+    icon: "dashboard",
+    children:[
+
+      {name: "Current Marekt",
+      icon: "multiline_chart",
+      children:[
+        {name: "LG Chem",
+         path: "/kospi/lgchem",
+         icon:"battery_charging_full"},
+         
+         {name: "LG Innotek",
+          path: "/kospi/lginnotek",
+          icon:"camera"}
+    ]
+  },
+    
+    {
+      name: "Kospi Prediction",
+      icon: "multiline_chart",
+      children: [
+        {
+          name: "LG Chem",
+          path: "/kospi_pred/lgchem_pred",
+          icon:"battery_charging_full",
+          iconText: "C"
+        },
+        {
+          name: "LG Innotek",
+          icon:"camera",
+          path: "/kospi_pred/lginnotek_pred",
+          iconText: "S"
+        }
+
+      ]
+    }]
+  },
+
+  {
+    name: "공지",
     icon: "description",
     path: "/forms/basic"
   },

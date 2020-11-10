@@ -119,11 +119,13 @@ const Trading = () => {
 
     // 매수
     const buyStock = () => {
-        alert(isTraded)
-        if(isTraded){
-            updateBuyTrading()
-        }else{
-            insertBuyTrading()
+        const re = window.confirm('매수하시겠습니까?')
+        if (re) {
+            if(isTraded){
+                updateBuyTrading()
+            }else{
+                insertBuyTrading()
+            }
         }
     }
 
@@ -172,15 +174,14 @@ const Trading = () => {
                 stock_type: 'NASDAQ',
                 stock_ticker: 'TSLA',
                 stock_qty: ((tradings.stock_qty*1) + (buyQty * 1)),
-                price: ( (tradings.price * tradings.stock_qty) + (temp_price * buyQty) ) / (tradings.stock_qty + buyQty),
+                price: ( (tradings.price * tradings.stock_qty) + (temp_price * buyQty) ) / ((tradings.stock_qty*1) + (buyQty * 1)),
                 trading_date: today
             }
             console.log(data)
             const req = {
                 method: c.put,
-                url: `${c.url}/api/trading/${tradings.id}`,
-                data: data,
-
+                url: `${c.url}/api/trading`,
+                data: data
             }
             const res = await axios(req)
             alert('매수되었습니다.')
@@ -208,23 +209,22 @@ const Trading = () => {
 
     //매도
     const sellStock = () => {
-        alert(tradings.stock_qty)
-        if(tradings.stock_qty > sellQty){
-            member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
-            updateSellTrading()
-            // updateSellMember()
-        }else if(tradings.stock_qty == sellQty){
-            member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
-            member.stock_qty = member.stock_qty - 1
-            deleteTradings()
-            // updateSellMember()
-        }else{
-            alert('보유하신 주보다 많이 매도할 수 없습니다.')
-        }
+        const re = window.confirm('매도하시겠습니까?')
+        if (re) {
+            if(tradings.stock_qty > sellQty){
+                member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
+                updateSellTrading()
+            }else if(tradings.stock_qty == sellQty){
+                member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
+                member.stock_qty = member.stock_qty - 1
+                deleteTradings()
+            }else{
+                alert('보유하신 수량보다 많이 매도할 수 없습니다.')
+            }
+        } 
     }
 
     const updateSellTrading = useCallback(async e => {
-        alert(tradings.stock_qty)
         try{
             const data = {
                 id: tradings.id,
@@ -238,12 +238,13 @@ const Trading = () => {
             console.log(data)
             const req = {
                 method: c.put,
-                url: `${c.url}/api/trading/${tradings.id}`,
+                url: `${c.url}/api/trading`,
                 data: data,
                 auth: c.auth
             }
             const res = await axios(req)
             alert('매도 되었습니다.')
+            updateSellMember()
             setSellQty(1)
         }catch(err){
             alert('매도에 실패했습니다.')
@@ -259,6 +260,7 @@ const Trading = () => {
             }
             const res = await axios(req)
             alert('매도 되었습니다.')
+            updateSellMember()
             setSellQty(1)
         }catch(err){
             alert('매도에 실패했습니다.')
@@ -291,10 +293,9 @@ const Trading = () => {
                 name="buyQty"
                 label="수량"
                 type="number"
-                min="1"
                 value={buyQty}
                 autoComplete="buyQty"
-                onChange={ e => {setBuyQty(e.target.value)}}
+                onChange={ e => {if (e.target.value < 1) { buyQty = 1 } else { setBuyQty(e.target.value) }}}
             />
             {sessionMember != null 
             ? <Button id='buyBtn' className='m-5' variant='contained' color='primary' onClick={buyStock}>매수</Button>
@@ -306,10 +307,9 @@ const Trading = () => {
                 name="sellQty"
                 label="수량"
                 type="number"
-                min="1"
                 value={sellQty}
                 autoComplete="sellQty"
-                onChange={ e => {setSellQty(e.target.value)}}
+                onChange={ e => {if (e.target.value < 1) { sellQty = 1 } else { setSellQty(e.target.value) }}}
             />
             {sessionMember != null && isTraded 
             ? <Button id='sellBtn' className='m-5' variant='contained' color='secondary' onClick={sellStock}>매도</Button>
