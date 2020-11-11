@@ -10,6 +10,12 @@
   border-radius: 50%;
   overflow: hidden;
 }
+.circular-image-medium {
+  height: 100px;
+  width: 100px;
+  border-radius: 0%;
+  overflow: hidden;
+}
 .card {
   transition: all 0.3s ease;
   &:hover {
