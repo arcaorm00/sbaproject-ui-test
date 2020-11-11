@@ -9,6 +9,7 @@ import {
   TableCell,
   TableBody
 } from "@material-ui/core";
+import { useHistory } from 'react-router-dom'
 
 import { context as c } from '../../../../context'
 import axios from 'axios'
@@ -16,6 +17,7 @@ import axios from 'axios'
 const TableCard = () => {
 
   const [tradeStock, setTradeStock] = useState([])
+  const history = useHistory()
   const sessionMember = sessionStorage.getItem("sessionMember")
 
   useEffect(() => { getTrading() }, [])
@@ -94,11 +96,36 @@ const TableCard = () => {
             <TableBody>
             {tradeStock.map((product, index) => (
               <TableRow key={index}>
-                <TableCell className="px-0" colSpan={4}>
+                {product.stock_ticker == 'LG화학'
+                ?
+                <TableCell className="px-0" colSpan={4} onClick={() => history.push('/kospi/lgchem')}>
                   <IconButton>
                     <h4>{product.stock_ticker}</h4>
                   </IconButton>
                 </TableCell>
+                : product.stock_ticker == 'LG이노텍'
+                ?
+                <TableCell className="px-0" colSpan={4} onClick={() => history.push('/kospi/lginnotek')}>
+                  <IconButton>
+                    <h4>{product.stock_ticker}</h4>
+                  </IconButton>
+                </TableCell>
+                : product.stock_ticker == 'AAPL'
+                ?
+                <TableCell className="px-0" colSpan={4} onClick={() => history.push('/nasdaq/apple')}>
+                  <IconButton>
+                    <h4>{product.stock_ticker}</h4>
+                  </IconButton>
+                </TableCell>
+                : product.stock_ticker == 'TSLA'
+                ?
+                <TableCell className="px-0" colSpan={4} onClick={() => history.push('/nasdaq/tesla')}>
+                  <IconButton>
+                    <h4>{product.stock_ticker}</h4>
+                  </IconButton>
+                </TableCell>
+                : null
+                }
 
                 <TableCell className="px-0" align="left" colSpan={2}>
                   {/* {product.available ? (

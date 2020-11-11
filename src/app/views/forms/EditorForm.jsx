@@ -19,7 +19,7 @@ const EditorForm = () => {
     }
     if (history.location['state']){
       const data = history.location['state']['detail']
-      alert(data.id)
+      // alert(data.id)
       document.getElementById('boardid').value = data.id
       document.getElementById('title').value = data.title
       setBodyContent(data.content)

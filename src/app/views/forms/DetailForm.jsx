@@ -75,7 +75,7 @@ const DetailForm = () => {
   useEffect(() => {
     getArticle()
     getComments()
-  }, [])
+  })
 
   const getArticle = useCallback(async e => {
     try{
@@ -135,9 +135,10 @@ const DetailForm = () => {
           method: c.delete,
           url: `${c.url}/api/board/${id}`
         }
+        history.push('/forms/basic')
         const res = await axios(req)
         alert('게시물이 삭제되었습니다.')
-        history.push('/forms/basic')
+        window.location.reload()
       }catch (err){
         alert('Delete Fail')
         throw(err)
@@ -335,12 +336,12 @@ const DetailForm = () => {
           
             <li className={classes.comments}>
               <td width="15%" align="left"><b>{row.email.split('@')[0]}</b>&nbsp;&nbsp;</td>
-              <td width="60%" align="left">{row.comment}</td>
+              <td width="70%" align="left">{row.comment}</td>
               
               <td width="15%" align="left"><small>{row.regdate}</small></td>
               { sessionMember == row.email 
               ? <>
-              <td width="10%" align="center" style={{cursor: 'pointer'}} onClick={() => clickCommentUpdateBtn(row)}>수정</td>
+              {/* <td width="10%" align="center" style={{cursor: 'pointer'}} onClick={() => clickCommentUpdateBtn(row)}>수정</td> */}
               <td width="5%" align="left" style={{cursor: 'pointer'}} onClick={() => clickCommentDelete(row)}>X</td>
               </>
               : <>
