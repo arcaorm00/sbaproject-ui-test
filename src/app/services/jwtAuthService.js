@@ -9,7 +9,7 @@ class JwtAuthService {
     role: 'ADMIN',
     displayName: "Jason Alexander",
     email: "jasonalexander@gmail.com",
-    photoURL: "/assets/images/stock_img.png",
+    photoURL: "/assets/images/stock_img.jpg",
     age: 25,
     token: "faslkhfh423oiu4h4kj432rkj23h432u49ufjaklj423h4jkhkjh"
   }

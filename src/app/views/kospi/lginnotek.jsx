@@ -3,6 +3,12 @@ import React, { Component } from "react";
 import CanvasJSReact from './canvasjs.stock.react';
 import { Breadcrumb } from "matx"
 import { Grid, Card, Icon, IconButton, Tooltip } from "@material-ui/core"
+import Table from '@material-ui/core/Table'
+import TableHead from '@material-ui/core/TableHead'
+import TableBody from '@material-ui/core/TableBody'
+import TableRow from '@material-ui/core/TableRow'
+import TableCell from '@material-ui/core/TableCell'
+import Typography from '@material-ui/core/Typography'
 import {axios} from 'axios'
 import ReactEcharts from "echarts-for-react";
 var CanvasJS = CanvasJSReact.CanvasJS;
@@ -12,7 +18,7 @@ var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 class Lginnotek extends Component {
   constructor(props) {
     super(props);
-    this.state = { dataPoints1: [], dataPoints2: [], dataPoints3: [], isLoaded: false };
+    this.state = { dataPoints1: [], dataPoints2: [], dataPoints3: [], isLoaded: false, news: [], covid: [] };
   }
   
   componentDidMount() {
@@ -45,9 +51,37 @@ class Lginnotek extends Component {
         }
       )
 
-      fetch(`http://localhost:8080/kospi/lgchemnews`)
+      fetch(`http://localhost:8080/kospi/lginnoteknews`)
       .then(res => res.json())
       .then(data => {
+        data = data.slice(0, 5)
+        console.log(data)
+        for (var i in data){
+          var date = new Date(data[i].date)
+          var yyyy = date.getFullYear().toString()
+          var mm = (date.getMonth()+1).toString()
+          var dd  = date.getDate().toString()
+          var hh = date.getHours().toString()
+          var min = date.getMinutes().toString()
+          var ss = date.getSeconds().toString()
+          data[i].date = yyyy + '-' + (mm[1]?mm:'0'+mm[0]) + '-' + (dd[1]?dd:'0'+dd[0]) + ' ' + (hh[1]?hh:'0'+hh[0]) + ':' + (min[1]?min:'0'+min[0])
+        }
+        this.setState({news: data})
+      })
+
+      fetch(`http://localhost:8080/kospi/koreacovid`)
+      .then(res => res.json())
+      .then(data => {
+        data = data.slice(0, 5)
+        console.log(data)
+        for (var i in data){
+          var date = new Date(data[i].date)
+          var yyyy = date.getFullYear().toString()
+          var mm = (date.getMonth()+1).toString()
+          var dd  = date.getDate().toString()
+          data[i].date = yyyy + '-' + (mm[1]?mm:'0'+mm[0]) + '-' + (dd[1]?dd:'0'+dd[0])
+        }
+        this.setState({covid: data})
       })
   }
  
@@ -154,18 +188,95 @@ class Lginnotek extends Component {
           </div>
           <br/>
           <Grid container spacing={3} className="mb-24">
-            <Grid item xs={12} md={6}>
-              <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-                <div className="flex flex-middle">
-                  <div className="ml-12">
-                    <h5 className="text-primary inlineblock">LG 이노텍 뉴스</h5>
-                  </div>
-                  <div>
-                  </div>
-                </div>
-              </Card>
-            </Grid>
-          </Grid>
+              <Grid item xs={12} md={6}>
+                 <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                   <div>
+                     <div className="ml-12">
+                        <h5 className="text-primary inlineblock">LG 이노텍 뉴스</h5>
+                        <Table aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell align="center" width="75%">
+                                <Typography variant="subtitle2" color="inherit" noWrap>
+                                  제목
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="center" width="20%">
+                                <Typography variant="subtitle2" color="inherit" noWrap>
+                                  날짜
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                        {this.state.news.map((row, idx) => (
+                          <TableRow>
+                            {/* <TableCell align="left" width="5%">{row.id}</TableCell> */}
+                            <TableCell align='left' width="75%" style={{cursor: 'pointer', whiteSpace: 'noWrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                              <a href={row.url}>{row.headline}</a>
+                            </TableCell>
+                            <TableCell align="right" width="20%"><small>{row.date}</small></TableCell>
+                          </TableRow>
+                        ))}
+                        </TableBody>
+                        </Table>
+                     </div>
+                   </div>
+                 </Card>
+              </Grid>
+                 {/* covid */}
+                <Grid item xs={12} md={6}>
+                  <Card className="play-card p-sm-24 bg-paper" elevation={6}>
+                    <div>
+                      <div className="ml-12">
+                          <h5 className="text-primary inlineblock">Covid-19 현황</h5>
+                          <Table aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    날짜
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    서울 확진자
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    서울 사망자
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    전국 확진자
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    전국 사망자
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {this.state.covid.map((row) => (
+                                <TableRow>
+                                  <TableCell align="center">{row.date}</TableCell>
+                                  <TableCell align="center">{row.seoul_cases}</TableCell>
+                                  <TableCell align='center'>{row.seoul_deaths}</TableCell>
+                                  <TableCell align="center">{row.total_cases}</TableCell>
+                                  <TableCell align="center">{row.total_deaths}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                      </div>
+                    </div>
+                  </Card>
+                 </Grid>
+              </Grid>
         </div>
       </div>
       </>

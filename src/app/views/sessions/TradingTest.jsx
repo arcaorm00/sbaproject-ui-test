@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
+import Lgchem from '../kospi/lgchem'
 
 const Trading = () => {
 
@@ -212,10 +213,10 @@ const Trading = () => {
         const re = window.confirm('매도하시겠습니까?')
         if (re) {
             if(tradings.stock_qty > sellQty){
-                member.balance = (tradings.price * tradings.stock_qty) - (temp_price * sellQty) 
+                member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * temp_price))
                 updateSellTrading()
             }else if(tradings.stock_qty == sellQty){
-                member.balance = member.balance - ( (tradings.price * tradings.stock_qty) -( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) )
+                member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * temp_price))
                 member.stock_qty = member.stock_qty - 1
                 deleteTradings()
             }else{
@@ -286,6 +287,7 @@ const Trading = () => {
 
     return (
         <div>
+            <Lgchem/>
             <div>TSLA 예수금: $ <span id='withholdings'>{withholdings}</span></div>
             <div>현재 계좌 잔액: $ <span id='balance'>{(member.balance - withholdings).toFixed(2)}</span></div>
             <TextField

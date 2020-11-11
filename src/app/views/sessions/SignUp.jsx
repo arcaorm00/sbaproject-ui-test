@@ -404,7 +404,7 @@ const SignUp = () => {
                   />
                   <FormControlLabel
                     className="mb-16"
-                    control={<Checkbox id="agreement" name="agreement" onChange={e=>{setAgreement(agreement)}}/>}
+                    control={<Checkbox id="agreement" name="agreement" checked disabled onChange={e=>{setAgreement(agreement)}}/>}
                     label="I have read and agree to the terms of service."
                   />
                   <div className="flex flex-middle">

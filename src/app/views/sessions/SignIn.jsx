@@ -124,7 +124,7 @@ const SignIn = (props) => {
                     className="mb-8"
                     name="agreement"
                     onChange={e => {setAgreement(e.target.value)}}
-                    control={<Checkbox checked />}
+                    control={<Checkbox checked disabled/>}
                     label="I have read and agree to the terms of service."
                   />
                   <div className="flex flex-middle mb-8">
@@ -135,7 +135,7 @@ const SignIn = (props) => {
                         disabled={props.login.loading}
                         type="submit"
                       >
-                        Sign in to Enter Dashboard
+                        Sign in to Stock Psychic
                       </Button>
                       {props.login.loading && (
                         <CircularProgress
@@ -157,11 +157,19 @@ const SignIn = (props) => {
                   <Button
                     className="text-primary"
                     onClick={() =>
+                      history.push("/")
+                    }
+                  >
+                    Sign in Later?
+                  </Button>
+                  {/* <Button
+                    className="text-primary"
+                    onClick={() =>
                       history.push("/session/forgot-password")
                     }
                   >
                     Forgot password?
-                  </Button>
+                  </Button> */}
                 </ValidatorForm>
               </div>
             </Grid>

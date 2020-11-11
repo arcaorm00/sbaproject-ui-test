@@ -1,5 +1,10 @@
 import { withStyles } from "@material-ui/styles";
-import React, { Component, useCallback, useState, useEffect } from "react";
+import React, { Component, useEffect, useCallback, useState } from "react";
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import { useHistory } from 'react-router-dom'
+import { context as c } from '../../../context'
+
 import CanvasJSReact from './canvasjs.stock.react';
 import { Breadcrumb } from "matx"
 import { Grid, Card, Icon, IconButton, Tooltip } from "@material-ui/core"
@@ -18,9 +23,109 @@ var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 class Lgchem extends Component {
   constructor(props) {
     super(props);
-    this.state = { dataPoints1: [], dataPoints2: [], dataPoints3: [], isLoaded: false, news: [], covid: [] };
+    this.state = { dataPoints1: [], dataPoints2: [], dataPoints3: [], isLoaded: false, news: [], covid: [], 
+      sessionMember: sessionStorage.getItem('sessionMember'), 
+      member: {
+        email: '',
+        password: '',
+        name: '',
+        profile: '', 
+        geography: '', 
+        gender: '', 
+        age: 0, 
+        tenure: 0, 
+        stock_qty: 0, 
+        balance: 0.0, 
+        has_credit: 0, 
+        credit_score: 0, 
+        is_active_member: 1, 
+        estimated_salary: 0.0, 
+        role: '',
+        probability_churn: 0.0,
+        exited: 0
+    },
+    trading: {
+      id: 0,
+      email: '',
+      stock_type: '',
+      stock_ticker: '',
+      stock_qty: 0,
+      trading_date: ''
+    },
+    isTraded: false,
+    withholdings: 0, balance: 0,
+    buyQty: 1, sellQty: 1, stockPrice: 0
+   };
   }
+
+
+
+  getTime = () => {
+      let today = new Date()
+      let yyyy = today.getFullYear().toString()
+      let mm = (today.getMonth() + 1).toString()
+      let dd = today.getDate().toString()
+
+      let hours = today.getHours().toString()
+      let minutes = today.getMinutes().toString()
+      let seconds = today.getSeconds().toString()
+
+      let result = yyyy + '/' + (mm[1] ? mm : '0' + mm[0]) + '/' + (dd[1] ? dd : '0' + dd[0]) + ' ' 
+      + (hours[1] ? hours : '0' + hours[0]) + ':' + (minutes[1] ? minutes : '0' + minutes[0]) + ':' + (seconds[1] ? seconds : '0' + seconds[0])
+      return result
+  }
+      
+
+  insertBuyTrading = () => {
+    const today = this.getTime()
+    const balance = document.getElementById('balance').value
+    alert(this.state.buyQty*this.state.stockPrice)
+    if((this.state.buyQty*this.state.stockPrice) > balance){
+        alert('잔금이 부족합니다.')
+        return
+    }
+    const data = {
+        email: this.state.sessionMember,
+        stock_type: 'KOSPI',
+        stock_ticker: 'LG화학',
+        stock_qty: this.state.buyQty,
+        price: this.state.stockPrice,
+        trading_date: today
+    }
+    const req = {
+        method: c.post,
+        url: `${c.url}/api/trading/0`,
+        data: data
+    }
+    this.updateMember()
+    alert('매수되었습니다.')
+    // setBuyQty(1)
+  }
+
+  updateBuyTrading = () => {
+    alert('UPDATE')
+  }
+
+  updateMember = () => {
+    this.state.member.stock_qty = this.state.member.stock_qty + 1
+    fetch({url: `${c.url}/api/member/${this.state.sessionMember}`, method: c.put, data: this.state.member})
+    .then(res => {console.log('UPDATEMEMBER:', res)})
+  }
+
+  // 매수
+  buyStock = () => {
+    const re = window.confirm('매수하시겠습니까?')
+    if (re) {
+      if(this.state.isTraded){
+          this.updateBuyTrading()
+      }else{
+          this.insertBuyTrading()
+      }
+    }
+  }
+
   
+ 
   componentDidMount() {
     //Reference: https://reactjs.org/docs/faq-ajax.html#example-using-ajax-results-to-set-local-state
     // fetch("https://canvasjs.com/data/docs/ltcusd2018.json")
@@ -46,7 +151,8 @@ class Lgchem extends Component {
             isLoaded: true,
             dataPoints1: dps1,
             dataPoints2: dps2,
-            dataPoints3: dps3
+            dataPoints3: dps3,
+            stockPrice: data[0].low / 1129.16
           });
         }
       )
@@ -56,18 +162,76 @@ class Lgchem extends Component {
       .then(data => {
         data = data.slice(0, 5)
         console.log(data)
+        for (var i in data){
+          var date = new Date(data[i].date)
+          var yyyy = date.getFullYear().toString()
+          var mm = (date.getMonth()+1).toString()
+          var dd  = date.getDate().toString()
+          var hh = date.getHours().toString()
+          var min = date.getMinutes().toString()
+          var ss = date.getSeconds().toString()
+          data[i].date = yyyy + '-' + (mm[1]?mm:'0'+mm[0]) + '-' + (dd[1]?dd:'0'+dd[0]) + ' ' + (hh[1]?hh:'0'+hh[0]) + ':' + (min[1]?min:'0'+min[0])
+        }
         this.setState({news: data})
       })
 
       fetch(`http://localhost:8080/kospi/koreacovid`)
       .then(res => res.json())
       .then(data => {
+        data = data.reverse()
         data = data.slice(0, 5)
         console.log(data)
+        for (var i in data){
+          var date = new Date(data[i].date)
+          var yyyy = date.getFullYear().toString()
+          var mm = (date.getMonth()+1).toString()
+          var dd  = date.getDate().toString()
+          data[i].date = yyyy + '-' + (mm[1]?mm:'0'+mm[0]) + '-' + (dd[1]?dd:'0'+dd[0])
+        }
         this.setState({covid: data})
       })
+
+      // getMember
+      fetch(`${c.url}/api/member/${this.state.sessionMember}`)
+      .then(res => res.json())
+      .then(data => {
+        this.setState({member: data[0]})
+      })
+
+      // getTradings
+      fetch(`${c.url}/api/tradings/${this.state.sessionMember}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        let temp_num = 0
+        // 해당 멤버가 거래한 종목 중 이 화면의 해당 종목이 있는지 확인해서 반환
+        const isAlready = data.filter(function(t){ return t['stock_ticker'] == 'LG화학' })
+        this.setState({trading: isAlready[0]})
+
+        if (isAlready.length > 0){
+            this.setState({isTraded: true})
+            // 예수금 구하기
+            for (let i=0; i < isAlready.length; i++){
+                temp_num = temp_num + isAlready[i].price*isAlready[i].stock_qty
+            }
+        }else{ 
+            this.setState({isTraded: false})
+            // 예수금 구하기
+            for (let i=0; i < isAlready.length; i++){
+                temp_num = temp_num + data[i].price*data[i].stock_qty
+            }
+        }
+        alert(temp_num)
+        this.setState({withholdings: temp_num.toFixed(2)})
+      })
+
+      // getBalance
+      this.setState({balance: (this.state.member.balance - this.state.withholdings).toFixed(2)})
+
+
   }
- 
+
+  
   render() {
     const options = {
       theme: "light2",
@@ -147,14 +311,13 @@ class Lgchem extends Component {
       margin: "auto"
     };
 
-
     return (
       <>
       <div className="m-sm-30">
         <div  className="mb-sm-30" style={{display: 'inline-block'}}>
           <Breadcrumb
             routeSegments={[
-              { name: "LG 화학" }
+              { name: "LG화학" }
             ]}
           />
         </div>
@@ -172,27 +335,72 @@ class Lgchem extends Component {
           <br/>
           
             <Grid container spacing={3} className="mb-24">
-              
+              <Grid item xs={12}>
+                <div>
+                  <div>LG화학 예수금: $ <span id='withholdings'>{this.state.withholdings}</span></div>
+                  <div>현재 계좌 잔액: $ <span id='balance'>{(this.state.member.balance - this.state.withholdings).toFixed(2)}</span></div>
+                  <TextField
+                      id="buyQty"
+                      name="buyQty"
+                      label="수량"
+                      type="number"
+                      value={this.state.buyQty}
+                      autoComplete="buyQty"
+                      onChange={ e => {if (e.target.value < 1) { this.state.buyQty = 1 } else { this.setState({buyQty: e.target.value}) }}}
+                  />
+                  {this.state.sessionMember != null 
+                  ? <Button id='buyBtn' className='m-5' variant='contained' color='primary' onClick={this.buyStock}>매수</Button>
+                  : <Button id='buyBtn' className='m-5' variant='contained' color='primary' disabled>매수</Button>
+                  }
+                  <br/>
+                  <TextField
+                      id="sellQty"
+                      name="sellQty"
+                      label="수량"
+                      type="number"
+                      value={this.state.sellQty}
+                      autoComplete="sellQty"
+                      onChange={ e => {if (e.target.value < 1) { this.state.sellQty = 1 } else { this.setState({sellQty: e.target.value}) }}}
+                  />
+                  {this.state.sessionMember != null && this.state.isTraded 
+                  ? <Button id='sellBtn' className='m-5' variant='contained' color='secondary' onClick={this.sellStock}>매도</Button>
+                  : <Button id='sellBtn' className='m-5' variant='contained' color='secondary' disabled>매도</Button>
+                  }
+                </div>
+              </Grid>
+              {/* News */}
               <Grid item xs={12} md={6}>
                  <Card className="play-card p-sm-24 bg-paper" elevation={6}>
                    <div>
-                     <div className="ml-12" style={{borderBottom: '1px solid lightgrey'}}>
-                       <TableHead>
-                        <h5 className="text-primary inlineblock">LG 화학 뉴스</h5>
-                       </TableHead>
-                     </div>
-                     <div>
-                     <TableBody>
-                     {this.state.news.map((row, idx) => (
-                       <TableRow key={row.id} fullWidth>
-                        <TableCell align="left" width="10%">{row.id}</TableCell>
-                        <TableCell align='left' width="80%" style={{cursor: 'pointer'}} noWrap>
-                          <a href={row.url}>{row.headline}</a>
-                        </TableCell>
-                        <TableCell align="right" width="10%">{row.date}</TableCell>
-                       </TableRow>
-                     ))}
-                     </TableBody>
+                     <div className="ml-12">
+                        <h5 id="news" className="text-primary inlineblock">LG화학 뉴스</h5>
+                        <Table aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell align="center" width="75%">
+                                <Typography variant="subtitle2" color="inherit" noWrap>
+                                  제목
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="center" width="20%">
+                                <Typography variant="subtitle2" color="inherit" noWrap>
+                                  날짜
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                        {this.state.news.map((row, idx) => (
+                          <TableRow>
+                            {/* <TableCell align="left" width="5%">{row.id}</TableCell> */}
+                            <TableCell align='left' width="75%" style={{cursor: 'pointer', whiteSpace: 'noWrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                              <a href={row.url}>{row.headline}</a>
+                            </TableCell>
+                            <TableCell align="right" width="20%"><small>{row.date}</small></TableCell>
+                          </TableRow>
+                        ))}
+                        </TableBody>
+                        </Table>
                      </div>
                    </div>
                  </Card>
@@ -201,47 +409,50 @@ class Lgchem extends Component {
                 <Grid item xs={12} md={6}>
                   <Card className="play-card p-sm-24 bg-paper" elevation={6}>
                     <div>
-                      <div className="ml-12" style={{borderBottom: '1px solid lightgrey'}}>
-                        <TableHead>
+                      <div className="ml-12">
                           <h5 className="text-primary inlineblock">Covid-19 현황</h5>
-                        </TableHead>
-                        <TableHead>
-                        <TableRow>
-                            <TableCell align="left">
-                              <Typography variant="subtitle2" color="inherit" noWrap>
-                                서울 확진자
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="center">
-                              <Typography variant="subtitle2" color="inherit" noWrap>
-                                서울 사망자
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="center">
-                              <Typography variant="subtitle2" color="inherit" noWrap>
-                                전국 확진자
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="center">
-                              <Typography variant="subtitle2" color="inherit" noWrap>
-                                전국 사망자
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                      </div>
-                      <div>
-                      <TableBody>
-                      {this.state.covid.map((row, idx) => (
-                        <TableRow fullWidth>
-                          {/* <TableCell align='left' noWrap>{row.date}</TableCell> */}
-                          <TableCell align='left' noWrap>{row.seoul_cases}</TableCell>
-                          <TableCell align='left' noWrap>{row.seoul_deaths}</TableCell>
-                          <TableCell align='left' noWrap>{row.total_cases}</TableCell>
-                          <TableCell align='left' noWrap>{row.total_deaths}</TableCell>
-                        </TableRow>
-                      ))}
-                      </TableBody>
+                          <Table aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    날짜
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    서울 확진자
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    서울 사망자
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    전국 확진자
+                                  </Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Typography variant="subtitle2" color="inherit" noWrap>
+                                    전국 사망자
+                                  </Typography>
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {this.state.covid.map((row) => (
+                                <TableRow>
+                                  <TableCell align="center">{row.date}</TableCell>
+                                  <TableCell align="center">{row.seoul_cases}</TableCell>
+                                  <TableCell align='center'>{row.seoul_deaths}</TableCell>
+                                  <TableCell align="center">{row.total_cases}</TableCell>
+                                  <TableCell align="center">{row.total_deaths}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
                       </div>
                     </div>
                   </Card>
@@ -254,28 +465,323 @@ class Lgchem extends Component {
   }
 }
 
-const LGchemNews = () => {
 
-  const [news, setNews] = useState(null)
+function Trading() {
 
-  return(
-    <div><p>{news}</p></div>
-    // <Grid container spacing={3} className="mb-24">
-    //   <Grid item xs={12} md={6}>
-    //     <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-    //       <div className="flex flex-middle">
-    //         <div className="ml-12">
-    //           <h5 className="text-primary inlineblock">LG 화학 뉴스</h5>
-    //         </div>
-    //         <div>
-    //           {news}
-    //         </div>
-    //       </div>
-    //     </Card>
-    //   </Grid>
-    // </Grid>
+  const sessionMember = sessionStorage.getItem('sessionMember')
+  const [member, setMemberInfo] = useState({
+      email: '',
+      password: '',
+      name: '',
+      profile: '', 
+      geography: '', 
+      gender: '', 
+      age: 0, 
+      tenure: 0, 
+      stock_qty: 0, 
+      balance: 0.0, 
+      has_credit: 0, 
+      credit_score: 0, 
+      is_active_member: 1, 
+      estimated_salary: 0.0, 
+      role: '',
+      probability_churn: 0.0,
+      exited: 0
+  })
+  
+  const [tradings, setTradings] = useState({
+      id: 0,
+      email: '',
+      stock_type: '',
+      stock_ticker: '',
+      stock_qty: 0,
+      trading_date: ''
+  })
+  const [isTraded, setIsTraded] = useState(false)
+  const [withholdings, setWithholdings] = useState(0)
+  const [balance, setBalance] = useState(0)
+
+  const [buyQty, setBuyQty] = useState(1)
+  const [sellQty, setSellQty] = useState(1)
+  const temp_price = 53.4923
+
+  useEffect(() => {
+      getMember()
+      getTradings()
+      getBalance()
+  }, [])
+
+  const getMember = useCallback(async e => {
+      try{
+        const req = {
+          method: c.get,
+          url:`${c.url}/api/member/${sessionMember}`
+        }
+        const res = await axios(req)
+        setMemberInfo(res.data[0])
+      }catch(err){
+        throw(e)
+      }
+  })
+
+  const getTradings = useCallback(async e => {
+      try{
+          const req = {
+              method: c.get,
+              url: `${c.url}/api/tradings/${sessionMember}`
+          }
+          const res = await axios(req)
+          console.log(res.data)
+
+          let temp_num = 0
+          // 해당 멤버가 거래한 종목 중 이 화면의 해당 종목이 있는지 확인해서 반환 (현재는 임의로 테슬라)
+          const isAlready = res.data.filter(function(t){ return t['stock_ticker'] == 'TSLA' })
+          setTradings(isAlready[0])
+          if (isAlready.length > 0){
+              setIsTraded(true)
+              // 예수금 구하기
+              for (let i=0; i < isAlready.length; i++){
+                  temp_num = temp_num + isAlready[i].price*isAlready[i].stock_qty
+              }
+          }else{ 
+              setIsTraded(false)
+              // 예수금 구하기
+              for (let i=0; i < res.data.length; i++){
+                  temp_num = temp_num + res.data[i].price*res.data[i].stock_qty
+              }
+          }
+          setWithholdings(temp_num.toFixed(2))
+      }catch(err){
+          throw(err)
+      }
+  })
+
+  // 잔금 구하기
+  const getBalance = () => {setBalance((member.balance - withholdings).toFixed(2))}
+
+  let today = new Date()
+
+  const getTime = () => {
+      let yyyy = today.getFullYear().toString()
+      let mm = (today.getMonth() + 1).toString()
+      let dd = today.getDate().toString()
+
+      let hours = today.getHours().toString()
+      let minutes = today.getMinutes().toString()
+      let seconds = today.getSeconds().toString()
+
+      let result = yyyy + '/' + (mm[1] ? mm : '0' + mm[0]) + '/' + (dd[1] ? dd : '0' + dd[0]) + ' ' 
+      + (hours[1] ? hours : '0' + hours[0]) + ':' + (minutes[1] ? minutes : '0' + minutes[0]) + ':' + (seconds[1] ? seconds : '0' + seconds[0])
+      return result
+  }
+    
+  today = getTime()
+
+  // 매수
+  const buyStock = () => {
+      const re = window.confirm('매수하시겠습니까?')
+      if (re) {
+          if(isTraded){
+              updateBuyTrading()
+          }else{
+              insertBuyTrading()
+          }
+      }
+  }
+
+  const insertBuyTrading = useCallback(async e => {
+      try{
+          const balance = document.getElementById('balance').value
+          alert(buyQty*temp_price)
+          if((buyQty*temp_price) > balance){
+              alert('잔금이 부족합니다.')
+              return
+          }
+          const data = {
+              email: sessionMember,
+              stock_type: 'NASDAQ',
+              stock_ticker: 'TSLA',
+              stock_qty: buyQty,
+              price: temp_price,
+              trading_date: today
+          }
+          const req = {
+              method: c.post,
+              url: `${c.url}/api/trading/0`,
+              data: data
+          }
+          const res = await axios(req)
+          updateMember()
+          alert('매수되었습니다.')
+          setBuyQty(1)
+      }catch(err){
+          alert('매수에 실패했습니다.')
+          throw(err)
+      }
+  })
+
+  const updateBuyTrading = useCallback(async e => {
+      const balance = document.getElementById('balance').value
+      if((buyQty*temp_price) > balance){
+          alert('잔금이 부족합니다.')
+          return
+      }
+      try{
+          console.log(tradings)
+          const data = {
+              id: tradings.id,
+              email: sessionMember,
+              stock_type: 'NASDAQ',
+              stock_ticker: 'TSLA',
+              stock_qty: ((tradings.stock_qty*1) + (buyQty * 1)),
+              price: ( (tradings.price * tradings.stock_qty) + (temp_price * buyQty) ) / ((tradings.stock_qty*1) + (buyQty * 1)),
+              trading_date: today
+          }
+          console.log(data)
+          const req = {
+              method: c.put,
+              url: `${c.url}/api/trading`,
+              data: data
+          }
+          const res = await axios(req)
+          alert('매수되었습니다.')
+          setBuyQty(1)
+      }catch(err){
+          alert('매수에 실패했습니다.')
+          throw(err)
+      }
+  })
+
+  const updateMember = useCallback(async e => {
+      try{
+          member.stock_qty = member.stock_qty + 1
+          const req = {
+              method: c.put,
+              url: `${c.url}/api/member/${sessionMember}`,
+              data: member
+            }
+          const res = await axios(req)
+      }catch(err){
+          throw(err)
+      }
+  })
+
+
+  //매도
+  const sellStock = () => {
+      const re = window.confirm('매도하시겠습니까?')
+      if (re) {
+          if(tradings.stock_qty > sellQty){
+              member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * temp_price))
+              updateSellTrading()
+          }else if(tradings.stock_qty == sellQty){
+              member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * temp_price))
+              member.stock_qty = member.stock_qty - 1
+              deleteTradings()
+          }else{
+              alert('보유하신 수량보다 많이 매도할 수 없습니다.')
+          }
+      } 
+  }
+
+  const updateSellTrading = useCallback(async e => {
+      try{
+          const data = {
+              id: tradings.id,
+              email: sessionMember,
+              stock_type: 'NASDAQ',
+              stock_ticker: 'TSLA',
+              stock_qty: tradings.stock_qty - sellQty,
+              price: ( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) / (tradings.stock_qty - sellQty),
+              trading_date: today
+          }
+          console.log(data)
+          const req = {
+              method: c.put,
+              url: `${c.url}/api/trading`,
+              data: data,
+              auth: c.auth
+          }
+          const res = await axios(req)
+          alert('매도 되었습니다.')
+          updateSellMember()
+          setSellQty(1)
+      }catch(err){
+          alert('매도에 실패했습니다.')
+          throw(err)
+      }
+  })
+
+  const deleteTradings = useCallback(async e => {
+      try{
+          const req = {
+              method: c.delete,
+              url: `${c.url}/api/trading/${tradings.id}`
+          }
+          const res = await axios(req)
+          alert('매도 되었습니다.')
+          updateSellMember()
+          setSellQty(1)
+      }catch(err){
+          alert('매도에 실패했습니다.')
+          throw(err)
+      }
+  })
+
+  const updateSellMember = useCallback(async e => {
+      try{
+          const req = {
+              method: c.put,
+              url: `${c.url}/api/member/${sessionMember}`,
+              data: member
+          }
+          const res = await axios(req)
+      }catch(err){
+          throw(err)
+      }
+  })
+
+
+  
+
+  return (
+      <div>
+          <div>TSLA 예수금: $ <span id='withholdings'>{withholdings}</span></div>
+          <div>현재 계좌 잔액: $ <span id='balance'>{(member.balance - withholdings).toFixed(2)}</span></div>
+          <TextField
+              id="buyQty"
+              name="buyQty"
+              label="수량"
+              type="number"
+              value={buyQty}
+              autoComplete="buyQty"
+              onChange={ e => {if (e.target.value < 1) { buyQty = 1 } else { setBuyQty(e.target.value) }}}
+          />
+          {sessionMember != null 
+          ? <Button id='buyBtn' className='m-5' variant='contained' color='primary' onClick={buyStock}>매수</Button>
+          : <Button id='buyBtn' className='m-5' variant='contained' color='primary' disabled>매수</Button>
+          }
+          <br/>
+          <TextField
+              id="sellQty"
+              name="sellQty"
+              label="수량"
+              type="number"
+              value={sellQty}
+              autoComplete="sellQty"
+              onChange={ e => {if (e.target.value < 1) { sellQty = 1 } else { setSellQty(e.target.value) }}}
+          />
+          {sessionMember != null && isTraded 
+          ? <Button id='sellBtn' className='m-5' variant='contained' color='secondary' onClick={sellStock}>매도</Button>
+          : <Button id='sellBtn' className='m-5' variant='contained' color='secondary' disabled>매도</Button>
+          }
+          
+      </div>
+      
   )
+
 }
+
 
 // const DoughnutChart = ({ height, color = [], theme }) => {
 //   const option = {
