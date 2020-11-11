@@ -167,14 +167,6 @@ class Lginnotek extends Component {
 
     return (
       <>
-      <div className="m-sm-30">
-        <div  className="mb-sm-30" style={{display: 'inline-block'}}>
-          <Breadcrumb
-            routeSegments={[
-              { name: "LG 이노텍" }
-            ]}
-          />
-        </div>
 
         <div> 
           <div>
@@ -187,98 +179,7 @@ class Lginnotek extends Component {
             }
           </div>
           <br/>
-          <Grid container spacing={3} className="mb-24">
-              <Grid item xs={12} md={6}>
-                 <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-                   <div>
-                     <div className="ml-12">
-                        <h5 className="text-primary inlineblock">LG 이노텍 뉴스</h5>
-                        <Table aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell align="center" width="75%">
-                                <Typography variant="subtitle2" color="inherit" noWrap>
-                                  제목
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="center" width="20%">
-                                <Typography variant="subtitle2" color="inherit" noWrap>
-                                  날짜
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                        {this.state.news.map((row, idx) => (
-                          <TableRow>
-                            {/* <TableCell align="left" width="5%">{row.id}</TableCell> */}
-                            <TableCell align='left' width="75%" style={{cursor: 'pointer', whiteSpace: 'noWrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                              <a href={row.url}>{row.headline}</a>
-                            </TableCell>
-                            <TableCell align="right" width="20%"><small>{row.date}</small></TableCell>
-                          </TableRow>
-                        ))}
-                        </TableBody>
-                        </Table>
-                     </div>
-                   </div>
-                 </Card>
-              </Grid>
-                 {/* covid */}
-                <Grid item xs={12} md={6}>
-                  <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-                    <div>
-                      <div className="ml-12">
-                          <h5 className="text-primary inlineblock">Covid-19 현황</h5>
-                          <Table aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    날짜
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    서울 확진자
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    서울 사망자
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    전국 확진자
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    전국 사망자
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                            {this.state.covid.map((row) => (
-                                <TableRow>
-                                  <TableCell align="center">{row.date}</TableCell>
-                                  <TableCell align="center">{row.seoul_cases}</TableCell>
-                                  <TableCell align='center'>{row.seoul_deaths}</TableCell>
-                                  <TableCell align="center">{row.total_cases}</TableCell>
-                                  <TableCell align="center">{row.total_deaths}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                      </div>
-                    </div>
-                  </Card>
-                 </Grid>
-              </Grid>
         </div>
-      </div>
       </>
       
     );

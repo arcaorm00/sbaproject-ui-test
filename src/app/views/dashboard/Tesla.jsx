@@ -2,7 +2,7 @@ import { withStyles } from "@material-ui/styles";
 import React, { Component, Fragment } from "react";
 import CanvasJSReact from './canvasjs.stock.react';
 import DoughnutChart from '../charts/echarts/Doughnut';
-// import TableCard from '../shared/TableCard'
+import TeslaNews from './TeslaNews' 
 import {Grid, Card} from '@material-ui/core';
 var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 class TeslaGraph extends Component {
@@ -46,10 +46,13 @@ class TeslaGraph extends Component {
     const options = {
       theme: "dark2",
       title:{
-        text:"Tesla, Inc.(TSLA)"
+        text:"Tesla, Inc.(TSLA)",
+        fontFamily: 'roboto'
       },
       subtitles: [{
-        text: "Price-Volume Trend"
+        text: "Price-Volume Trend",
+        fontFamily: 'roboto'
+
       }],
       charts: [{
         axisX: {
@@ -69,6 +72,7 @@ class TeslaGraph extends Component {
         axisY: {
           title: "US Dollar",
           prefix: "$",
+          fontFamily: 'roboto',
           tickLength: 0
         },
         toolTip: {
@@ -78,6 +82,7 @@ class TeslaGraph extends Component {
           name: "Price (in USD)",
           yValueFormatString: "$#,###.##",
           type: "candlestick",
+          fontFamily: 'roboto',
           dataPoints : this.state.dataPoints1
         }]
       },{
@@ -91,6 +96,7 @@ class TeslaGraph extends Component {
         axisY: {
           title: "Volume",
           prefix: "$",
+          fontFamily: 'roboto',
           tickLength: 0
         },
         toolTip: {
@@ -100,6 +106,7 @@ class TeslaGraph extends Component {
           name: "Volume",
           yValueFormatString: "$#,###.##",
           type: "column",
+          fontFamily: 'roboto',
           dataPoints : this.state.dataPoints2
         }]
       }],
@@ -120,7 +127,8 @@ class TeslaGraph extends Component {
     };
     return (
       <Fragment>
-        <div className="pb-86 pt-30 px-30 bg-primary">
+        <div className="pb-86 pt-30 px-30">
+        {/* <div className="pb-86 pt-30 px-30 bg-primary"> */}
           <CanvasJSStockChart 
           containerProps={containerProps}
           options = {options}
@@ -143,10 +151,12 @@ class TeslaGraph extends Component {
               ]}
               />
             </Card>
+            {/* <TeslaNews/> */}
+            
             </Grid>
         </div>
       </Fragment>
     );
   }
 }
-export default withStyles({}, { withTheme: true }) (TeslaGraph, DoughnutChart);
+export default withStyles({}, { withTheme: true }) (TeslaGraph, DoughnutChart, TeslaNews);

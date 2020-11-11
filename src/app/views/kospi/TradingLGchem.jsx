@@ -13,7 +13,7 @@ import { Breadcrumb } from 'matx'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
-import Lgchem from './lgchem'
+import Lginnotek from './lginnotek'
 
 const Trading = () => {
 
@@ -49,10 +49,11 @@ const Trading = () => {
     const [isTraded, setIsTraded] = useState(false)
     const [withholdings, setWithholdings] = useState(0)
     const [balance, setBalance] = useState(0)
+    const [totalStockPrice, setTotalStockPrice] = useState(0)
+    const [thisPrice, setThisPrice] = useState(0)
 
     const [buyQty, setBuyQty] = useState(1)
     const [sellQty, setSellQty] = useState(1)
-    const temp_price = 53.4923
 
     const [news, setNews] = useState([])
     const [covid, setCovid] = useState([])
@@ -61,6 +62,7 @@ const Trading = () => {
         getMember()
         getTradings()
         getBalance()
+        getPrice()
         getNews()
         getCovid()
     }, [])
@@ -87,6 +89,13 @@ const Trading = () => {
             const res = await axios(req)
             console.log(res.data)
 
+            let total = 0
+            for (let i=0; i < res.data.length; i++){
+                total = total + res.data[i].price * res.data[i].stock_qty
+            }
+
+            setTotalStockPrice(total)
+
             let temp_num = 0
             // 해당 멤버가 거래한 종목 중 이 화면의 해당 종목이 있는지 확인해서 반환 (현재는 임의로 테슬라)
             const isAlready = res.data.filter(function(t){ return t['stock_ticker'] == 'LG화학' })
@@ -111,7 +120,7 @@ const Trading = () => {
     })
 
     // 잔금 구하기
-    const getBalance = () => {setBalance((member.balance - withholdings).toFixed(2))}
+    const getBalance = () => {setBalance((totalStockPrice - withholdings).toFixed(2))}
 
     let today = new Date()
 
@@ -131,6 +140,19 @@ const Trading = () => {
       
     today = getTime()
 
+    const getPrice = useCallback(async e => {
+        try{
+            const req = {
+                method: c.get,
+                url: `${c.url}/kospi/lgchem`
+            }
+            const res = await axios(req)
+            setThisPrice((res.data[0].low/1129.16).toFixed(2))
+        }catch(err){
+            throw(err)
+        }
+    })
+
     // 매수
     const buyStock = () => {
         const re = window.confirm('매수하시겠습니까?')
@@ -146,17 +168,17 @@ const Trading = () => {
     const insertBuyTrading = useCallback(async e => {
         try{
             const balance = document.getElementById('balance').value
-            alert(buyQty*temp_price)
-            if((buyQty*temp_price) > balance){
+            alert(buyQty*thisPrice)
+            if((buyQty*thisPrice) > balance){
                 alert('잔금이 부족합니다.')
                 return
             }
             const data = {
                 email: sessionMember,
-                stock_type: 'NASDAQ',
-                stock_ticker: 'TSLA',
+                stock_type: 'KOSPI',
+                stock_ticker: 'LG화학',
                 stock_qty: buyQty,
-                price: temp_price,
+                price: thisPrice,
                 trading_date: today
             }
             const req = {
@@ -168,6 +190,7 @@ const Trading = () => {
             updateMember()
             alert('매수되었습니다.')
             setBuyQty(1)
+            window.location.reload()
         }catch(err){
             alert('매수에 실패했습니다.')
             throw(err)
@@ -176,7 +199,7 @@ const Trading = () => {
 
     const updateBuyTrading = useCallback(async e => {
         const balance = document.getElementById('balance').value
-        if((buyQty*temp_price) > balance){
+        if((buyQty*tradings.price) > balance){
             alert('잔금이 부족합니다.')
             return
         }
@@ -185,10 +208,10 @@ const Trading = () => {
             const data = {
                 id: tradings.id,
                 email: sessionMember,
-                stock_type: 'NASDAQ',
-                stock_ticker: 'TSLA',
+                stock_type: 'KOSPI',
+                stock_ticker: 'LG화학',
                 stock_qty: ((tradings.stock_qty*1) + (buyQty * 1)),
-                price: ( (tradings.price * tradings.stock_qty) + (temp_price * buyQty) ) / ((tradings.stock_qty*1) + (buyQty * 1)),
+                price: ( (tradings.price * tradings.stock_qty) + (thisPrice * buyQty) ) / ((tradings.stock_qty*1) + (buyQty * 1)),
                 trading_date: today
             }
             console.log(data)
@@ -200,6 +223,7 @@ const Trading = () => {
             const res = await axios(req)
             alert('매수되었습니다.')
             setBuyQty(1)
+            window.location.reload()
         }catch(err){
             alert('매수에 실패했습니다.')
             throw(err)
@@ -226,10 +250,10 @@ const Trading = () => {
         const re = window.confirm('매도하시겠습니까?')
         if (re) {
             if(tradings.stock_qty > sellQty){
-                member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * temp_price))
+                member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * thisPrice))
                 updateSellTrading()
             }else if(tradings.stock_qty == sellQty){
-                member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * temp_price))
+                member.balance = (member.balance - (tradings.stock_qty * tradings.price)) + (((tradings.stock_qty - sellQty) * tradings.price) + (sellQty * thisPrice))
                 member.stock_qty = member.stock_qty - 1
                 deleteTradings()
             }else{
@@ -243,10 +267,10 @@ const Trading = () => {
             const data = {
                 id: tradings.id,
                 email: sessionMember,
-                stock_type: 'NASDAQ',
-                stock_ticker: 'TSLA',
+                stock_type: 'KOSPI',
+                stock_ticker: 'LG화학',
                 stock_qty: tradings.stock_qty - sellQty,
-                price: ( (tradings.price * tradings.stock_qty) - (temp_price * sellQty) ) / (tradings.stock_qty - sellQty),
+                price: ( (tradings.price * tradings.stock_qty) - (thisPrice * sellQty) ) / (tradings.stock_qty - sellQty),
                 trading_date: today
             }
             console.log(data)
@@ -260,6 +284,7 @@ const Trading = () => {
             alert('매도 되었습니다.')
             updateSellMember()
             setSellQty(1)
+            window.location.reload()
         }catch(err){
             alert('매도에 실패했습니다.')
             throw(err)
@@ -276,6 +301,7 @@ const Trading = () => {
             alert('매도 되었습니다.')
             updateSellMember()
             setSellQty(1)
+            window.location.reload()
         }catch(err){
             alert('매도에 실패했습니다.')
             throw(err)
@@ -361,13 +387,14 @@ const Trading = () => {
                 ]}
             />
             </div>
-            <Lgchem/>
+            <Lginnotek/>
             <Grid container spacing={3} className="mb-24">
                 <Grid item xs={12}>
                     <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-                        <div>LG화학 예수금  $ <span id='withholdings'>{withholdings}</span></div>
+                        <div>LG화학  <p><h3 id='price' className='text-primary'>$ {thisPrice}</h3></p></div>
+                        <div>LG화학 예수금  <p id='withholdings'>$ {withholdings}</p></div>
                         {sessionMember != null
-                        ? <div>현재 계좌 잔액  $ <span id='balance'>{(member.balance - withholdings).toFixed(2)}</span></div>
+                        ? <div>현재 계좌 잔액  <p id='balance'>$ {(member.balance - totalStockPrice).toFixed(2)}</p></div>
                         : null }
                         
                         <TextField
@@ -377,7 +404,7 @@ const Trading = () => {
                             type="number"
                             value={buyQty}
                             autoComplete="buyQty"
-                            onChange={ e => {if (e.target.value < 1) { buyQty = 1 } else { setBuyQty(e.target.value) }}}
+                            onChange={ e => {if (e.target.value < 1) { setBuyQty(1) } else { setBuyQty(e.target.value) }}}
                         />
                         {sessionMember != null 
                         ? <Button id='buyBtn' className='m-5' variant='contained' color='primary' onClick={buyStock}>매수</Button>
@@ -390,7 +417,7 @@ const Trading = () => {
                             type="number"
                             value={sellQty}
                             autoComplete="sellQty"
-                            onChange={ e => {if (e.target.value < 1) { sellQty = 1 } else { setSellQty(e.target.value) }}}
+                            onChange={ e => {if (e.target.value < 1) { setSellQty(1) } else { setSellQty(e.target.value) }}}
                         />
                         {sessionMember != null && isTraded 
                         ? <Button id='sellBtn' className='m-5' variant='contained' color='secondary' onClick={sellStock}>매도</Button>

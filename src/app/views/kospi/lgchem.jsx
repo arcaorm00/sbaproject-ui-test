@@ -1,7 +1,6 @@
 import { withStyles } from "@material-ui/styles";
 import React, { Component } from "react";
 
-
 import CanvasJSReact from './canvasjs.stock.react';
 import { Breadcrumb } from "matx"
 import { Grid, Card, Icon, IconButton, Tooltip } from "@material-ui/core"

@@ -1,7 +1,9 @@
 import { withStyles } from "@material-ui/styles";
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import CanvasJSReact from './canvasjs.stock.react';
-import {axios} from 'axios'
+import AppleNews from './AppleNews' 
+import {Grid, Card} from '@material-ui/core';
+
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
  
@@ -48,10 +50,12 @@ class AppleGraph extends Component {
     const options = {
       theme: "dark2",
       title:{
-        text:"Apple, Inc.(APPL)"
+        text:"Apple, Inc.(APPL)",
+        fontFamily: 'roboto'
       },
       subtitles: [{
-        text: "Price-Volume Trend"
+        text: "Price-Volume Trend",
+        fontFamily: 'roboto'
       }],
       charts: [{
         axisX: {
@@ -71,6 +75,7 @@ class AppleGraph extends Component {
         axisY: {
           title: "US Dollar",
           prefix: "$",
+          fontFamily: 'roboto',
           tickLength: 0
         },
         toolTip: {
@@ -80,6 +85,7 @@ class AppleGraph extends Component {
           name: "Price (in USD)",
           yValueFormatString: "$#,###.##",
           type: "candlestick",
+          fontFamily: 'roboto',
           dataPoints : this.state.dataPoints1
         }]
       },{
@@ -93,6 +99,7 @@ class AppleGraph extends Component {
         axisY: {
           title: "Volume",
           prefix: "$",
+          fontFamily: 'roboto',
           tickLength: 0
         },
         toolTip: {
@@ -102,6 +109,7 @@ class AppleGraph extends Component {
           name: "Volume",
           yValueFormatString: "$#,###.##",
           type: "column",
+          fontFamily: 'roboto',
           dataPoints : this.state.dataPoints2
         }]
       }],
@@ -121,19 +129,26 @@ class AppleGraph extends Component {
       margin: "auto"
     };
     return (
-      <div> 
-        <div>
-          {
-            // Reference: https://reactjs.org/docs/conditional-rendering.html#inline-if-with-logical--operator
-            this.state.isLoaded && 
-            <CanvasJSStockChart containerProps={containerProps} options = {options}
-              /* onRef = {ref => this.chart = ref} */
-            />
-          }
+      <Fragment>
+        <div className="pb-86 pt-30 px-30">
+        {/* <div className="pb-86 pt-30 px-30 bg-primary"> */}
+          <CanvasJSStockChart 
+          containerProps={containerProps}
+          options = {options}
+          ></CanvasJSStockChart>
         </div>
-      </div>
+        <div className="analytics m-sm-30 mt--72">
+          <Grid container spacing={2}
+        direction="row"
+        justify="space-evenly"
+        alignItems="center">
+        
+            {/* <AppleNews/> */}
+            
+            </Grid>
+        </div>
+      </Fragment>
     );
   }
 }
- 
-export default withStyles({}, { withTheme: true })(AppleGraph);
+export default withStyles({}, { withTheme: true }) (AppleGraph, AppleNews);

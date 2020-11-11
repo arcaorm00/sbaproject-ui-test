@@ -13,7 +13,8 @@ import { Breadcrumb } from 'matx'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
-import Lginnotek from './lginnotek'
+import Tesla from './Tesla'
+import TeslaNews from './TeslaNews'
 
 const Trading = () => {
 
@@ -63,8 +64,6 @@ const Trading = () => {
         getTradings()
         getBalance()
         getPrice()
-        getNews()
-        getCovid()
     }, [])
 
     const getMember = useCallback(async e => {
@@ -98,7 +97,7 @@ const Trading = () => {
 
             let temp_num = 0
             // 해당 멤버가 거래한 종목 중 이 화면의 해당 종목이 있는지 확인해서 반환
-            const isAlready = res.data.filter(function(t){ return t['stock_ticker'] == 'LG이노텍' })
+            const isAlready = res.data.filter(function(t){ return t['stock_ticker'] == 'TSLA' })
             setTradings(isAlready[0])
             if (isAlready.length > 0){
                 setIsTraded(true)
@@ -144,10 +143,11 @@ const Trading = () => {
         try{
             const req = {
                 method: c.get,
-                url: `${c.url}/kospi/lgchem`
+                url: `${c.url}/nasdaq/tesla`
             }
             const res = await axios(req)
-            setThisPrice((res.data[0].low/1129.16).toFixed(2))
+            console.log(res.data[res.data.length-1])
+            setThisPrice((res.data[res.data.length-1].low).toFixed(2))
         }catch(err){
             throw(err)
         }
@@ -175,8 +175,8 @@ const Trading = () => {
             }
             const data = {
                 email: sessionMember,
-                stock_type: 'KOSPI',
-                stock_ticker: 'LG이노텍',
+                stock_type: 'NASDAQ',
+                stock_ticker: 'TSLA',
                 stock_qty: buyQty,
                 price: thisPrice,
                 trading_date: today
@@ -208,8 +208,8 @@ const Trading = () => {
             const data = {
                 id: tradings.id,
                 email: sessionMember,
-                stock_type: 'KOSPI',
-                stock_ticker: 'LG이노텍',
+                stock_type: 'NASDAQ',
+                stock_ticker: 'TSLA',
                 stock_qty: ((tradings.stock_qty*1) + (buyQty * 1)),
                 price: ( (tradings.price * tradings.stock_qty) + (thisPrice * buyQty) ) / ((tradings.stock_qty*1) + (buyQty * 1)),
                 trading_date: today
@@ -259,7 +259,6 @@ const Trading = () => {
             }else{
                 alert('보유하신 수량보다 많이 매도할 수 없습니다.')
             }
-            window.location.reload()
         } 
     }
 
@@ -268,8 +267,8 @@ const Trading = () => {
             const data = {
                 id: tradings.id,
                 email: sessionMember,
-                stock_type: 'KOSPI',
-                stock_ticker: 'LG이노텍',
+                stock_type: 'NASDAQ',
+                stock_ticker: 'TSLA',
                 stock_qty: tradings.stock_qty - sellQty,
                 price: ( (tradings.price * tradings.stock_qty) - (thisPrice * sellQty) ) / (tradings.stock_qty - sellQty),
                 trading_date: today
@@ -322,59 +321,6 @@ const Trading = () => {
         }
     })
 
-    // getNews
-    const getNews = useCallback(async e => {
-        try{
-            const req = {
-                method: c.get,
-                url: `${c.url}/kospi/lginnoteknews`
-            }
-            const res = await axios(req)
-            let data = res.data.slice(0, 5)
-            console.log(data)
-            for (var i in data){
-            var date = new Date(data[i].date)
-            var yyyy = date.getFullYear().toString()
-            var mm = (date.getMonth()+1).toString()
-            var dd  = date.getDate().toString()
-            var hh = date.getHours().toString()
-            var min = date.getMinutes().toString()
-            var ss = date.getSeconds().toString()
-            data[i].date = yyyy + '-' + (mm[1]?mm:'0'+mm[0]) + '-' + (dd[1]?dd:'0'+dd[0]) + ' ' + (hh[1]?hh:'0'+hh[0]) + ':' + (min[1]?min:'0'+min[0])
-            }
-            setNews(data)
-        }catch(err){
-            throw(err)
-        }
-    })
-
-    // getCovid
-    const getCovid = useCallback(async e => {
-        try{
-            const req = {
-                method: c.get,
-                url: `${c.url}/kospi/koreacovid`
-            }
-            const res = await axios(req)
-            let data = res.data.reverse()
-            data = data.slice(0, 5)
-            console.log(data)
-            for (var i in data){
-            var date = new Date(data[i].date)
-            var yyyy = date.getFullYear().toString()
-            var mm = (date.getMonth()+1).toString()
-            var dd  = date.getDate().toString()
-            var hh = date.getHours().toString()
-            var min = date.getMinutes().toString()
-            var ss = date.getSeconds().toString()
-            data[i].date = yyyy + '-' + (mm[1]?mm:'0'+mm[0]) + '-' + (dd[1]?dd:'0'+dd[0])
-            }
-            setCovid(data)
-        }catch(err){
-            throw(err)
-        }
-    })
-
 
     
 
@@ -384,16 +330,16 @@ const Trading = () => {
             <div  className="mb-sm-30" style={{display: 'inline-block'}}>
             <Breadcrumb
                 routeSegments={[
-                { name: "LG이노텍" }
+                { name: "TESLA" }
                 ]}
             />
             </div>
-            <Lginnotek/>
+            <Tesla/>
             <Grid container spacing={3} className="mb-24">
                 <Grid item xs={12}>
                     <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-                        <div>LG이노텍  <p><h3 id='price' className='text-primary'>$ {thisPrice}</h3></p></div>
-                        <div>LG이노텍 예수금  <p id='withholdings'>$ {withholdings}</p></div>
+                        <div>TESLA  <p><h3 id='price' className='text-primary'>$ {thisPrice}</h3></p></div>
+                        <div>TESLA 예수금  <p id='withholdings'>$ {withholdings}</p></div>
                         {sessionMember != null
                         ? <div>현재 계좌 잔액  <p id='balance'>$ {(member.balance - totalStockPrice).toFixed(2)}</p></div>
                         : null }
@@ -427,95 +373,7 @@ const Trading = () => {
                     </Card>
                 </Grid>
                 
-              {/* News */}
-              <Grid item xs={12} md={6}>
-                 <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-                   <div>
-                     <div className="ml-12">
-                        <h5 id="news" className="text-primary inlineblock">LG이노텍 뉴스</h5>
-                        <Table aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell align="center" width="75%">
-                                <Typography variant="subtitle2" color="inherit" noWrap>
-                                  제목
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="center" width="20%">
-                                <Typography variant="subtitle2" color="inherit" noWrap>
-                                  날짜
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                        {news.map((row, idx) => (
-                          <TableRow>
-                            {/* <TableCell align="left" width="5%">{row.id}</TableCell> */}
-                            <TableCell align='left' width="75%" style={{cursor: 'pointer', whiteSpace: 'noWrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                              <a href={row.url}>{row.headline}</a>
-                            </TableCell>
-                            <TableCell align="right" width="20%"><small>{row.date}</small></TableCell>
-                          </TableRow>
-                        ))}
-                        </TableBody>
-                        </Table>
-                     </div>
-                   </div>
-                 </Card>
-              </Grid>
-                 {/* covid */}
-                <Grid item xs={12} md={6}>
-                  <Card className="play-card p-sm-24 bg-paper" elevation={6}>
-                    <div>
-                      <div className="ml-12">
-                          <h5 className="text-primary inlineblock">Covid-19 현황</h5>
-                          <Table aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    날짜
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    서울 확진자
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    서울 사망자
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    전국 확진자
-                                  </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                  <Typography variant="subtitle2" color="inherit" noWrap>
-                                    전국 사망자
-                                  </Typography>
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                            {covid.map((row) => (
-                                <TableRow>
-                                  <TableCell align="center">{row.date}</TableCell>
-                                  <TableCell align="center">{row.seoul_cases}</TableCell>
-                                  <TableCell align='center'>{row.seoul_deaths}</TableCell>
-                                  <TableCell align="center">{row.total_cases}</TableCell>
-                                  <TableCell align="center">{row.total_deaths}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                      </div>
-                    </div>
-                  </Card>
-                 </Grid>
+                <TeslaNews/>
               </Grid>   
         </div>
     </div>     

@@ -6,11 +6,17 @@ const Analytics = MatxLoadable({
 })
 
 const Apple = MatxLoadable({
-  loader: () => import("./Apple")
+  loader: () => import("./TradingApple")
 })
 const Tesla = MatxLoadable({
-  loader: () => import("./Tesla")
+  loader: () => import("./TradingTesla")
 })
+// const Apple = MatxLoadable({
+//   loader: () => import("./Apple")
+// })
+// const Tesla = MatxLoadable({
+//   loader: () => import("./Tesla")
+// })
 
 const dashboardRoutes = [
   {
