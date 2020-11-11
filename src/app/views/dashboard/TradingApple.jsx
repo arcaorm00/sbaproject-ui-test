@@ -97,7 +97,7 @@ const Trading = () => {
 
             let temp_num = 0
             // 해당 멤버가 거래한 종목 중 이 화면의 해당 종목이 있는지 확인해서 반환
-            const isAlready = res.data.filter(function(t){ return t['stock_ticker'] == 'APPL' })
+            const isAlready = res.data.filter(function(t){ return t['stock_ticker'] == 'AAPL' })
             setTradings(isAlready[0])
             if (isAlready.length > 0){
                 setIsTraded(true)
@@ -176,7 +176,7 @@ const Trading = () => {
             const data = {
                 email: sessionMember,
                 stock_type: 'NASDAQ',
-                stock_ticker: 'APPL',
+                stock_ticker: 'AAPL',
                 stock_qty: buyQty,
                 price: thisPrice,
                 trading_date: today
@@ -199,7 +199,7 @@ const Trading = () => {
 
     const updateBuyTrading = useCallback(async e => {
         const balance = document.getElementById('balance').value
-        if((buyQty*tradings.price) > balance){
+        if((buyQty*thisPrice) > balance){
             alert('잔금이 부족합니다.')
             return
         }
@@ -209,7 +209,7 @@ const Trading = () => {
                 id: tradings.id,
                 email: sessionMember,
                 stock_type: 'NASDAQ',
-                stock_ticker: 'APPL',
+                stock_ticker: 'AAPL',
                 stock_qty: ((tradings.stock_qty*1) + (buyQty * 1)),
                 price: ( (tradings.price * tradings.stock_qty) + (thisPrice * buyQty) ) / ((tradings.stock_qty*1) + (buyQty * 1)),
                 trading_date: today
@@ -268,7 +268,7 @@ const Trading = () => {
                 id: tradings.id,
                 email: sessionMember,
                 stock_type: 'NASDAQ',
-                stock_ticker: 'APPL',
+                stock_ticker: 'AAPL',
                 stock_qty: tradings.stock_qty - sellQty,
                 price: ( (tradings.price * tradings.stock_qty) - (thisPrice * sellQty) ) / (tradings.stock_qty - sellQty),
                 trading_date: today
@@ -341,7 +341,7 @@ const Trading = () => {
                         <div>APPLE  <p><h3 id='price' className='text-primary'>$ {thisPrice}</h3></p></div>
                         <div>APPLE 예수금  <p id='withholdings'>$ {withholdings}</p></div>
                         {sessionMember != null
-                        ? <div>현재 계좌 잔액  <p id='balance'>$ {(member.balance - totalStockPrice).toFixed(2)}</p></div>
+                        ? <div>현재 계좌 잔액  <p id='balance'>$ <span id='balance'>{(member.balance - totalStockPrice).toFixed(2)}</span></p></div>
                         : null }
                         
                         <TextField

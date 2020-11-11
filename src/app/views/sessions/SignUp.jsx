@@ -223,9 +223,10 @@ const SignUp = () => {
       }
       const res = await axios(req)
       console.log(res.data)
-      alert(`isExistMember? ==> ${res.data.length > 0}`)
+      // alert(`isExistMember? ==> ${res.data.length > 0}`)
       if (res.data.length > 0){
         setIsAlready(true)
+        return true
       }
     }catch(err){
 
@@ -256,11 +257,11 @@ const SignUp = () => {
         exited: 0
       }
 
-      alert(isAlready)
+      // alert(isAlready)
 
       if (data.age < 18 || data.age > 99){
         alert('입력하신 나이를 확인해주세요.')
-      }else if(isAlready){
+      }else if(isExistMember()){
         alert('이미 존재하는 계정이거나 사용할 수 없는 계정입니다.')
       }else{
         const req = {

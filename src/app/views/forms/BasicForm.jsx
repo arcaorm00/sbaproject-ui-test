@@ -152,7 +152,7 @@ const BasicForm = () => {
     <div  className="mb-sm-30" style={{display: 'inline-block'}}>
       <Breadcrumb
         routeSegments={[
-          { name: "게시판" }
+          { name: "공지" }
         ]}
       />
     </div>

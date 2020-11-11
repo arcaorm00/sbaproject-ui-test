@@ -9,11 +9,13 @@ import {
 
 import { context as c } from '../../../../context'
 import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 
 
 const StatCards = ({theme}) => {
 
   const sessionMember = sessionStorage.getItem('sessionMember')
+  const history = useHistory()
   const [recommend, setRecommend] = useState([])
 
   useEffect(() => {
@@ -46,11 +48,37 @@ const StatCards = ({theme}) => {
                 {/* <h6 className="m-0 mt-4 text-primary font-weight-500">3050</h6> */}
               </div>
             </div>
-            <Tooltip title="View Details" placement="top">
+            {row.stock_ticker == 'LG화학'
+            ?
+            <Tooltip title="View Details" placement="top" onClick={() => history.push('/kospi/lgchem')}>
               <IconButton>
                 <Icon>arrow_right_alt</Icon>
               </IconButton>
             </Tooltip>
+            : row.stock_ticker == 'LG이노텍'
+            ?
+            <Tooltip title="View Details" placement="top" onClick={() => history.push('/kospi/lginnotek')}>
+              <IconButton>
+                <Icon>arrow_right_alt</Icon>
+              </IconButton>
+            </Tooltip>
+            :row.stock_ticker == 'AAPL'
+            ?
+            <Tooltip title="View Details" placement="top" onClick={() => history.push('/nasdaq/apple')}>
+              <IconButton>
+                <Icon>arrow_right_alt</Icon>
+              </IconButton>
+            </Tooltip>
+            :row.stock_ticker == 'TSLA'
+            ?
+            <Tooltip title="View Details" placement="top" onClick={() => history.push('/nasdaq/tesla')}>
+              <IconButton>
+                <Icon>arrow_right_alt</Icon>
+              </IconButton>
+            </Tooltip>
+            : null
+            }
+            
           </Card>
         </Grid>
       ))}

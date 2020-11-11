@@ -56,7 +56,7 @@ const SignIn = (props) => {
   const handleFormSubmit = useCallback(async e => {
     try{
       e.preventDefault()
-      alert(`${email}, ${password}`)
+      // alert(`${email}, ${password}`)
 
       const data = {email: email, password: password}
 

@@ -199,7 +199,7 @@ const Trading = () => {
 
     const updateBuyTrading = useCallback(async e => {
         const balance = document.getElementById('balance').value
-        if((buyQty*tradings.price) > balance){
+        if((buyQty*thisPrice) > balance){
             alert('잔금이 부족합니다.')
             return
         }
@@ -395,7 +395,7 @@ const Trading = () => {
                         <div>LG이노텍  <p><h3 id='price' className='text-primary'>$ {thisPrice}</h3></p></div>
                         <div>LG이노텍 예수금  <p id='withholdings'>$ {withholdings}</p></div>
                         {sessionMember != null
-                        ? <div>현재 계좌 잔액  <p id='balance'>$ {(member.balance - totalStockPrice).toFixed(2)}</p></div>
+                        ? <div>현재 계좌 잔액  <p id='balance'>$ <span id='balance'>{(member.balance - totalStockPrice).toFixed(2)}</span></p></div>
                         : null }
                         
                         <TextField
