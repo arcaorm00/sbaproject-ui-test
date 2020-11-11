@@ -2,21 +2,27 @@ import React from "react";
 import { MatxLoadable } from "matx";
 import { authRoles } from "../../auth/authRoles";
 
-const Lgchem = MatxLoadable({
-  loader: () => import("./lgchem")
+const TradingLGchem = MatxLoadable({
+  loader: () => import("./TradingLGchem")
 })
-const Lginnotek = MatxLoadable({
-  loader: () => import("./lginnotek")
+// const Lgchem = MatxLoadable({
+//   loader: () => import("./lgchem")
+// })
+const TradingLGinnotek = MatxLoadable({
+  loader: () => import("./TradingLGinnotek")
 })
+// const Lginnotek = MatxLoadable({
+//   loader: () => import("./lginnotek")
+// })
 
 const kospiRoutes = [
   {
     path: "/kospi/lgchem",
-    component: Lgchem,
+    component: TradingLGchem,
   },
   {
     path:"/kospi/lginnotek",
-    component: Lginnotek,
+    component: TradingLGinnotek,
   }
 ];
 
