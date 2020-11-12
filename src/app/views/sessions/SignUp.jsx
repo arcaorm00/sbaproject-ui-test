@@ -192,8 +192,8 @@ const SignUp = () => {
     name: '',
     email: '',
     password: '',
-    geography: '',
-    gender: '',
+    geography: 'France',
+    gender: 'Etc.',
     age: ''
   })
   const [agreement, setAgreement] = useState(0)
@@ -227,7 +227,7 @@ const SignUp = () => {
       if (res.data.length > 0){
         setIsAlready(true)
         return true
-      }
+      }else{ return false}
     }catch(err){
 
     }
@@ -236,34 +236,48 @@ const SignUp = () => {
   const handleFormSubmit = useCallback(async e => {
     try{
       e.preventDefault()
-      isExistMember()
-      const data = {
-        email: form.email, 
-        password: form.password, 
-        name: form.name, 
-        geography: form.geography, 
-        gender: form.gender, 
-        age: form.age,
-        profile: 'noimage.png',
-        tenure: 0,
-        stock_qty: 0,
-        balance: 0,
-        has_credit: 0,
-        credit_score: 0,
-        is_active_member: 1,
-        estimated_salary: 0,
-        role: 'ROLE_USER',
-        probability_churn: -1,
-        exited: 0
+
+      let exist = false
+
+      const req = {
+        method: c.get,
+        url: `${c.url}/api/member/${form.email}`
       }
+      const res = await axios(req)
+      console.log(res)
+      // alert(`isExistMember? ==> ${res.data.length > 0}`)
+      if (res.data != null){
+        exist = true
+
+      }else{ exist = false }
 
       // alert(isAlready)
 
-      if (data.age < 18 || data.age > 99){
+      if (form.age < 18 || form.age > 99){
         alert('입력하신 나이를 확인해주세요.')
-      }else if(isExistMember()){
+        return
+      }else if(exist){
         alert('이미 존재하는 계정이거나 사용할 수 없는 계정입니다.')
       }else{
+        const data = {
+          email: form.email, 
+          password: form.password, 
+          name: form.name, 
+          geography: form.geography, 
+          gender: form.gender, 
+          age: form.age,
+          profile: 'noimage.png',
+          tenure: 0,
+          stock_qty: 0,
+          balance: 0,
+          has_credit: 0,
+          credit_score: 0,
+          is_active_member: 1,
+          estimated_salary: 0,
+          role: 'ROLE_USER',
+          probability_churn: -1,
+          exited: 0
+        }
         const req = {
           method: c.post,
           url: `${c.url}/api/auth`,
@@ -281,7 +295,7 @@ const SignUp = () => {
   })
 
   const gender_option = [
-    { label: "Etc.", velue: "Etc" },
+    { label: "Etc.", velue: "Etc." },
     { label: "Male", velue: "Male" },
     { label: "Female", velue: "Female" },
   ]
@@ -356,7 +370,6 @@ const SignUp = () => {
                       }}
                       validators={["required"]} errorMessages={["this field is required"]}
                     >
-                      <option aria-label="None" value="" />
                       {geography_option.map((row, idx) => (
                         <option value={row.value}>{row.label}</option>
                       ))}
@@ -375,7 +388,6 @@ const SignUp = () => {
                       }}
                       validators={["required"]} errorMessages={["this field is required"]}
                     >
-                      <option aria-label="None" value="" />
                       {gender_option.map((row, idx) => (
                         <option value={row.value}>{row.label}</option>
                       ))}

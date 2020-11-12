@@ -15,20 +15,20 @@ import mapRoutes from "./views/map/MapRoutes";
 import kospiRoutes from "./views/kospi/KospiRoutes";
 import kospipredRoutes from "./views/kospi_pred/kospipredRoutes";
 
-// const redirectRoute = [
-//   {
-//     path: "/",
-//     exact: true,
-//     component: () => <Redirect to="/stock-psychic" />
-//   }
-// ];
 const redirectRoute = [
   {
     path: "/",
     exact: true,
-    component: () => <Redirect to="/dashboard/analytics" />
+    component: () => <Redirect to="/session/mypage" />
   }
 ];
+// const redirectRoute = [
+//   {
+//     path: "/",
+//     exact: true,
+//     component: () => <Redirect to="/dashboard/analytics" />
+//   }
+// ];
 
 const errorRoute = [
   {
