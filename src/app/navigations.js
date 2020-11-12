@@ -39,7 +39,7 @@ export const navigations = [
     }]
   },
   {
-    name: "Kospi",
+    name: "KOSPI",
     icon: "dashboard",
     children:[
 
