@@ -246,12 +246,12 @@ const SignUp = () => {
       const res = await axios(req)
       console.log(res)
       // alert(`isExistMember? ==> ${res.data.length > 0}`)
+      alert(`isExistMember? ==> ${res.data}`)
       if (res.data != null){
         exist = true
-
       }else{ exist = false }
 
-      // alert(isAlready)
+      alert(exist)
 
       if (form.age < 18 || form.age > 99){
         alert('입력하신 나이를 확인해주세요.')
