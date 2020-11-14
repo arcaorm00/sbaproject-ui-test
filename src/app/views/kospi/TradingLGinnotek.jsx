@@ -167,7 +167,7 @@ const Trading = () => {
 
     const insertBuyTrading = useCallback(async e => {
         try{
-            const balance = document.getElementById('balance').value
+            const balance = (member.balance - totalStockPrice).toFixed(2)
             alert(buyQty*thisPrice)
             if((buyQty*thisPrice) > balance){
                 alert('잔금이 부족합니다.')
@@ -198,7 +198,7 @@ const Trading = () => {
     })
 
     const updateBuyTrading = useCallback(async e => {
-        const balance = document.getElementById('balance').value
+        const balance = (member.balance - totalStockPrice).toFixed(2)
         if((buyQty*thisPrice) > balance){
             alert('잔금이 부족합니다.')
             return

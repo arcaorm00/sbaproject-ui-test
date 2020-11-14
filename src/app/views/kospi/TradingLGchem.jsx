@@ -13,7 +13,7 @@ import { Breadcrumb } from 'matx'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
 import { context as c } from '../../../context'
-import Lginnotek from './lginnotek'
+import Lgchem from './lgchem'
 
 const Trading = () => {
 
@@ -167,8 +167,7 @@ const Trading = () => {
 
     const insertBuyTrading = useCallback(async e => {
         try{
-            const balance = document.getElementById('balance').value
-            // alert(buyQty*thisPrice)
+            const balance = (member.balance - totalStockPrice).toFixed(2)
             if((buyQty*thisPrice) > balance){
                 alert('잔금이 부족합니다.')
                 return
@@ -198,7 +197,7 @@ const Trading = () => {
     })
 
     const updateBuyTrading = useCallback(async e => {
-        const balance = document.getElementById('balance').value
+        const balance = (member.balance - totalStockPrice).toFixed(2)
         if((buyQty*thisPrice) > balance){
             alert('잔금이 부족합니다.')
             return
@@ -387,14 +386,14 @@ const Trading = () => {
                 ]}
             />
             </div>
-            <Lginnotek/>
+            <Lgchem/>
             <Grid container spacing={3} className="mb-24">
                 <Grid item xs={12}>
                     <Card className="play-card p-sm-24 bg-paper" elevation={6}>
                         <div>LG화학  <p><h3 id='price' className='text-primary'>$ {thisPrice}</h3></p></div>
                         <div>LG화학 예수금  <p id='withholdings'>$ {withholdings}</p></div>
                         {sessionMember != null
-                        ? <div>현재 계좌 잔액  <p id='balance'>$ <span id='balance'>{(member.balance - totalStockPrice).toFixed(2)}</span></p></div>
+                        ? <div>현재 계좌 잔액  <p>$ <span id='balance'>{(member.balance - totalStockPrice).toFixed(2)}</span></p></div>
                         : null }
                         
                         <TextField
