@@ -190,7 +190,6 @@ const Trading = () => {
             updateMember()
             alert('매수되었습니다.')
             setBuyQty(1)
-            window.location.reload()
         }catch(err){
             alert('매수에 실패했습니다.')
             throw(err)
@@ -232,13 +231,17 @@ const Trading = () => {
 
     const updateMember = useCallback(async e => {
         try{
-            member.stock_qty = member.stock_qty + 1
+            
+            member.stock_qty = member.stock_qty+1
+            alert(member.stock_qty)
             const req = {
                 method: c.put,
                 url: `${c.url}/api/member/${sessionMember}`,
                 data: member
-              }
+            }
+            alert(req)
             const res = await axios(req)
+            window.location.reload()
         }catch(err){
             throw(err)
         }
@@ -282,7 +285,6 @@ const Trading = () => {
             }
             const res = await axios(req)
             alert('매도 되었습니다.')
-            updateSellMember()
             setSellQty(1)
             window.location.reload()
         }catch(err){
@@ -301,7 +303,6 @@ const Trading = () => {
             alert('매도 되었습니다.')
             updateSellMember()
             setSellQty(1)
-            window.location.reload()
         }catch(err){
             alert('매도에 실패했습니다.')
             throw(err)
@@ -316,6 +317,7 @@ const Trading = () => {
                 data: member
             }
             const res = await axios(req)
+            window.location.reload()
         }catch(err){
             throw(err)
         }

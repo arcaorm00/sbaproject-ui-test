@@ -190,7 +190,6 @@ const Trading = () => {
             updateMember()
             alert('매수되었습니다.')
             setBuyQty(1)
-            window.location.reload()
         }catch(err){
             alert('매수에 실패했습니다.')
             throw(err)
@@ -239,6 +238,7 @@ const Trading = () => {
                 data: member
               }
             const res = await axios(req)
+            window.location.reload()
         }catch(err){
             throw(err)
         }
@@ -259,7 +259,6 @@ const Trading = () => {
             }else{
                 alert('보유하신 수량보다 많이 매도할 수 없습니다.')
             }
-            window.location.reload()
         } 
     }
 
@@ -283,7 +282,6 @@ const Trading = () => {
             }
             const res = await axios(req)
             alert('매도 되었습니다.')
-            updateSellMember()
             setSellQty(1)
             window.location.reload()
         }catch(err){
@@ -302,7 +300,6 @@ const Trading = () => {
             alert('매도 되었습니다.')
             updateSellMember()
             setSellQty(1)
-            window.location.reload()
         }catch(err){
             alert('매도에 실패했습니다.')
             throw(err)
@@ -317,6 +314,7 @@ const Trading = () => {
                 data: member
             }
             const res = await axios(req)
+            window.location.reload()
         }catch(err){
             throw(err)
         }
