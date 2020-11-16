@@ -22,6 +22,7 @@ function TeslaNews() {
   }, [])
 
   return (
+    <>
     <div className="TeslaNews">
       <h1>Tesla News</h1>
     <Card elevation={3} className="pt-20 mb-24">
@@ -80,6 +81,7 @@ function TeslaNews() {
       </div>
     </Card>
     </div>
+    </>
   );
 };
 

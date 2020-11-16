@@ -372,7 +372,6 @@ const Trading = () => {
                         }
                     </Card>
                 </Grid>
-                
                 <TeslaNews/>
               </Grid>   
         </div>

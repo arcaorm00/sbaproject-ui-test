@@ -48,7 +48,7 @@ class AppleGraph extends Component {
  
   render() {
     const options = {
-      theme: "dark2",
+      theme: "light2",
       title:{
         text:"Apple, Inc.(APPL)",
         fontFamily: 'roboto'
@@ -130,25 +130,26 @@ class AppleGraph extends Component {
     };
     return (
       <Fragment>
-        <div className="pb-86 pt-30 px-30">
+        <div>
         {/* <div className="pb-86 pt-30 px-30 bg-primary"> */}
           <CanvasJSStockChart 
           containerProps={containerProps}
           options = {options}
           ></CanvasJSStockChart>
         </div>
-        <div className="analytics m-sm-30 mt--72">
+        <br/>
+        {/* <div className="analytics m-sm-30 mt--72">
           <Grid container spacing={2}
         direction="row"
         justify="space-evenly"
         alignItems="center">
         
-            {/* <AppleNews/> */}
+            <AppleNews/>
             
             </Grid>
-        </div>
+        </div> */}
       </Fragment>
     );
   }
 }
-export default withStyles({}, { withTheme: true }) (AppleGraph, AppleNews);
+export default withStyles({}, { withTheme: true }) (AppleGraph);

@@ -161,14 +161,13 @@ const Trading = () => {
             }else{
                 insertBuyTrading()
             }
-            window.location.reload()
         }
     }
 
     const insertBuyTrading = useCallback(async e => {
         try{
             const balance = (member.balance - totalStockPrice).toFixed(2)
-            alert(buyQty*thisPrice)
+            // alert(buyQty*thisPrice)
             if((buyQty*thisPrice) > balance){
                 alert('잔금이 부족합니다.')
                 return
@@ -372,7 +371,6 @@ const Trading = () => {
                         }
                     </Card>
                 </Grid>
-                
                 <AppleNews/>
               </Grid>   
         </div>
