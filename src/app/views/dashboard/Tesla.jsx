@@ -4,6 +4,7 @@ import CanvasJSReact from './canvasjs.stock.react';
 import DoughnutChart from '../charts/echarts/Doughnut';
 import TeslaNews from './TeslaNews' 
 import {Grid, Card} from '@material-ui/core';
+import Container from './prediction_model'
 var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 class TeslaGraph extends Component {
   constructor(props) {
@@ -44,7 +45,7 @@ class TeslaGraph extends Component {
   render() {
     let {theme} = this.props;
     const options = {
-      theme: "light2",
+      theme: "dark2",
       title:{
         text:"Tesla, Inc.(TSLA)",
         fontFamily: 'roboto'
@@ -127,15 +128,14 @@ class TeslaGraph extends Component {
     };
     return (
       <Fragment>
-        <div>
+        <div className="pb-86 pt-30 px-30">
         {/* <div className="pb-86 pt-30 px-30 bg-primary"> */}
           <CanvasJSStockChart 
           containerProps={containerProps}
           options = {options}
           ></CanvasJSStockChart>
         </div>
-        <br/>
-        {/* <div className="analytics m-sm-30 mt--72">
+        <div className="analytics m-sm-30 mt--72">
           <Grid container spacing={2}
         direction="row"
         justify="space-evenly"
@@ -146,16 +146,16 @@ class TeslaGraph extends Component {
               <DoughnutChart
               height="300px"
               color={[
-                "#b28704",
-                "#e91e63",
-                "#8bc34a"
+                "#4287f5",
+                "#f23d6d",
+                "#45dea3"
               ]}
-              />
+              /><Container/>
             </Card>
-            <TeslaNews/>
+            {/* <TeslaNews/> */}
             
             </Grid>
-        </div> */}
+        </div>
       </Fragment>
     );
   }

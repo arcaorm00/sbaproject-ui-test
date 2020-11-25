@@ -1,8 +1,10 @@
 import { withStyles } from "@material-ui/styles";
 import React, { Component, Fragment } from "react";
 import CanvasJSReact from './canvasjs.stock.react';
+import DoughnutChart from '../charts/echarts/Doughnut';
 import AppleNews from './AppleNews' 
 import {Grid, Card} from '@material-ui/core';
+import Container from './prediction_model'
 
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
@@ -48,7 +50,7 @@ class AppleGraph extends Component {
  
   render() {
     const options = {
-      theme: "light2",
+      theme: "dark2",
       title:{
         text:"Apple, Inc.(APPL)",
         fontFamily: 'roboto'
@@ -130,14 +132,34 @@ class AppleGraph extends Component {
     };
     return (
       <Fragment>
-        <div>
+         <div className="pb-86 pt-30 px-30">
         {/* <div className="pb-86 pt-30 px-30 bg-primary"> */}
           <CanvasJSStockChart 
           containerProps={containerProps}
           options = {options}
           ></CanvasJSStockChart>
         </div>
-        <br/>
+        <div className="analytics m-sm-30 mt--72">
+          <Grid container spacing={2}
+        direction="row"
+        justify="space-evenly"
+        alignItems="center">
+            <Card className="px-30 py-30 mb-16">
+              <div className="card-title">News Sentiment</div>
+              <div className="card-subtitle">First half of 2020</div>
+              <DoughnutChart
+              height="300px"
+              color={[
+                "#4287f5",
+                "#f23d6d",
+                "#45dea3"
+              ]}
+              /><Container/>
+            </Card>
+            {/* <TeslaNews/> */}
+            
+            </Grid>
+        </div>
         {/* <div className="analytics m-sm-30 mt--72">
           <Grid container spacing={2}
         direction="row"
@@ -152,4 +174,4 @@ class AppleGraph extends Component {
     );
   }
 }
-export default withStyles({}, { withTheme: true }) (AppleGraph);
+export default withStyles({}, { withTheme: true }) (AppleGraph, DoughnutChart);
